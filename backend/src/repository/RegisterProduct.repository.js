@@ -57,8 +57,8 @@ class ProductRegister {
     }
 
 
-    async delete(id){
-        const index = registerProduct.findIndex (product =product.id === id);
+    async deleteById(id){
+        const index = registerProduct.findIndex (registerProduct => registerProduct.id === id);
 
         if(index ===-1){
             return false; //Produto nao encontrado

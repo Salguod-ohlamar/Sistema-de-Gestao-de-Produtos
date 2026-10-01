@@ -1,49 +1,22 @@
 
 // instanciando o fastify
 import Fastify from 'fastify'
+import cors from '@fastify/cors'
+import productsRouters from '../src/routes/RegisterProduct.routes.js'
 
 const fastify = Fastify({
     logger: true
 })
 
-
-// declarção de rota
-fastify.get('/', (req, reply) => {
-    return 'Servidor funcionando na porta 3000'
+//REGISTRA O CORS PARA PERMITIR REQUISIÇÃO DO FRONT END
+await fastify.register(cors, {
+    origin:true, //Permite qualquer origem em modo de desenvolvimento
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 })
 
-
-
-// criar uma nova rota que exiba um array de objetos 
-// com dados de usuarios
-
-
-
-
-fastify.get('/users', async (req, reply) => {
-    return dados
-})
-
-
-
-fastify.post('/users', async (req, reply) => {
-  
-
-    return 'usuario adicionado com sucesso!'
-})
-
-
-
-fastify.delete('/users', async (req, reply) => {
-
-    dados.splice(  1 ,    1)
-    return 'usuario deletado com sucesso!'
-
-})
-
-
-
-
+//REGISTRA A ROTA DE PRODUTOS
+await fastify.register(productsRouters)
 
 
 // Status code 
@@ -62,5 +35,5 @@ fastify.listen({ port: 3000 }, function (err, address) {
         fastify.log.error(err)
         process.exit(1)
     }
-    // Server is now listening on ${address}
+ 
 })
