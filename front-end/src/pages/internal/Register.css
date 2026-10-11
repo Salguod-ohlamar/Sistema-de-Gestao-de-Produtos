@@ -1,203 +1,208 @@
 /* Container alinhado com o limite de 1200px do Header */
 .register-page-container {
-max-width: 1200px;
-margin: 80px auto 0 auto; /* 80px afasta o conteúdo do Header fixo */
-padding: 60px 40px;
-min-height: calc(100vh - 160px);
-display: flex;
-justify-content: center;
+    max-width: 1200px;
+    margin: 80px auto 0 auto; /* 80px afasta o conteúdo do Header fixo */
+    padding: 60px 40px;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
 }
 
 /* Card minimalista com a mesma borda sutil do Header */
 .register-card {
-width: 100%;
-max-width: 700px;
-background-color: #fff;
+    width: 100%;
+    max-width: 700px;
+    background-color: #fff;
 }
 
 /* Título seguindo o estilo pesado da sua .logo */
 .register-header h2,
 .list-container h2 {
-font-size: 24px;
-font-weight: 700;
-color: #111;
-letter-spacing: -1px;
-margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
 }
 
 /* Subtítulo combinando com as cores dos links do menu (.nav-menu a) */
 .register-header p,
 .list-container p {
-font-size: 15px;
-color: #555;
-font-weight: 500;
-margin-bottom: 40px;
+    font-size: 15px;
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 40px;
 }
 
 /* =========================================
 ESTILOS DAS ABAS (TABS)
 ========================================= */
 .tabs-container {
-display: flex;
-gap: 15px;
-margin-bottom: 30px;
-border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-padding-bottom: 10px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 10px;
 }
 
 .tab-button {
-padding: 10px 20px;
-cursor: pointer;
-border: none;
-border-radius: 5px;
-font-weight: 700;
-font-size: 14px;
-background-color: #f4f4f4;
-color: #555;
-transition: all 0.3s ease;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 14px;
+    background-color: #f4f4f4;
+    color: #555;
+    transition: all 0.3s ease;
 }
 
 .tab-button:hover {
-background-color: #e0e0e0;
-color: #111;
+    background-color: #e0e0e0;
+    color: #111;
 }
 
 /* Estilo para a aba quando está selecionada */
 .tab-button.active {
-background-color: #111;
-color: #fff;
+    background-color: #111;
+    color: #fff;
 }
 
 /* =========================================
 FORMULÁRIO
 ========================================= */
 .register-form {
-display: flex;
-flex-direction: column;
-gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .form-row {
-display: flex;
-gap: 30px; /* Mesmo gap utilizado no menu ul */
+    display: flex;
+    gap: 30px; /* Mesmo gap utilizado no menu ul */
+    width: 100%; /* ADICIONADO: Garante que a linha respeita o limite */
 }
 
 @media (max-width: 600px) {
-.form-row {
-flex-direction: column;
-gap: 24px;
-}
+    .form-row {
+        flex-direction: column;
+        gap: 24px;
+    }
 }
 
 .form-group {
-flex: 1;
-display: flex;
-flex-direction: column;
-gap: 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0; /* ADICIONADO: Previne que inputs grandes quebrem o flexbox no modal */
 }
 
 /* Labels discretas e elegantes */
 .form-group label {
-font-size: 14px;
-font-weight: 600;
-color: #111;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
 }
 
 /* Inputs com bordas suaves idênticas à borda inferior do Header */
 .form-group input,
 .form-group select {
-padding: 12px 16px;
-border: 1px solid rgba(0, 0, 0, 0.1);
-border-radius: 8px;
-font-size: 15px;
-color: #111;
-background-color: #fff;
-outline: none;
-transition: border-color 0.3s ease;
+    width: 100%; /* ADICIONADO: Força 100% da caixa pai */
+    box-sizing: border-box; /* ADICIONADO: O padding passa a contar para dentro da caixa */
+    max-width: 100%; /* ADICIONADO: Impede crescimento infinito */
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 15px;
+    color: #111;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
 
 /* Efeito de foco limpo e sem exageros */
 .form-group input:focus,
 .form-group select:focus {
-border-color: #111;
+    border-color: #111;
 }
 
 .form-group input::placeholder {
-color: #999;
+    color: #999;
 }
 
 .form-actions {
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 16px;
-margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
 }
 
 /* Botão principal (Confirmar Cadastro) */
 .form-actions .btn-elegant {
-border: none;
-cursor: pointer;
-padding: 14px 32px;
-font-size: 14px;
+    border: none;
+    cursor: pointer;
+    padding: 14px 32px;
+    font-size: 14px;
 }
 
 /* Botões do Formulário */
 .form-actions .btn-secondary,
 .btn-terceiro {
-background: transparent;
-color: #555;
-border: 1px solid rgba(0, 0, 0, 0.15);
-border-radius: 50px;
-padding: 14px 32px;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.3s ease;
+    background: transparent;
+    color: #555;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 50px;
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .form-actions .btn-secondary:hover,
 .btn-terceiro:hover {
-color: #000;
-border-color: #111;
-background-color: rgba(0, 0, 0, 0.02);
+    color: #000;
+    border-color: #111;
+    background-color: rgba(0, 0, 0, 0.02);
 }
 
 @media (max-width: 480px) {
-.form-actions {
-flex-direction: column-reverse;
-width: 100%;
-}
-.form-actions button {
-width: 100%;
-}
+    .form-actions {
+        flex-direction: column-reverse;
+        width: 100%;
+    }
+    .form-actions button {
+        width: 100%;
+    }
 }
 
 .checkbox-group {
-margin: 8px 0;
+    margin: 8px 0;
 }
 
 .checkbox-label {
-display: flex;
-align-items: center;
-gap: 12px;
-cursor: pointer;
-user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
-width: 18px;
-height: 18px;
-cursor: pointer;
-accent-color: #111;
-border: 1px solid rgba(0, 0, 0, 0.15);
-border-radius: 4px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #111;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
 }
 
 .checkbox-label span {
-font-size: 14px;
-color: #555;
-font-weight: 500;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
 }
 
 /* =========================================
@@ -205,43 +210,72 @@ TABELA DE PRODUTOS
 ========================================= */
 
 .list-container table {
-width: 100%;
-border-collapse: collapse;
-margin-top: 10px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
 /* Cabeçalho da tabela */
 .list-container th {
-padding: 14px 12px;
-background-color: rgba(0, 0, 0, 0.03);
-color: #111;
-font-weight: 600;
-font-size: 13px;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-text-align: left;
+    padding: 14px 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #111;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
 /* Linhas da tabela */
 .list-container td {
-padding: 16px 12px;
-border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-color: #444;
-font-size: 14px;
-vertical-align: middle;
+    padding: 16px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    color: #444;
+    font-size: 14px;
+    vertical-align: middle;
 }
 
 /* Efeito ao passar o rato (hover) na linha */
 .list-container tbody tr:hover {
-background-color: rgba(0, 0, 0, 0.015);
-transition: background-color 0.2s ease;
+    background-color: rgba(0, 0, 0, 0.015);
+    transition: background-color 0.2s ease;
 }
 
 /* Estilo para avisos quando não há produtos */
 .list-container > p,
 .empty-message {
-padding: 20px 0;
-color: #888;
-font-style: italic;
+    padding: 20px 0;
+    color: #888;
+    font-style: italic;
+}
+
+/* =========================================
+BOTÕES GERAIS E DA TABELA
+========================================= */
+/* Sobrescreve qualquer regra anterior e aplica a todos os btn-secondary */
+.btn-secondary {
+    background: transparent;
+    color: #555;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 50px;
+    padding: 8px 16px; /* Mais compacto para caber bem na tabela */
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    color: #000;
+    border-color: #111;
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Alinha os botões lado a lado na célula de ações da tabela */
+.actions-cell {
+    display: flex;
+    gap: 8px; /* Espaço entre o botão Editar e Deletar */
+    align-items: center;
 }

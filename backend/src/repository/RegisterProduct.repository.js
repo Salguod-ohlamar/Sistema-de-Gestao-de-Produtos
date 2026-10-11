@@ -76,34 +76,34 @@ class ProductRegister {
         return registerProduct.find(p => p.sku === codigo || p.codigoBarras === codigo)
     }
 
-    async updateById(id, updateDate){
-        const index = registerProduct.findIndex(product => product.id === id);
-        if (index === -1){
-            return null;
-        }
-        //mantem os dados antigos e sobreescreve com novos atualizando a data de modificação
-        const existinProduct = registerProduct[index];
-        const updateProduct ={
-            ...existinProduct,
-            ...updateDate,
-            id:existinProduct.id, //Garabte que o Id nao seja alterado
-            creatAt: existinProduct.creatAt, //Mantem a data de criação original
-            updateDate: new Date() //Adiciona a data de atualização
-        };
-        registerProduct[index] =updateProduct;
-        return updateProduct;
+    async updateById(id, productData){
+        const result = await sql`
+        UPDATE PRODUCTS
+        SET
+         name = ${productData.nomeProduto},
+                sku = ${productData.sku},
+                barcode = ${productData.codigoBarras},
+                ncm_code = ${productData.ncm},
+                unit = ${productData.unidade},
+                cost_price = ${productData.precoCusto},
+                sale_price = ${productData.precoVenda},
+                origin_code = ${productData.origemProduto},
+                category = ${productData.categoria}
+        WHERE id = ${id}
+        RETURNING *;
+        `
+        return result
     }
 
 
     async deleteById(id){
-        const index = registerProduct.findIndex (registerProduct => registerProduct.id === id);
-
-        if(index ===-1){
-            return false; //Produto nao encontrado
-        }
-
-        registerProduct.splice(index, 1);
-        return true;
+        
+          const result = await sql `
+            DELETE FROM PRODUCTS
+            WHERE id= ${id}
+            RETURNING *;
+        `
+        return result;
 
     }
 

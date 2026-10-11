@@ -56,13 +56,26 @@ async function findProductsByCodeController(req, reply) {
     }
 }
 
+
+
+
+
+
+
+
+
 async function updateById(req, reply) {
     try {
         const { id } = req.params;
-        const updateProduct = await RegisterProductRepository.updateById(id, req.body);
+        const {nomeProduto, sku, codigoBarras, ncm, unidade, precoCusto, precoVenda, origemProduto, categoria} =req.body;
+        const safeProductData={
+          id, nomeProduto, sku, codigoBarras, ncm, unidade, precoCusto, precoVenda, origemProduto, categoria
+        };
+
+        const updateProduct = await RegisterProductRepository.updateById(id, safeProductData);
 
 
-        if (!updateProduct) {
+        if (!updateProduct || updateProduct.leght === 0) {
             return reply.status(404).send({ error: 'Produto nao encontrado, para atualizar' })
         }
         return reply.status(200).send(updateProduct);
@@ -71,6 +84,14 @@ async function updateById(req, reply) {
         return reply.status(500).send({ error: 'Erro ao atualizar produto' });
     }
 }
+
+
+
+
+
+
+
+
 
 async function deleteById(req, reply) {
     try {
