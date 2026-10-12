@@ -1,0 +1,73 @@
+:root,
+.dark {
+  /* Fundo e Superfícies Base (Dark Mode Obrigatório) */
+  --background: #05070D;
+  --foreground: #EAF0FF;
+
+  --surface-1: #0A0F1C;
+  --surface-2: #0E1526;
+  --surface-elevated: #141C30;
+
+  --card: #0E1526;
+  --card-foreground: #EAF0FF;
+
+  --popover: #141C30;
+  --popover-foreground: #EAF0FF;
+
+  /* Bordas */
+  --border: #1B2540;
+  --border-subtle: #1B2540;
+  --border-highlight: #2A3A66;
+  --input: #1B2540;
+
+  /* Ação Primária */
+  --primary: #2F6BFF;
+  --primary-foreground: #EAF0FF;
+  --primary-hover: #4C82FF;
+  --primary-pressed: #1F52D6;
+  --primary-glow: rgba(47, 107, 255, 0.35);
+  --blue-deep: #0B2A6F;
+
+  /* Apoio e Secundários */
+  --secondary: #0E1526;
+  --secondary-foreground: #EAF0FF;
+  --cyan-accent: #38BDF8;
+
+  /* Textos e Contraste */
+  --text-primary: #EAF0FF;
+  --text-secondary: #9AA8C7;
+  --text-muted: #7A89AB;
+  --text-disabled: #5F6E8F;
+
+  --muted: #0E1526;
+  --muted-foreground: #7A89AB;
+
+  --accent: #141C30;
+  --accent-foreground: #EAF0FF;
+
+  --destructive: #F2555A;
+  --destructive-foreground: #EAF0FF;
+
+  /* Anel de foco */
+  --ring: #4C82FF;
+
+  /* Semânticas Operacionais (para fundos translúcidos 12%) */
+  --status-success: #34D399;
+  --status-success-bg: rgba(52, 211, 153, 0.12);
+  --status-success-border: rgba(52, 211, 153, 0.25);
+
+  --status-warning: #F5B544;
+  --status-warning-bg: rgba(245, 181, 68, 0.12);
+  --status-warning-border: rgba(245, 181, 68, 0.25);
+
+  --status-error: #F2555A;
+  --status-error-bg: rgba(242, 85, 90, 0.12);
+  --status-error-border: rgba(242, 85, 90, 0.25);
+
+  /* Raios */
+  --radius-card: 14px;
+  --radius-input: 10px;
+  --radius-btn: 10px;
+  --radius-pill: 9999px;
+  --radius: 10px;
+}
