@@ -54,6 +54,14 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+
+  --color-cyan-accent: var(--cyan-accent);
+  --color-blue-deep: var(--blue-deep);
+
   --color-status-success: var(--status-success);
   --color-status-warning: var(--status-warning);
   --color-status-error: var(--status-error);
@@ -104,3 +112,22 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Utilitários Visuais do Cockpit e Auth */
+.dot-grid {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 80%);
+}
+
+.perspective-container {
+  perspective: 1200px;
+}
+
+.tilted-dashboard {
+  transform: rotateY(-8deg) rotateX(4deg);
+  transform-style: preserve-3d;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--border);
+}
+
