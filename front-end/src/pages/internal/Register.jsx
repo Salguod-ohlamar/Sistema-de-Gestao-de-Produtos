@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom" // 1. Importe o hook de navegação
 import Header from "../../components/Header"
 import Footer from "../../components/Footer"
-import "./Register.css"
+import styles from "./Register.module.css"
 
 
 function Register() {
@@ -37,7 +37,7 @@ function Register() {
         <>
             <Header />
 
-            <main className="register-page-container">
+            <main className={styles.page}>
                 <div className="register-card">
                     <div className="register-header">
                         <h2>Registro e cadastro de Empresas</h2>

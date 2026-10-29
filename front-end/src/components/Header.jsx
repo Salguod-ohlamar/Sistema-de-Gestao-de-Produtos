@@ -1,4 +1,5 @@
 import style from './Header.module.css';
+import { Link } from 'react-router-dom';
 
 // Recebemos a função onOpenLogin como propriedade (prop)
 function Header({ onOpenLogin }) {
@@ -9,7 +10,9 @@ function Header({ onOpenLogin }) {
 
                 <nav className={style['nav-menu']}>
                     <ul>
-                        <li><a href="#">Início</a></li>
+                        <li><Link to="/">Início</Link></li>
+                        <li><Link to="/PDV">PDV</Link></li>
+                        <li><Link to="/Produtos">Produtos</Link></li>
                         <li><a href="#">Sobre</a></li>
                         <li><a href="#">Serviços</a></li>
                         <li><a href="#">Contato</a></li>

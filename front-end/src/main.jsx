@@ -6,6 +6,7 @@ import Register from './pages/internal/Register'
 import App from './pages/App'
 import RegisterEmployee from './pages/internal/RegisterEmployee'
 import RegisterProduct from './pages/internal/RegisterProduct'
+import RegisterPOS from './pages/internal/RegisterPOS'
 
 
 const routes = createBrowserRouter([
@@ -26,6 +27,10 @@ const routes = createBrowserRouter([
     {
         path:'/Produtos',
         element: <RegisterProduct />
+    },
+    {
+        path: '/PDV',
+        element: <RegisterPOS />
     }
 ])
 

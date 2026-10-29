@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Header from "../../components/Header"
 import Footer from "../../components/Footer"
-import "./Register.css"
+import styles from "./RegisterEmployee.module.css"
 
 function RegisterEmployee() {
     const [formData, setFormData] = useState({
@@ -33,7 +33,7 @@ function RegisterEmployee() {
         <>
             <Header />
 
-            <main className="register-page-container">
+            <main className={styles.page}>
                 <div className="register-card">
                     <div className="register-header">
                         <h2>Registro e cadastro de Colaboradores</h2>

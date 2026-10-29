@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Aceitamos propriedades extras (isModal e onCancel) para ajustar o layout dos botões
 function ProductForm({ formData, handleChange, handleSubmit, isModal, onCancel,handleEdit }) {
     return (
@@ -60,6 +58,17 @@ function ProductForm({ formData, handleChange, handleSubmit, isModal, onCancel,h
                 <div className="form-group">
                     <label htmlFor="precoVenda">Preço de Venda (R$)</label>
                     <input type="number" step="0.01" id="precoVenda" name="precoVenda" value={formData.precoVenda} onChange={handleChange} placeholder="0,00" required />
+                </div>
+            </div>
+
+            <div className="form-row">
+                <div className="form-group">
+                    <label htmlFor="em_estoque">Quantidade em estoque</label>
+                    <input type="number" min="0" step="1" id="em_estoque" name="em_estoque" value={formData.em_estoque} onChange={handleChange} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="qtda_minima">Quantidade mínima</label>
+                    <input type="number" min="0" step="1" id="qtda_minima" name="qtda_minima" value={formData.qtda_minima} onChange={handleChange} required />
                 </div>
             </div>
 

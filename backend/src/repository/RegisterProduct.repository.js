@@ -68,27 +68,37 @@ class ProductRegister {
 
 
 
-    async findById(){
-        return registerProduct.find(product => product.id === id || null);
+    async findById(id){
+        const result = await sql`
+            SELECT * FROM products WHERE id = ${id} LIMIT 1;
+        `;
+        return result[0] || null;
     }
 
-    async findBySkuorBarra(){
-        return registerProduct.find(p => p.sku === codigo || p.codigoBarras === codigo)
+    async findBySkuorBarra(codigo){
+        const result = await sql`
+            SELECT * FROM products
+            WHERE sku = ${codigo} OR barcode = ${codigo}
+            LIMIT 1;
+        `;
+        return result[0] || null;
     }
 
     async updateById(id, productData){
         const result = await sql`
         UPDATE PRODUCTS
         SET
-         name = ${productData.nomeProduto},
-                sku = ${productData.sku},
-                barcode = ${productData.codigoBarras},
-                ncm_code = ${productData.ncm},
-                unit = ${productData.unidade},
-                cost_price = ${productData.precoCusto},
-                sale_price = ${productData.precoVenda},
-                origin_code = ${productData.origemProduto},
-                category = ${productData.categoria}
+                name = COALESCE(${productData.nomeProduto ?? productData.name ?? null}, name),
+                sku = COALESCE(${productData.sku ?? null}, sku),
+                barcode = COALESCE(${productData.codigoBarras ?? productData.barcode ?? null}, barcode),
+                ncm_code = COALESCE(${productData.ncm ?? productData.ncm_code ?? null}, ncm_code),
+                unit = COALESCE(${productData.unidade ?? productData.unit ?? null}, unit),
+                cost_price = COALESCE(${productData.precoCusto ?? productData.cost_price ?? null}, cost_price),
+                sale_price = COALESCE(${productData.precoVenda ?? productData.sale_price ?? null}, sale_price),
+                origin_code = COALESCE(${productData.origemProduto ?? productData.origin_code ?? null}, origin_code),
+                category = COALESCE(${productData.categoria ?? productData.category ?? null}, category),
+                stock_quantity = COALESCE(${productData.em_estoque ?? productData.stock_quantity ?? null}, stock_quantity),
+                min_stock_quantity = COALESCE(${productData.qtda_minima ?? productData.min_stock_quantity ?? null}, min_stock_quantity)
         WHERE id = ${id}
         RETURNING *;
         `

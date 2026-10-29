@@ -1,0 +1,271 @@
+.page {
+    max-width: 1200px;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
+    margin: 80px auto 0;
+    padding: 60px 40px;
+}
+
+.page :global(.register-card) {
+    width: 100%;
+    max-width: 700px;
+    background: #fff;
+}
+
+.page :global(.register-header h2),
+.page :global(.list-container h2) {
+    margin-bottom: 8px;
+    color: #111;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.page :global(.register-header p),
+.page :global(.list-container p) {
+    margin-bottom: 40px;
+    color: #555;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.page :global(.tabs-container) {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(0, 0, 0, .05);
+}
+
+.page :global(.tab-button) {
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 5px;
+    background: #f4f4f4;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all .3s ease;
+}
+
+.page :global(.tab-button:hover) {
+    background: #e0e0e0;
+    color: #111;
+}
+
+.page :global(.tab-button.active) {
+    background: #111;
+    color: #fff;
+}
+
+.page :global(.register-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.page :global(.form-row) {
+    display: flex;
+    width: 100%;
+    gap: 30px;
+}
+
+.page :global(.form-group) {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.page :global(.form-group label) {
+    color: #111;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.page :global(.form-group input),
+.page :global(.form-group select) {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: #111;
+    font-size: 15px;
+    transition: border-color .3s ease;
+}
+
+.page :global(.form-group input:focus),
+.page :global(.form-group select:focus) {
+    border-color: #111;
+}
+
+.page :global(.form-group input::placeholder) {
+    color: #999;
+}
+
+.page :global(.form-actions) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.page :global(.form-actions .btn-elegant) {
+    padding: 14px 32px;
+    border: 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.page :global(.form-actions .btn-secondary),
+.page :global(.btn-terceiro) {
+    padding: 14px 32px;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 50px;
+    background: transparent;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all .3s ease;
+}
+
+.page :global(.form-actions .btn-secondary:hover),
+.page :global(.btn-terceiro:hover) {
+    border-color: #111;
+    background: rgba(0, 0, 0, .02);
+    color: #000;
+}
+
+.page :global(.list-container table) {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+.page :global(.list-container th) {
+    padding: 14px 12px;
+    border-bottom: 2px solid rgba(0, 0, 0, .1);
+    background: rgba(0, 0, 0, .03);
+    color: #111;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.page :global(.list-container td) {
+    padding: 16px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+    color: #444;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.page :global(.list-container tbody tr:hover) {
+    background: rgba(0, 0, 0, .015);
+    transition: background-color .2s ease;
+}
+
+.page :global(.list-container > p),
+.page :global(.empty-message) {
+    padding: 20px 0;
+    color: #888;
+    font-style: italic;
+}
+
+.page :global(.btn-secondary) {
+    padding: 8px 16px;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 50px;
+    background: transparent;
+    color: #555;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .3s ease;
+}
+
+.page :global(.btn-secondary:hover) {
+    border-color: #111;
+    background: rgba(0, 0, 0, .04);
+    color: #000;
+}
+
+.page :global(.actions-cell) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modalOverlay {
+    position: fixed;
+    z-index: 2000;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .4);
+    backdrop-filter: blur(5px);
+}
+
+.modalContent {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    padding: 30px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .1);
+}
+
+.modalContent :global(.modal-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.modalContent :global(.modal-close) {
+    border: 0;
+    background: transparent;
+    color: #777;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+@media (max-width: 600px) {
+    .page :global(.form-row) {
+        flex-direction: column;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        padding: 40px 20px;
+    }
+
+    .page :global(.form-actions) {
+        width: 100%;
+        flex-direction: column-reverse;
+    }
+
+    .page :global(.form-actions button) {
+        width: 100%;
+    }
+
+    .modalContent {
+        width: calc(100% - 32px);
+        padding: 20px;
+    }
+}

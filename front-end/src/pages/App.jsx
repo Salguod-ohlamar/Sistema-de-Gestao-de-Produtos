@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { Link } from "react-router-dom";
 import "./App.css";
 
 function App() {
@@ -20,9 +21,7 @@ function App() {
                 <h1>Gestão Inteligente e Estratégica para o seu Negócio</h1>
                 <p>Domine o seu estoque, organize a sua esteira de produtos e acelere as suas vendas com uma plataforma completa, rápida e intuitiva.</p>
                 <div className="hero-buttons">
-                    <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
-                        Começar Agora
-                    </button>
+                    <Link className="btn-primary" to="/PDV">Abrir PDV</Link>
                     <button className="btn-outline">Conhecer Recursos</button>
                 </div>
             </section>

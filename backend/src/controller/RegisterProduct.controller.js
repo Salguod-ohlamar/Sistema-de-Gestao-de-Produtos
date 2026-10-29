@@ -25,7 +25,7 @@ async function findAllProductsController(req, reply) {
 //busca produtos pelo ID busca unica
 async function findProductsByIdController(req, reply) {
     try {
-        const id = req.params;
+        const { id } = req.params;
 
         const product = await RegisterProductRepository.findById(id);
 
@@ -50,7 +50,7 @@ async function findProductsByCodeController(req, reply) {
         if (!product) {
             return reply.status(404).send({ message: 'Nenhum produto encontrado com este código' })
         }
-        return reply.send(produto);
+        return reply.send(product);
     } catch (erro) {
         return reply.status(500).send({ error: 'Erro ao buscar por código' });
     }
@@ -67,18 +67,13 @@ async function findProductsByCodeController(req, reply) {
 async function updateById(req, reply) {
     try {
         const { id } = req.params;
-        const {nomeProduto, sku, codigoBarras, ncm, unidade, precoCusto, precoVenda, origemProduto, categoria} =req.body;
-        const safeProductData={
-          id, nomeProduto, sku, codigoBarras, ncm, unidade, precoCusto, precoVenda, origemProduto, categoria
-        };
-
-        const updateProduct = await RegisterProductRepository.updateById(id, safeProductData);
+                const updateProduct = await RegisterProductRepository.updateById(id, req.body);
 
 
-        if (!updateProduct || updateProduct.leght === 0) {
+                if (!updateProduct || updateProduct.length === 0) {
             return reply.status(404).send({ error: 'Produto nao encontrado, para atualizar' })
         }
-        return reply.status(200).send(updateProduct);
+                return reply.status(200).send(updateProduct[0]);
     } catch (error) {
          console.error("Erro interno no controller:", error);
         return reply.status(500).send({ error: 'Erro ao atualizar produto' });

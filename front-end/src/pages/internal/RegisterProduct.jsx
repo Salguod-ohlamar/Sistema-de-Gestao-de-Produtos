@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ProductForm from "../../components/productForm.jsx";
-import "./Register.css";
+import styles from "./RegisterProduct.module.css";
 
 function RegisterProduct() {
     const [activeTab, setActiveTab] = useState('form');
@@ -14,16 +14,10 @@ function RegisterProduct() {
     // Estado do formulário
     const initialFormData = {
         nomeProduto: "", sku: "", codigoBarras: "", ncm: "",
-        unidade: "", precoVenda: "", precoCusto: "", origemProduto: "0", categoria: "", id: null
+        unidade: "", precoVenda: "", precoCusto: "", em_estoque: "0", qtda_minima: "0",
+        origemProduto: "0", categoria: "", id: null
     };
     const [formData, setFormData] = useState(initialFormData);
-
-    // Carregar produtos quando a componente monta ou muda de aba
-    useEffect(() => {
-        if (activeTab === 'list') {
-            fetchProducts();
-        }
-    }, [activeTab]);
 
     const fetchProducts = async () => {
         try {
@@ -36,6 +30,23 @@ function RegisterProduct() {
             console.log("Erro ao carregar produtos: ", error);
         }
     }
+
+    // Carregar produtos quando a componente monta ou muda de aba
+    useEffect(() => {
+        if (activeTab !== 'list') return undefined;
+
+        let isActive = true;
+        fetch("http://localhost:3000/produtos")
+            .then((response) => response.ok ? response.json() : Promise.reject(new Error("Falha ao carregar produtos")))
+            .then((data) => {
+                if (isActive) setProducts(data);
+            })
+            .catch((error) => console.log("Erro ao carregar produtos: ", error));
+
+        return () => {
+            isActive = false;
+        };
+    }, [activeTab]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -130,6 +141,8 @@ function RegisterProduct() {
             unidade: prod.unit || prod.unidade || "",
             precoVenda: prod.sale_price || prod.precoVenda || "",
             precoCusto: prod.cost_price || prod.precoCusto || "",
+            em_estoque: prod.stock_quantity ?? prod.em_estoque ?? "0",
+            qtda_minima: prod.min_stock_quantity ?? prod.qtda_minima ?? "0",
             origemProduto: prod.origin_code || prod.origemProduto || "0",
             categoria: prod.category || prod.categoria || ""
         });
@@ -150,7 +163,7 @@ function RegisterProduct() {
         <>
             <Header />
 
-            <main className="register-page-container">
+            <main className={styles.page}>
                 <div className="register-card">
 
                     {/* Botões das Abas */}
@@ -202,6 +215,8 @@ function RegisterProduct() {
                                             <th>Nome</th>
                                             <th>SKU</th>
                                             <th>Preço Venda</th>
+                                            <th>Estoque</th>
+                                            <th>Qtd. mínima</th>
                                             <th className="actions-cell">Ações</th>
                                         </tr>
                                     </thead>
@@ -212,6 +227,8 @@ function RegisterProduct() {
                                                 <td>{prod.name || prod.nomeProduto}</td>
                                                 <td>{prod.sku}</td>
                                                 <td>R$ {prod.sale_price || prod.precoVenda}</td>
+                                                <td>{prod.stock_quantity ?? prod.em_estoque ?? 0}</td>
+                                                <td>{prod.min_stock_quantity ?? prod.qtda_minima ?? 0}</td>
                                                 <td className="actions-cell">
                                                     <button 
                                                         className="btn-secondary"
@@ -239,8 +256,8 @@ function RegisterProduct() {
 
             {/* MODAL DE EDIÇÃO (Aparece por cima da tela) */}
             {isEditModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
                         <div className="modal-header">
                             <h2>Editar Produto (ID: {formData.id})</h2>
                             <button className="modal-close" onClick={closeEditModal}>&times;</button>

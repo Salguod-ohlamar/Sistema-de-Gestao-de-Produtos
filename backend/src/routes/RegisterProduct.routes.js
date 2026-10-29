@@ -16,9 +16,9 @@ async function productsRouters(fastify, options) {
 
     fastify.get('/produtos', findAllProductsController);
 
-    fastify.get("/produtos/:id", findProductsByIdController);
-
     fastify.get('/produtos/codigo/:codigo', findProductsByCodeController);
+
+    fastify.get("/produtos/:id", findProductsByIdController);
 
     fastify.put('/produtos/:id', updateById)
 
