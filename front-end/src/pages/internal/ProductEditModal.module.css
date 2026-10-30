@@ -60,6 +60,86 @@
     width: 100%;
 }
 
+.body :global(.register-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.body :global(.form-row) {
+    display: flex;
+    width: 100%;
+    gap: 24px;
+}
+
+.body :global(.form-group) {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.body :global(.form-group label) {
+    color: #111;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.body :global(.form-group input),
+.body :global(.form-group select) {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 0, 0, .14);
+    border-radius: 4px;
+    outline: none;
+    background: #fff;
+    color: #111;
+    font: inherit;
+    font-size: 13px;
+    transition: border-color .16s ease, box-shadow .16s ease;
+}
+
+.body :global(.form-group input:focus),
+.body :global(.form-group select:focus) {
+    border-color: #222;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, .08);
+}
+
+.body :global(.form-group input::placeholder) {
+    color: #888;
+}
+
+.body :global(.form-actions) {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px !important;
+    margin-top: 4px;
+}
+
+.body :global(.form-actions .btn-secondary),
+.body :global(.form-actions .btn-terceiro) {
+    min-height: 40px;
+    padding: 0 18px;
+    border: 1px solid #222;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.body :global(.form-actions .btn-secondary:hover),
+.body :global(.form-actions .btn-terceiro:hover) {
+    background: #f3f3f3;
+}
+
 @keyframes modal-enter {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
@@ -67,10 +147,29 @@
 
 @media (max-width: 540px) {
     .dialog {
+        max-height: calc(100vh - 24px);
         padding: 20px 16px;
     }
 
     .header h2 {
         font-size: 18px;
+    }
+
+    .body :global(.register-form) {
+        gap: 18px;
+    }
+
+    .body :global(.form-row) {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .body :global(.form-actions) {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .body :global(.form-actions button) {
+        width: 100%;
     }
 }

@@ -10,6 +10,7 @@ import RegisterPOS from './pages/internal/RegisterPOS'
 import AdminManagement from './pages/internal/AdminManagement'
 import RequireAuth from './components/RequireAuth'
 import SubscriptionPlans from './pages/SubscriptionPlans'
+import CompanyDashboard from './pages/internal/CompanyDashboard'
 
 
 const routes = createBrowserRouter([
@@ -42,6 +43,10 @@ const routes = createBrowserRouter([
     {
         path: '/Gerenciamento',
         element: <RequireAuth allowedTypes={["root"]}><AdminManagement /></RequireAuth>
+    },
+    {
+        path: '/PainelEmpresa',
+        element: <RequireAuth allowedTypes={["company", "collaborator"]}><CompanyDashboard /></RequireAuth>
     }
 ])
 

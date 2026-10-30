@@ -51,7 +51,46 @@ CREATE TABLE IF NOT EXISTS system_admins (
 
 CREATE INDEX IF NOT EXISTS collaborators_company_id_idx ON collaborators(company_id);
 
-ALTER TABLE products
-    ADD COLUMN IF NOT EXISTS company_id integer REFERENCES companies(id) ON DELETE CASCADE;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS company_id integer;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS legacy_company_id varchar(255);
+
+DO $$
+DECLARE
+    company_id_type text;
+BEGIN
+    SELECT data_type INTO company_id_type
+    FROM information_schema.columns
+    WHERE table_schema = current_schema()
+      AND table_name = 'products'
+      AND column_name = 'company_id';
+
+    IF company_id_type = 'character varying' THEN
+        UPDATE products
+        SET legacy_company_id = company_id
+        WHERE company_id IS NOT NULL
+          AND btrim(company_id) !~ '^[0-9]+$'
+          AND legacy_company_id IS NULL;
+
+        ALTER TABLE products
+            ALTER COLUMN company_id TYPE integer
+            USING CASE
+                WHEN btrim(company_id) ~ '^[0-9]+$' THEN btrim(company_id)::integer
+                ELSE NULL
+            END;
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'products_company_id_fkey'
+          AND conrelid = 'products'::regclass
+    ) THEN
+        ALTER TABLE products
+            ADD CONSTRAINT products_company_id_fkey
+            FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE;
+    END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS products_company_id_idx ON products(company_id);

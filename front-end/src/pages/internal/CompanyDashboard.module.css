@@ -1,0 +1,384 @@
+.page {
+    max-width: 1200px;
+    min-height: calc(100vh - 160px);
+    margin: 80px auto 0;
+    padding: 48px 40px 72px;
+    color: #171717;
+}
+
+.heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #666;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.heading h1 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 500;
+}
+
+.heading p:last-child {
+    margin: 8px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.productLink,
+.primaryButton {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 14px;
+    border: 1px solid #111;
+    background: #111;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.productLink span,
+.primaryButton span { font-size: 18px; }
+
+.tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabs button {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 15px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+}
+
+.tabs button:hover,
+.tabs .selectedTab {
+    border-bottom-color: #111;
+    color: #111;
+}
+
+.tabs button span {
+    display: grid;
+    min-width: 20px;
+    height: 20px;
+    place-items: center;
+    border: 1px solid #ddd;
+    font-size: 10px;
+}
+
+.gauges {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+    padding: 18px 22px;
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+
+.gauge {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.gauge svg {
+    width: min(100%, 210px);
+    overflow: visible;
+}
+
+.gauge svg path:not(.gaugeNeedle) {
+    fill: none;
+    stroke-width: 13;
+    stroke-linecap: butt;
+}
+
+.gaugeRed { stroke: #d83b3b; }
+.gaugeYellow { stroke: #e3b52f; }
+.gaugeBlue { stroke: #2377c9; }
+
+.gauge svg .gaugeNeedle {
+    fill: none;
+    stroke: #202020;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+.gaugeHub { fill: #202020; }
+
+.gauge svg text {
+    fill: #666;
+    font-size: 9px;
+}
+
+.gauge > strong {
+    margin-top: -1px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.gauge > span {
+    margin-top: 5px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.gauge > small {
+    margin-top: 4px;
+    color: #777;
+    font-size: 10px;
+}
+
+.metricGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.metric {
+    display: grid;
+    min-width: 0;
+    gap: 10px;
+    padding: 16px;
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+
+.metric span {
+    min-height: 28px;
+    color: #666;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.metric strong {
+    overflow-wrap: anywhere;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.lowStock,
+.teamSection,
+.billingSection {
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+
+.lowStock > header,
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.lowStock > header h2,
+.sectionHeader h2 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.lowStock > header > span {
+    display: grid;
+    min-width: 23px;
+    height: 23px;
+    place-items: center;
+    border: 1px solid #ddd;
+    color: #555;
+    font-size: 11px;
+}
+
+.lowStockList {
+    padding: 0 18px;
+}
+
+.lowStockRow {
+    display: grid;
+    min-height: 44px;
+    grid-template-columns: minmax(0, 1fr) 120px 130px;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+}
+
+.lowStockRow:first-child { border-top: 0; }
+.lowStockRow strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lowStockRow span { color: #666; }
+.lowStockRow span:last-child { color: #a93636; text-align: right; }
+
+.sectionHeader p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 11px;
+}
+
+.teamList { padding: 0 18px; }
+
+.teamRow {
+    display: grid;
+    min-height: 60px;
+    grid-template-columns: minmax(0, 1fr) 120px 60px 150px;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #eee;
+}
+
+.teamRow > div {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+
+.teamRow > div strong,
+.teamRow > div span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.teamRow > div strong { font-size: 12px; }
+.teamRow > div span,
+.role,
+.status { color: #666; font-size: 11px; }
+.status { font-weight: 700; }
+.active { color: #28613d; }
+.inactive { color: #a33636; }
+
+.activeToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    gap: 7px;
+    color: #555;
+    cursor: pointer;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.activeToggle input { accent-color: #111; }
+
+.readOnlyTag {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    color: #555;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.billingGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: #e6e6e6;
+}
+
+.billingGrid article {
+    display: grid;
+    min-height: 80px;
+    align-content: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: #fff;
+}
+
+.billingGrid article span { color: #666; font-size: 11px; }
+.billingGrid article strong { font-size: 13px; }
+.billingGrid article small { margin-left: 4px; color: #666; font-size: 10px; font-weight: 400; }
+
+.contractTotal {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 0 18px;
+    padding: 18px 0;
+    border-top: 1px solid #ddd;
+}
+
+.contractTotal span { color: #555; font-size: 12px; }
+.contractTotal strong { font-family: Georgia, "Times New Roman", serif; font-size: 22px; font-weight: 500; }
+.billingNote { margin: 0; padding: 12px 18px; border-top: 1px solid #eee; color: #777; font-size: 11px; }
+
+.noPlan,
+.empty,
+.loading {
+    margin: 0;
+    padding: 20px 18px;
+    color: #666;
+    font-size: 13px;
+}
+
+.noPlan h3 { margin: 0 0 6px; color: #222; font-size: 14px; }
+.noPlan p { margin: 0; line-height: 1.5; }
+
+.error {
+    padding: 12px 15px;
+    border-left: 3px solid #a33636;
+    background: #fff2f2;
+    color: #842626;
+    font-size: 13px;
+}
+
+@media (max-width: 850px) {
+    .metricGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .billingGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .teamRow { grid-template-columns: minmax(0, 1fr) 100px 55px 130px; gap: 8px; }
+}
+
+@media (max-width: 600px) {
+    .page { margin-top: 42px; padding: 34px 16px 50px; }
+    .heading { align-items: flex-start; flex-direction: column; }
+    .heading h1 { font-size: 29px; }
+    .tabs { overflow-x: auto; }
+    .tabs button { flex: 0 0 auto; padding: 0 11px; }
+    .gauges { gap: 8px; padding: 13px 8px; }
+    .gauge > span { font-size: 11px; }
+    .gauge > small { min-height: 26px; font-size: 9px; }
+    .metric { padding: 12px; }
+    .metric strong { font-size: 16px; }
+    .lowStockRow { grid-template-columns: minmax(0, 1fr) auto; gap: 5px 10px; padding: 9px 0; }
+    .lowStockRow span:nth-child(2) { display: none; }
+    .lowStockRow span:last-child { grid-column: 2; grid-row: 1; }
+    .teamRow { grid-template-columns: minmax(0, 1fr) auto; padding: 9px 0; }
+    .teamRow .role { grid-column: 1; }
+    .teamRow .status { grid-column: 2; grid-row: 1; text-align: right; }
+    .activeToggle { grid-column: 2; grid-row: 2; }
+    .billingGrid { grid-template-columns: 1fr 1fr; }
+    .billingGrid article { min-height: 70px; padding: 11px; }
+    .billingGrid article strong { font-size: 11px; }
+    .contractTotal { align-items: flex-start; flex-direction: column; margin: 0 12px; }
+    .sectionHeader { align-items: flex-start; flex-direction: column; }
+}

@@ -37,3 +37,14 @@ export async function requireRootAccess(request, reply) {
     `;
     if (!admin.length) return reply.code(403).send({ error: 'Administrador inativo ou não encontrado.' });
 }
+
+export async function requireCompanyManager(request, reply) {
+    await requireCompanyAccess(request, reply);
+    if (reply.sent) return;
+
+    const canManageTeam = request.auth.type === 'company' ||
+        request.auth.isAdmin || request.auth.role === 'administrator';
+    if (!canManageTeam) {
+        return reply.code(403).send({ error: 'Somente administradores podem gerenciar a equipe.' });
+    }
+}

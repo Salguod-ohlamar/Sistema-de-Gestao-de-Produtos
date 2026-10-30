@@ -6,6 +6,7 @@ import productsRouters from '../src/routes/RegisterProduct.routes.js'
 import companyRoutes from '../src/routes/Company.routes.js'
 import adminRoutes from '../src/routes/Admin.routes.js'
 import collaboratorRoutes from '../src/routes/Collaborator.routes.js'
+import companyWorkspaceRoutes from '../src/routes/CompanyWorkspace.routes.js'
 import { sql } from './database.js'
 
 
@@ -28,6 +29,7 @@ await fastify.register(cors, {
 await fastify.register(companyRoutes)
 await fastify.register(adminRoutes)
 await fastify.register(collaboratorRoutes)
+await fastify.register(companyWorkspaceRoutes)
 await fastify.register(productsRouters)
 
 
