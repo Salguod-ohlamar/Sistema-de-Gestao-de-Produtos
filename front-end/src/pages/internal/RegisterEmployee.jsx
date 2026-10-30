@@ -2,18 +2,22 @@ import { useState } from "react"
 import Header from "../../components/Header"
 import Footer from "../../components/Footer"
 import styles from "./RegisterEmployee.module.css"
+import { apiFetch } from "../../api"
 
 function RegisterEmployee() {
     const [formData, setFormData] = useState({
-        nomeCompleto: "",
+        name: "",
         cpf: "",
-        cargo: "",
+        role: "",
         isAdmin: false, // Nova flag adicionada ao estado
         email: "",
-        telefone: "",
-        dataAdmissao: "",
-        dataDemissao:""
+        phone: "",
+        hire_date: "",
+        termination_date: "",
+        password: ""
     })
+    const [errorMessage, setErrorMessage] = useState("")
+    const [successMessage, setSuccessMessage] = useState("")
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
@@ -24,9 +28,23 @@ function RegisterEmployee() {
         })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log("Dados do colaborador enviados:", formData)
+        setErrorMessage("")
+        setSuccessMessage("")
+        try {
+            const response = await apiFetch("/colaboradores", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...formData, is_admin: formData.isAdmin })
+            })
+            const result = await response.json()
+            if (!response.ok) throw new Error(result.error || "Não foi possível cadastrar o colaborador.")
+            setSuccessMessage(`${result.name} foi cadastrado com acesso ativo.`)
+            setFormData({ name: "", cpf: "", role: "", isAdmin: false, email: "", phone: "", hire_date: "", termination_date: "", password: "" })
+        } catch (error) {
+            setErrorMessage(error.message)
+        }
     }
 
     return (
@@ -46,9 +64,9 @@ function RegisterEmployee() {
                             <label htmlFor="nomeCompleto">Nome Completo</label>
                             <input
                                 type="text"
-                                id="nomeCompleto"
-                                name="nomeCompleto"
-                                value={formData.nomeCompleto}
+                                id="name"
+                                name="name"
+                                value={formData.name}
                                 onChange={handleChange}
                                 placeholder="Nome completo do colaborador"
                                 required
@@ -72,17 +90,17 @@ function RegisterEmployee() {
                             <div className="form-group">
                                 <label htmlFor="cargo">Cargo / Função</label>
                                 <select
-                                    id="cargo"
-                                    name="cargo"
-                                    value={formData.cargo}
+                                    id="role"
+                                    name="role"
+                                    value={formData.role}
                                     onChange={handleChange}
                                     placeholder="Ex: Desenvolvedor, Gerente"
                                     required
                                 >
-                                    <option value="0"> Selecione </option>
-                                    <option value="1"> Admministração </option>
-                                    <option value="2"> Gerencia</option>
-                                    <option value="3"> Operacional</option>
+                                    <option value="">Selecione</option>
+                                    <option value="administrator">Administrador</option>
+                                    <option value="manager">Gerência</option>
+                                    <option value="operator">Operacional</option>
                                 </select>
                             </div>
                         </div>
@@ -119,9 +137,9 @@ function RegisterEmployee() {
                                 <label htmlFor="telefone">Telefone / Celular</label>
                                 <input
                                     type="tel"
-                                    id="telefone"
-                                    name="telefone"
-                                    value={formData.telefone}
+                                    id="phone"
+                                    name="phone"
+                                    value={formData.phone}
                                     onChange={handleChange}
                                     placeholder="(00) 00000-0000"
                                     required
@@ -133,36 +151,37 @@ function RegisterEmployee() {
                             <label htmlFor="dataAdmissao">Data de Admissão</label>
                             <input
                                 type="date"
-                                id="dataAdmissao"
-                                name="dataAdmissao"
-                                value={formData.dataAdmissao}
+                                id="hire_date"
+                                name="hire_date"
+                                value={formData.hire_date}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
 
                         <div className="form-group full-width">
-                            <label htmlFor="dataAdmissao">Data de Desligamento</label>
+                            <label htmlFor="termination_date">Data de Desligamento</label>
                             <input
                                 type="date"
-                                id="dataAdmissao"
-                                name="dataAdmissao"
-                                value={formData.dataDemissao}
+                                id="termination_date"
+                                name="termination_date"
+                                value={formData.termination_date}
                                 onChange={handleChange}
-                                required
                             />
                         </div>
+
+                        <div className="form-group full-width">
+                            <label htmlFor="password">Senha inicial</label>
+                            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} minLength="8" autoComplete="new-password" required />
+                        </div>
+
+                        {errorMessage && <p role="alert">{errorMessage}</p>}
+                        {successMessage && <p role="status">{successMessage}</p>}
 
 
                         <div className="form-actions">
                             <span />
-                            <button type="submit" className="btn-elegant">
-                                Confirmar Cadastro
-                            </button>
-
-                            <button type="submit" className="btn-elegant">
-                                Atualizar Cadastro
-                            </button>
+                            <button type="submit" className="btn-elegant">Cadastrar colaborador</button>
                         </div>
                     </form>
                 </div>

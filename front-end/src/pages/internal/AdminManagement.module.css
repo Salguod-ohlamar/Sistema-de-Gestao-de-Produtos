@@ -1,0 +1,459 @@
+.page {
+    max-width: 1200px;
+    min-height: calc(100vh - 160px);
+    margin: 80px auto 0;
+    padding: 48px 40px 72px;
+    color: #171717;
+}
+
+.heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    margin: 0 0 9px;
+    color: #666;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.heading h1 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 500;
+}
+
+.heading p:last-child {
+    margin: 9px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.addCompany {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    gap: 16px;
+    padding: 0 14px;
+    border: 1px solid #111;
+    background: #111;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.addCompany span {
+    font-size: 20px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 26px;
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+
+.summary div {
+    display: grid;
+    gap: 10px;
+    padding: 16px 20px;
+}
+
+.summary div + div {
+    border-left: 1px solid #e3e3e3;
+}
+
+.summary span {
+    color: #666;
+    font-size: 12px;
+}
+
+.summary strong {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.companyList {
+    display: grid;
+    gap: 14px;
+}
+
+.company {
+    border: 1px solid #e1e1e1;
+    background: #fff;
+}
+
+.companyHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 20px;
+}
+
+.companyIdentity {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 14px;
+}
+
+.companyMark {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    place-items: center;
+    border: 1px solid #e2e2e2;
+    background: #f5f5f5;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+}
+
+.companyIdentity h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.companyIdentity p,
+.companyIdentity small {
+    display: block;
+    overflow: hidden;
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.companyControls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.active { color: #21613d; }
+.inactive { color: #a33636; }
+
+.toggle {
+    position: relative;
+    display: inline-flex;
+    width: 40px;
+    height: 23px;
+    cursor: pointer;
+}
+
+.toggle input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.toggle span {
+    position: absolute;
+    inset: 0;
+    border: 1px solid #aaa;
+    border-radius: 20px;
+    background: #ddd;
+    transition: background .16s ease;
+}
+
+.toggle span::after {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #fff;
+    content: "";
+    transition: transform .16s ease;
+}
+
+.toggle input:checked + span { background: #222; }
+.toggle input:checked + span::after { transform: translateX(17px); }
+.toggle input:focus-visible + span { outline: 2px solid #555; outline-offset: 2px; }
+
+.peopleHeading {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 20px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.peopleHeading h3 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.peopleHeading > span {
+    display: grid;
+    min-width: 22px;
+    height: 22px;
+    place-items: center;
+    border: 1px solid #e1e1e1;
+    color: #555;
+    font-size: 11px;
+}
+
+.noPeople,
+.empty {
+    margin: 0;
+    padding: 15px 20px;
+    color: #777;
+    font-size: 13px;
+}
+
+.peopleList {
+    padding: 0 20px 6px;
+}
+
+.person {
+    display: grid;
+    min-height: 52px;
+    grid-template-columns: minmax(0, 1fr) 120px auto 100px;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #eee;
+}
+
+.personIdentity {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+
+.personIdentity strong,
+.personIdentity span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.personIdentity strong { font-size: 13px; }
+.personIdentity span,
+.role,
+.adminTag { color: #666; font-size: 11px; }
+
+.adminTag {
+    padding: 4px 7px;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+.personToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    gap: 7px;
+    color: #555;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.personToggle input { accent-color: #111; }
+
+.error {
+    padding: 12px 15px;
+    border-left: 3px solid #a33636;
+    background: #fff2f2;
+    color: #842626;
+    font-size: 13px;
+}
+
+@media (max-width: 760px) {
+    .page { padding: 40px 20px 56px; }
+    .heading { align-items: flex-start; flex-direction: column; }
+    .person { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 10px 0; }
+    .role { grid-column: 1; }
+    .adminTag { grid-column: 1; justify-self: start; }
+    .personToggle { grid-column: 2; grid-row: 1 / span 3; }
+}
+
+@media (max-width: 520px) {
+    .page { padding-right: 14px; padding-left: 14px; }
+    .heading h1 { font-size: 29px; }
+    .summary div { padding: 12px 9px; }
+    .summary span { font-size: 10px; }
+    .summary strong { font-size: 21px; }
+    .companyHeader { align-items: flex-start; padding: 15px 12px; }
+    .companyIdentity { gap: 9px; }
+    .companyIdentity h2 { font-size: 14px; }
+    .companyIdentity p,
+    .companyIdentity small { max-width: 55vw; }
+    .companyControls { gap: 7px; }
+    .companyControls .status { display: none; }
+    .peopleHeading { padding-right: 12px; padding-left: 12px; }
+    .peopleList { padding-right: 12px; padding-left: 12px; }
+}
+
+.peopleHeading small {
+    margin-left: auto;
+    color: #777;
+    font-size: 11px;
+}
+
+.planSection {
+    padding: 18px 20px 20px;
+    border-top: 1px solid #e8e8e8;
+    background: #fafafa;
+}
+
+.planHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.planHeader h3 {
+    margin: 0;
+    font-size: 13px;
+}
+
+.planHeader p {
+    margin: 6px 0 0;
+    color: #666;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.planBadge {
+    padding: 5px 8px;
+    border: 1px solid #d8d8d8;
+    background: #fff;
+    color: #333;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.planFacts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.planFacts div,
+.planTotals div {
+    display: grid;
+    gap: 5px;
+}
+
+.planFacts span,
+.planTotals span {
+    color: #666;
+    font-size: 11px;
+}
+
+.planFacts strong {
+    font-size: 12px;
+}
+
+.planTotals {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 13px;
+    border-top: 1px solid #e1e1e1;
+}
+
+.planTotals div:last-child {
+    text-align: right;
+}
+
+.planTotals strong {
+    font-size: 16px;
+}
+
+.planTotals small {
+    margin-left: 4px;
+    color: #666;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.assignPlan {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.assignPlan label {
+    display: grid;
+    gap: 6px;
+    color: #555;
+    font-size: 11px;
+}
+
+.assignPlan input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 36px;
+    padding: 0 9px;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    background: #fff;
+    font: inherit;
+}
+
+.assignEstimate {
+    display: grid;
+    gap: 5px;
+    color: #555;
+    font-size: 11px;
+}
+
+.assignEstimate strong {
+    color: #111;
+    font-size: 13px;
+}
+
+.assignButton {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid #111;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.assignButton:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+@media (max-width: 760px) {
+    .planFacts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .assignPlan { grid-template-columns: minmax(100px, 140px) minmax(0, 1fr); }
+    .assignButton { grid-column: 1 / -1; }
+}
+
+@media (max-width: 520px) {
+    .planSection { padding: 16px 12px; }
+    .planTotals { flex-direction: column; }
+    .planTotals div:last-child { text-align: left; }
+    .assignPlan { grid-template-columns: minmax(0, 1fr); }
+    .assignButton { grid-column: auto; }
+}

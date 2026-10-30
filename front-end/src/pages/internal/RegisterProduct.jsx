@@ -3,6 +3,8 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ProductForm from "../../components/productForm.jsx";
 import styles from "./RegisterProduct.module.css";
+import modalStyles from "./ProductEditModal.module.css";
+import { apiFetch } from "../../api";
 
 function RegisterProduct() {
     const [activeTab, setActiveTab] = useState('form');
@@ -21,7 +23,7 @@ function RegisterProduct() {
 
     const fetchProducts = async () => {
         try {
-            const resposta = await fetch("http://localhost:3000/produtos");
+            const resposta = await apiFetch("/produtos");
             if (resposta.ok) {
                 const data = await resposta.json();
                 setProducts(data);
@@ -36,7 +38,7 @@ function RegisterProduct() {
         if (activeTab !== 'list') return undefined;
 
         let isActive = true;
-        fetch("http://localhost:3000/produtos")
+        apiFetch("/produtos")
             .then((response) => response.ok ? response.json() : Promise.reject(new Error("Falha ao carregar produtos")))
             .then((data) => {
                 if (isActive) setProducts(data);
@@ -63,7 +65,7 @@ function RegisterProduct() {
 
         // Criar Novo (POST)
         try {
-            const response = await fetch("http://localhost:3000/produtos", {
+            const response = await apiFetch("/produtos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
@@ -75,7 +77,8 @@ function RegisterProduct() {
                 setFormData(initialFormData);
                 if (activeTab === 'list') fetchProducts(); // Atualiza a lista se estivermos nela
             } else {
-                alert("Erro ao salvar produto.");
+                const error = await response.json().catch(() => ({}));
+                alert(error.error || error.message || "Erro ao salvar produto.");
             }
         } catch (error) {
             console.error("Erro ao cadastrar:", error);
@@ -84,7 +87,7 @@ function RegisterProduct() {
 
     const handleEdit = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/produtos/${formData.id}`, {
+            const response = await apiFetch(`/produtos/${formData.id}`, {
                 method: "PUT",
                 headers: { "Content-type": "application/json" },
                 body: JSON.stringify(formData)
@@ -114,7 +117,7 @@ function RegisterProduct() {
         if(!window.confirm("Tem certeza que deseja deletar este produto?")) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/produtos/${id}`, {
+            const response = await apiFetch(`/produtos/${id}`, {
                 method: "DELETE"
             });
 
@@ -256,13 +259,13 @@ function RegisterProduct() {
 
             {/* MODAL DE EDIÇÃO (Aparece por cima da tela) */}
             {isEditModalOpen && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <div className="modal-header">
+                <div className={modalStyles.overlay} onClick={closeEditModal}>
+                    <div className={modalStyles.dialog} onClick={(event) => event.stopPropagation()}>
+                        <div className={modalStyles.header}>
                             <h2>Editar Produto (ID: {formData.id})</h2>
-                            <button className="modal-close" onClick={closeEditModal}>&times;</button>
+                            <button className={modalStyles.closeButton} onClick={closeEditModal} aria-label="Fechar edição">&times;</button>
                         </div>
-                        <div className="modal-body">
+                        <div className={modalStyles.body}>
                             <ProductForm
                                 formData={formData}
                                 handleChange={handleChange}

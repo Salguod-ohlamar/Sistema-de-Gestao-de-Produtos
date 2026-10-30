@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import "./RegisterPOS.css";
-
-const API_URL = "http://localhost:3000/produtos";
+import { apiFetch } from "../../api";
 
 function getStock(product) {
     return Number(product.stock_quantity ?? product.em_estoque ?? 0);
@@ -46,7 +45,7 @@ function RegisterPOS() {
 
     async function loadProducts() {
         try {
-            const response = await fetch(API_URL);
+            const response = await apiFetch("/produtos");
             setProducts(await readProductResponse(response));
         } catch (error) {
             setMessage(`Não foi possível carregar os produtos: ${error.message}`);
@@ -58,7 +57,7 @@ function RegisterPOS() {
     useEffect(() => {
         let isActive = true;
 
-        fetch(API_URL)
+        apiFetch("/produtos")
             .then(readProductResponse)
             .then((data) => {
                 if (isActive) setProducts(data);
@@ -114,7 +113,7 @@ function RegisterPOS() {
 
     async function selectProduct(product) {
         try {
-            const currentProduct = await readProductResponse(await fetch(`${API_URL}/${product.id}`));
+            const currentProduct = await readProductResponse(await apiFetch(`/produtos/${product.id}`));
             addToCart(currentProduct);
         } catch (error) {
             setMessage(`Não foi possível consultar o produto: ${error.message}`);
@@ -128,7 +127,7 @@ function RegisterPOS() {
 
         setIsSearchingBarcode(true);
         try {
-            const product = await readProductResponse(await fetch(`${API_URL}/codigo/${encodeURIComponent(code)}`));
+            const product = await readProductResponse(await apiFetch(`/produtos/codigo/${encodeURIComponent(code)}`));
             addToCart(product);
             setBarcode("");
         } catch (error) {
@@ -156,7 +155,7 @@ function RegisterPOS() {
 
         try {
             const checkedItems = await Promise.all(cart.map(async (item) => {
-                const currentProduct = await readProductResponse(await fetch(`${API_URL}/${item.product.id}`));
+                const currentProduct = await readProductResponse(await apiFetch(`/produtos/${item.product.id}`));
                 if (getStock(currentProduct) < item.quantity) {
                     throw new Error(`Estoque insuficiente para ${getName(currentProduct)}. Atualize o carrinho.`);
                 }
@@ -165,7 +164,7 @@ function RegisterPOS() {
 
             for (const item of checkedItems) {
                 stockUpdateStarted = true;
-                const response = await fetch(`${API_URL}/${item.product.id}`, {
+                const response = await apiFetch(`/produtos/${item.product.id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ stock_quantity: getStock(item.product) - item.quantity })

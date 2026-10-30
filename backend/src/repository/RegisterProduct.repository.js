@@ -1,4 +1,4 @@
-import {sql} from '../server.js'
+import {sql} from '../database.js'
 
 
 
@@ -7,9 +7,10 @@ import {sql} from '../server.js'
 class ProductRegister {
 
 
-    async create(productData) {
+    async create(productData, companyId) {
         const result = await sql`
        INSERT INTO products (
+                company_id,
                 name,
                 sku,
                 category,
@@ -30,6 +31,7 @@ class ProductRegister {
                 markup,
                 history
             ) VALUES (
+                ${companyId},
                 ${productData.nomeProduto || productData.name},
                 ${productData.sku},
                 ${productData.categoria || productData.category},
@@ -56,10 +58,10 @@ class ProductRegister {
         
     }
 
-    async finAll(){
+    async finAll(companyId){
 
         const result = await sql `
-            SELECT * FROM products ORDER BY iD DESC;
+            SELECT * FROM products WHERE company_id = ${companyId} ORDER BY id DESC;
         `
         return result;
     }
@@ -68,23 +70,23 @@ class ProductRegister {
 
 
 
-    async findById(id){
+    async findById(id, companyId){
         const result = await sql`
-            SELECT * FROM products WHERE id = ${id} LIMIT 1;
+            SELECT * FROM products WHERE id = ${id} AND company_id = ${companyId} LIMIT 1;
         `;
         return result[0] || null;
     }
 
-    async findBySkuorBarra(codigo){
+    async findBySkuorBarra(codigo, companyId){
         const result = await sql`
             SELECT * FROM products
-            WHERE sku = ${codigo} OR barcode = ${codigo}
+            WHERE company_id = ${companyId} AND (sku = ${codigo} OR barcode = ${codigo})
             LIMIT 1;
         `;
         return result[0] || null;
     }
 
-    async updateById(id, productData){
+    async updateById(id, companyId, productData){
         const result = await sql`
         UPDATE PRODUCTS
         SET
@@ -99,18 +101,18 @@ class ProductRegister {
                 category = COALESCE(${productData.categoria ?? productData.category ?? null}, category),
                 stock_quantity = COALESCE(${productData.em_estoque ?? productData.stock_quantity ?? null}, stock_quantity),
                 min_stock_quantity = COALESCE(${productData.qtda_minima ?? productData.min_stock_quantity ?? null}, min_stock_quantity)
-        WHERE id = ${id}
+            WHERE id = ${id} AND company_id = ${companyId}
         RETURNING *;
         `
         return result
     }
 
 
-    async deleteById(id){
+    async deleteById(id, companyId){
         
           const result = await sql `
             DELETE FROM PRODUCTS
-            WHERE id= ${id}
+            WHERE id = ${id} AND company_id = ${companyId}
             RETURNING *;
         `
         return result;

@@ -3,10 +3,15 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import productsRouters from '../src/routes/RegisterProduct.routes.js'
-import { neon } from '@neondatabase/serverless';
+import companyRoutes from '../src/routes/Company.routes.js'
+import adminRoutes from '../src/routes/Admin.routes.js'
+import collaboratorRoutes from '../src/routes/Collaborator.routes.js'
+import { sql } from './database.js'
 
 
-export const sql = neon(`postgresql://neondb_owner:npg_acwrvh2GfI4u@ep-misty-grass-b64iimrd-pooler.c-2.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`);
+if (!process.env.AUTH_TOKEN_SECRET || process.env.AUTH_TOKEN_SECRET.length < 32) {
+    throw new Error('AUTH_TOKEN_SECRET precisa ter pelo menos 32 caracteres.');
+}
 
 const fastify = Fastify({
     logger: true
@@ -19,7 +24,10 @@ await fastify.register(cors, {
     allowedHeaders: ['Content-Type', 'Authorization']
 })
 
-//REGISTRA A ROTA DE PRODUTOS
+//REGISTRA AS ROTAS PUBLICAS E PROTEGIDAS
+await fastify.register(companyRoutes)
+await fastify.register(adminRoutes)
+await fastify.register(collaboratorRoutes)
 await fastify.register(productsRouters)
 
 

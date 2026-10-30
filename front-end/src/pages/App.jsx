@@ -1,12 +1,45 @@
 import { useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { apiFetch, getPrincipalType, saveSession } from "../api";
 import "./App.css";
 
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   // Estado para controlar se o modal está aberto (true) ou fechado (false)
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("login") === "required" || Boolean(location.state?.loginRequired);
+  });
+  const [loginData, setLoginData] = useState({ email: location.state?.registeredEmail || "", password: "" });
+  const [loginError, setLoginError] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    setLoginError("");
+    setIsLoggingIn(true);
+    try {
+      const response = await apiFetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData)
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Não foi possível entrar.");
+      saveSession(result);
+      setIsModalOpen(false);
+      const returnTo = new URLSearchParams(location.search).get("returnTo") || location.state?.from?.pathname;
+      const defaultRoute = result.principalType === "root" ? "/Gerenciamento" : "/Produtos";
+      navigate(returnTo || defaultRoute, { replace: true });
+    } catch (error) {
+      setLoginError(error.message);
+    } finally {
+      setIsLoggingIn(false);
+    }
+  }
 
   return (
     <>
@@ -48,6 +81,12 @@ function App() {
             </section>
         </main>
 
+        {getPrincipalType() === "root" && (
+          <div className="hero-buttons">
+            <Link className="btn-outline" to="/Gerenciamento">Gerenciar empresas</Link>
+          </div>
+        )}
+
         <Footer />
       </div>
 
@@ -61,16 +100,18 @@ function App() {
             <h3>Acesse sua Conta</h3>
             <p className="modal-subtitle">Insira suas credenciais para entrar.</p>
             
-            <form className="modal-form">
+            <form className="modal-form" onSubmit={handleLogin}>
               <div className="input-group">
-                <label>E-mail</label>
-                <input type="email" placeholder="seu@email.com" required />
+                <label>E-mail cadastrado</label>
+                <input type="email" autoComplete="username" value={loginData.email} onChange={(event) => setLoginData({ ...loginData, email: event.target.value })} placeholder="E-mail usado no cadastro" required />
               </div>
               <div className="input-group">
                 <label>Senha</label>
-                <input type="password" placeholder="••••••••" required />
+                <input type="password" autoComplete="current-password" value={loginData.password} onChange={(event) => setLoginData({ ...loginData, password: event.target.value })} placeholder="••••••••" required />
               </div>
-              <button type="submit" className="btn-submit">Entrar</button>
+              {loginError && <p role="alert">{loginError}</p>}
+              <button type="submit" className="btn-submit" disabled={isLoggingIn}>{isLoggingIn ? "Entrando..." : "Entrar"}</button>
+              <p>Empresa nova? <Link to="/Planos" onClick={() => setIsModalOpen(false)}>Conheça os planos</Link></p>
             </form>
           </div>
         </div>

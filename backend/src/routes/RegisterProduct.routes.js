@@ -6,10 +6,13 @@ import { createProductController,
          findProductsByCodeController,
          findProductsByIdController, 
          updateById} from "../controller/RegisterProduct.controller.js"
+import { requireCompanyAccess } from '../middleware/authorization.js';
 
 //Função principal das  rotas
 
 async function productsRouters(fastify, options) {
+
+    fastify.addHook('preHandler', requireCompanyAccess);
 
     
     fastify.post('/produtos', createProductController);

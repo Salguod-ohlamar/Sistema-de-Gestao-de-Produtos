@@ -13,8 +13,8 @@ function ProductForm({ formData, handleChange, handleSubmit, isModal, onCancel,h
                     <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleChange} placeholder="Ex: CAM-PRETA-M" required />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="codigoBarras">Código de Barras / EAN</label>
-                    <input type="text" id="codigoBarras" name="codigoBarras" value={formData.codigoBarras} onChange={handleChange} placeholder="7890000000000 (ou 'SEM GTIN')" required />
+                    <label htmlFor="codigoBarras">Código de Barras / EAN (até 14 caracteres)</label>
+                    <input type="text" id="codigoBarras" name="codigoBarras" value={formData.codigoBarras} onChange={handleChange} placeholder="EAN/GTIN ou SEM GTIN" maxLength="14" required />
                 </div>
             </div>
 
