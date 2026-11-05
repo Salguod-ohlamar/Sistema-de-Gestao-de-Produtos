@@ -1,0 +1,69 @@
+import { pool } from '../database.js'
+
+class SaleRepository {
+    async decrementStock(client, product_id, quantity, company_id) {
+        const result = await client.query(
+            `UPDATE products
+             SET stock_quantity = stock_quantity - $1
+             WHERE id = $2
+               AND company_id = $3
+               AND stock_quantity >= $1
+             RETURNING sale_price`,
+            [quantity, product_id, company_id]
+        );
+        return result.rows[0] || null;
+    }
+
+    async createSale(company_id, collaborator_id, items) {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            // 1) para cada item: desconta o estoque
+            //    se o resultado for null -> ???
+            let total = 0
+            const soldItems = [];
+            for (const item of items) {
+                const stockResult =  await this.decrementStock(client, item.product_id, item.quantity,company_id);
+                if (stockResult === null) {
+                    throw new Error('Estoque insuficiente ou produto não encontrado');
+                }
+                
+                // 2) soma o total
+                total += Number(stockResult.sale_price) * item.quantity;
+
+                soldItems.push({
+                    product_id: item.product_id,
+                    quantity: item.quantity,
+                    unit_price: stockResult.sale_price
+                })
+            }
+            // 3) insere a venda (INSERT ... RETURNING id)
+            const saleResult = await client.query(
+                `INSERT INTO sales (company_id, collaborator_id, total, status)
+                 VALUES ($1, $2, $3, 'completed')
+                 RETURNING id, created_at`,
+                [company_id, collaborator_id,total]
+            );
+            const sale = saleResult.rows[0];
+
+            // 4) insere cada item em sales_items
+            for (const sold of soldItems) {
+                await client.query(
+                    `INSERT INTO sales_items (sale_id, product_id, quantity, unit_price)
+                     VALUES ($1, $2, $3, $4)`,
+                    [sale.id, sold.product_id, sold.quantity, sold.unit_price]
+                );
+            }
+    
+            await client.query('COMMIT');
+            return sale;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+}
+
+export default new SaleRepository();
