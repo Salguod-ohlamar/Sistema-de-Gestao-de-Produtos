@@ -219,7 +219,7 @@ export function PosView() {
       {/* Venda atual */}
       <aside
         aria-label="Venda atual"
-        className="flex w-[380px] shrink-0 flex-col gap-4 rounded-[14px] border border-border-highlight bg-surface-elevated p-6"
+        className="dark flex w-[380px] shrink-0 flex-col gap-4 rounded-[14px] border border-border-highlight bg-surface-elevated p-6 text-text-primary"
       >
         <div className="flex items-center justify-between">
           <h2 className="font-headline text-xl font-bold text-text-primary">Venda atual</h2>

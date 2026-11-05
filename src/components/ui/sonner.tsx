@@ -10,14 +10,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast:
-            'group toast group-[.toaster]:bg-[#0E1526] group-[.toaster]:text-[#EAF0FF] group-[.toaster]:border-[#1B2540] group-[.toaster]:shadow-xl group-[.toaster]:rounded-[12px] group-[.toaster]:text-sm',
-          description: 'group-[.toast]:text-[#9AA8C7]',
+            'group toast group-[.toaster]:bg-surface-2 group-[.toaster]:text-text-primary group-[.toaster]:border-border group-[.toaster]:shadow-xl group-[.toaster]:rounded-[12px] group-[.toaster]:text-sm',
+          description: 'group-[.toast]:text-text-secondary',
           actionButton:
-            'group-[.toast]:bg-[#2F6BFF] group-[.toast]:text-[#EAF0FF] group-[.toast]:rounded-[8px]',
+            'group-[.toast]:bg-primary group-[.toast]:text-text-primary group-[.toast]:rounded-[8px]',
           cancelButton:
-            'group-[.toast]:bg-[#141C30] group-[.toast]:text-[#9AA8C7] group-[.toast]:rounded-[8px]',
+            'group-[.toast]:bg-surface-elevated group-[.toast]:text-text-secondary group-[.toast]:rounded-[8px]',
           error:
-            'group-[.toaster]:border-[rgba(242,85,90,0.3)] group-[.toaster]:text-[#F2555A]',
+            'group-[.toaster]:border-destructive/30 group-[.toaster]:text-destructive',
           success:
             'group-[.toaster]:border-[rgba(34,197,94,0.3)] group-[.toaster]:text-[#22C55E]',
         },

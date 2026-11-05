@@ -13,7 +13,7 @@
 /* Tokens do tema Nexora */
 @import "./styles/theme.css";
 
-@theme {
+@theme inline {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-headline: 'Manrope', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -152,4 +152,12 @@
     width: 80mm;
     box-shadow: none;
   }
+}
+
+/* Tema claro: fundo com manchas azuis suaves (efeito vidro nas superfícies translúcidas) */
+:root:not(.dark) body {
+  background-image:
+    radial-gradient(60rem 40rem at -10% -15%, rgb(191 208 242 / 0.9), transparent 60%),
+    radial-gradient(50rem 40rem at 105% 105%, rgb(197 224 240 / 0.9), transparent 60%);
+  background-attachment: fixed;
 }

@@ -11,7 +11,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      'inline-flex h-10 items-center justify-center rounded-[10px] bg-[#0A0F1C] p-1 text-[#9AA8C7] border border-[#1B2540]',
+      'inline-flex h-10 items-center justify-center rounded-[10px] bg-surface-1 p-1 text-text-secondary border border-border',
       className
     )}
     {...props}
@@ -26,7 +26,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      'inline-flex items-center justify-center whitespace-nowrap rounded-[8px] px-3.5 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4C82FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070D] disabled:pointer-events-none disabled:opacity-50 text-[#7A89AB] hover:text-[#EAF0FF] data-[state=active]:bg-[#141C30] data-[state=active]:text-[#EAF0FF] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#2A3A66]',
+      'inline-flex items-center justify-center whitespace-nowrap rounded-[8px] px-3.5 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-hover focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 text-text-muted hover:text-text-primary data-[state=active]:bg-surface-elevated data-[state=active]:text-text-primary data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border-highlight',
       className
     )}
     {...props}
@@ -41,7 +41,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      'mt-3 ring-offset-[#05070D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4C82FF] focus-visible:ring-offset-2',
+      'mt-3 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-hover focus-visible:ring-offset-2',
       className
     )}
     {...props}

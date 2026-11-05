@@ -14,7 +14,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      'fixed inset-0 z-50 bg-[#05070D]/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -24,7 +24,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-  'fixed z-50 gap-4 bg-[#0E1526] p-6 shadow-2xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-300 border-[#1B2540]',
+  'fixed z-50 gap-4 bg-surface-2 p-6 shadow-2xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-300 border-border',
   {
     variants: {
       side: {
@@ -69,7 +69,7 @@ const SheetHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex items-center justify-between h-[72px] px-6 bg-[#0E1526] border-b border-[#1B2540] shrink-0',
+      'flex items-center justify-between h-[72px] px-6 bg-surface-2 border-b border-border shrink-0',
       className
     )}
     {...props}
@@ -83,7 +83,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex items-center justify-end gap-3 h-[72px] px-6 bg-[#0A0F1C] border-t border-[#1B2540] shrink-0',
+      'flex items-center justify-end gap-3 h-[72px] px-6 bg-surface-1 border-t border-border shrink-0',
       className
     )}
     {...props}
@@ -97,7 +97,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn('font-headline text-lg font-bold text-[#EAF0FF]', className)}
+    className={cn('font-headline text-lg font-bold text-text-primary', className)}
     {...props}
   />
 ))
@@ -109,7 +109,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-[#9AA8C7]', className)}
+    className={cn('text-sm text-text-secondary', className)}
     {...props}
   />
 ))

@@ -4,22 +4,22 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4C82FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070D] disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-hover focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer',
   {
     variants: {
       variant: {
         default:
-          'bg-[#2F6BFF] text-[#EAF0FF] shadow-[0_0_16px_rgba(47,107,255,0.35)] hover:bg-[#4C82FF] hover:shadow-[0_0_20px_rgba(47,107,255,0.5)] active:bg-[#1F52D6] active:scale-[0.99]',
+          'bg-primary text-text-primary shadow-[0_0_16px_rgba(47,107,255,0.35)] hover:bg-primary-hover hover:shadow-[0_0_20px_rgba(47,107,255,0.5)] active:bg-primary-pressed active:scale-[0.99]',
         secondary:
-          'bg-[#0E1526] text-[#EAF0FF] border border-[#1B2540] hover:bg-[#141C30] hover:border-[#2A3A66] active:scale-[0.99]',
+          'bg-surface-2 text-text-primary border border-border hover:bg-surface-elevated hover:border-border-highlight active:scale-[0.99]',
         destructive:
-          'bg-[rgba(242,85,90,0.12)] text-[#F2555A] border border-[rgba(242,85,90,0.3)] hover:bg-[rgba(242,85,90,0.22)] active:scale-[0.99]',
+          'bg-destructive/12 text-destructive border border-destructive/30 hover:bg-destructive/22 active:scale-[0.99]',
         outline:
-          'border border-[#1B2540] bg-transparent text-[#EAF0FF] hover:bg-[#0E1526] hover:border-[#2A3A66]',
+          'border border-border bg-transparent text-text-primary hover:bg-surface-2 hover:border-border-highlight',
         ghost:
-          'text-[#9AA8C7] hover:text-[#EAF0FF] hover:bg-[#0E1526]',
+          'text-text-secondary hover:text-text-primary hover:bg-surface-2',
         link:
-          'text-[#4C82FF] underline-offset-4 hover:underline hover:text-[#38BDF8] p-0 h-auto',
+          'text-primary-hover underline-offset-4 hover:underline hover:text-cyan-accent p-0 h-auto',
       },
       size: {
         default: 'h-10 px-4 py-2',

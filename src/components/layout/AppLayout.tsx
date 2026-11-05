@@ -41,7 +41,7 @@ export function AppLayout({ currentView, onNavigate, children }: AppLayoutProps)
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased flex">
+    <div className="min-h-screen text-foreground antialiased flex">
       {/* Sidebar Fixa à Esquerda */}
       <Sidebar currentView={currentView} onNavigate={onNavigate} />
 
@@ -55,7 +55,7 @@ export function AppLayout({ currentView, onNavigate, children }: AppLayoutProps)
         />
 
         {/* Conteúdo com padding top para compensar o Header fixo de 64px */}
-        <main className="flex-1 pt-16 bg-background">
+        <main className="flex-1 pt-16">
           {children}
         </main>
       </div>

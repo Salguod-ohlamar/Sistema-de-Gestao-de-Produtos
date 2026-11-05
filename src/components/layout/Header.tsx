@@ -1,4 +1,5 @@
 import { Search, Bell } from 'lucide-react'
+import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { useAuth } from '@/features/auth/context'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
@@ -37,6 +38,8 @@ export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
 
       {/* Ações da Direita */}
       <div className="flex items-center gap-4">
+        <ThemeToggle />
+
         {/* Notificações */}
         <button
           type="button"

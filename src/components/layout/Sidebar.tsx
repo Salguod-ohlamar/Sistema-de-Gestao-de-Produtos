@@ -52,7 +52,7 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
     user?.roleKey === 'operator' ? allNavItems.filter((item) => item.id === 'pdv') : allNavItems
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[248px] bg-surface-1 border-r border-border z-40 flex flex-col justify-between select-none">
+    <aside className="fixed left-0 top-0 bottom-0 w-[248px] bg-surface-1/80 backdrop-blur-xl border-r border-border z-40 flex flex-col justify-between select-none">
       <div className="flex flex-col">
         {/* Header da Sidebar */}
         <div className="h-16 px-5 border-b border-border flex items-center justify-between">
