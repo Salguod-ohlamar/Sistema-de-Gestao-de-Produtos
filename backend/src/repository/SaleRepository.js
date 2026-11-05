@@ -56,13 +56,39 @@ class SaleRepository {
             }
     
             await client.query('COMMIT');
-            return sale;
+            return {
+                id: sale.id,
+                created_at: sale.created_at,
+                total: total.toFixed(2),
+                status: 'completed',
+                items: soldItems
+            };
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;
         } finally {
             client.release();
         }
+    }
+
+    async listSales(company_id, limit = 100) {
+        const result = await pool.query(
+            `SELECT s.id,
+                    s.created_at,
+                    s.total,
+                    s.status,
+                    COALESCE(c.name, 'Empresa') AS operator_name,
+                    COALESCE(SUM(si.quantity), 0)::int AS items_count
+             FROM sales s
+             LEFT JOIN collaborators c ON c.id = s.collaborator_id
+             LEFT JOIN sales_items si ON si.sale_id = s.id
+             WHERE s.company_id = $1
+             GROUP BY s.id, c.name
+             ORDER BY s.created_at DESC, s.id DESC
+             LIMIT $2`,
+            [company_id, limit]
+        );
+        return result.rows;
     }
 }
 
