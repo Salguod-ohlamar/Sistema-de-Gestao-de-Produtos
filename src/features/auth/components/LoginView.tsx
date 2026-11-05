@@ -24,13 +24,9 @@ export function LoginView({
   onLoginSuccess,
   initialErrorState = false,
 }: LoginViewProps) {
-  const { login } = useAuth()
-  const [email, setEmail] = useState(
-    initialErrorState ? 'rodrigo.silveira@nexora.io' : 'rodrigo.s@nexora.io'
-  )
-  const [password, setPassword] = useState(
-    initialErrorState ? 'SenhaIncorreta123' : 'CockpitMaster2026!'
-  )
+  const { login, loginError } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [hasError, setHasError] = useState(initialErrorState)
@@ -51,56 +47,21 @@ export function LoginView({
 
     if (!success) {
       setHasError(true)
-      toast.error('Credenciais inválidas.')
+      toast.error('Não foi possível entrar. Verifique e-mail e senha.')
       return
     }
 
     setHasError(false)
-    toast.success('Autenticação realizada com sucesso! Bem-vindo ao Nexora.')
+    toast.success('Autenticação realizada com sucesso!')
     onLoginSuccess?.()
   }
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true)
-    toast.info('Autenticação via Google Workspace corporativo iniciada...')
-    const success = await login('rodrigo.s@nexora.io', 'CockpitMaster2026!')
-    setIsLoading(false)
-    if (success) {
-      toast.success('Acesso corporativo concedido via Google SSO.')
-      onLoginSuccess?.()
-    }
+  const handleGoogleLogin = () => {
+    toast.info('Login com Google ainda não está disponível. Use e-mail e senha.')
   }
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background font-sans text-text-primary antialiased select-none flex">
-      {/* Botão de Toggle rápido de demonstração (Tela 5 Normal vs Tela 6 Erro) */}
-      <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => {
-            const next = !hasError
-            setHasError(next)
-            if (next) {
-              setEmail('rodrigo.silveira@nexora.io')
-              setPassword('SenhaIncorreta123')
-              toast.error('Modo Tela 6: Erro de Validação ativado')
-            } else {
-              setEmail('rodrigo.s@nexora.io')
-              setPassword('CockpitMaster2026!')
-              toast.info('Modo Tela 5: Estado Normal ativado')
-            }
-          }}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-all cursor-pointer ${
-            hasError
-              ? 'bg-destructive/15 text-destructive border-destructive/40 shadow-[0_0_12px_rgba(242,85,90,0.3)]'
-              : 'bg-surface-elevated text-text-secondary border-border hover:text-text-primary'
-          }`}
-          title="Alternar entre Tela 5 (Normal) e Tela 6 (Erro de validação)"
-        >
-          {hasError ? '● Exibindo: Tela 6 (Erro)' : '○ Exibindo: Tela 5 (Normal)'}
-        </button>
-      </div>
-
       {/* ======================================================== */}
       {/* COLUNA ESQUERDA (40% - ~576px em 1440px)                */}
       {/* ======================================================== */}
@@ -151,7 +112,7 @@ export function LoginView({
             >
               <AlertCircle className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
               <div className="text-[13px] leading-snug text-text-primary">
-                E-mail ou senha incorretos. Verifique os dados e tente novamente.
+                {loginError ?? 'E-mail ou senha incorretos. Verifique os dados e tente novamente.'}
               </div>
             </div>
           )}

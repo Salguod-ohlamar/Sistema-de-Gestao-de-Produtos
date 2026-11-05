@@ -5,11 +5,13 @@ import { DashboardView } from '@/features/dashboard/components/DashboardView'
 import { UsersView } from '@/features/users/components/UsersView'
 import { ProductsView } from '@/features/products/components/ProductsView'
 import { NewProductView } from '@/features/products/components/NewProductView'
+import { PosView } from '@/features/sales/components/PosView'
+import { SalesHistoryView } from '@/features/sales/components/SalesHistoryView'
 import { LoginView } from '@/features/auth/components/LoginView'
 import { toast } from 'sonner'
 
 function AppContent() {
-  const { isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, logout } = useAuth()
   const [currentView, setCurrentView] = useState('login') // Fluxo de Autenticação / Tela 7
 
   const handleNavigate = (view: string) => {
@@ -20,7 +22,16 @@ function AppContent() {
       return
     }
 
+    // Operadores só podem usar o PDV (a regra definitiva é do backend)
+    if (user?.roleKey === 'operator' && view !== 'pdv') {
+      toast.warning('Seu perfil de operador só tem acesso ao PDV.')
+      setCurrentView('pdv')
+      return
+    }
+
     if (
+      view === 'pdv' ||
+      view === 'historico' ||
       view === 'dashboard' ||
       view === 'usuarios' ||
       view === 'produtos' ||
@@ -37,7 +48,7 @@ function AppContent() {
   if (!isAuthenticated || currentView === 'login') {
     return (
       <LoginView
-        onLoginSuccess={() => handleNavigate('dashboard')}
+        onLoginSuccess={() => setCurrentView(user?.roleKey === 'operator' ? 'pdv' : 'dashboard')}
         initialErrorState={false}
       />
     )
@@ -45,7 +56,11 @@ function AppContent() {
 
   return (
     <AppLayout currentView={currentView} onNavigate={handleNavigate}>
-      {currentView === 'dashboard' ? (
+      {currentView === 'pdv' ? (
+        <PosView />
+      ) : currentView === 'historico' ? (
+        <SalesHistoryView />
+      ) : currentView === 'dashboard' ? (
         <DashboardView />
       ) : currentView === 'usuarios' ? (
         <UsersView />
@@ -71,7 +86,7 @@ function AppContent() {
 
 export function App() {
   return (
-    <AuthProvider initialAuthenticated={true}>
+    <AuthProvider>
       <AppContent />
     </AuthProvider>
   )

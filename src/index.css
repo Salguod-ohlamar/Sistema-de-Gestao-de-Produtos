@@ -59,6 +59,10 @@
   --color-text-muted: var(--text-muted);
   --color-text-disabled: var(--text-disabled);
 
+  --color-paper: var(--paper);
+  --color-paper-foreground: var(--paper-foreground);
+  --color-paper-muted: var(--paper-muted);
+
   --color-cyan-accent: var(--cyan-accent);
   --color-blue-deep: var(--blue-deep);
 
@@ -131,3 +135,21 @@
   box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--border);
 }
 
+
+/* Impressão do comprovante: mostra apenas o papel do comprovante */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt-paper,
+  #receipt-paper * {
+    visibility: visible;
+  }
+  #receipt-paper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    box-shadow: none;
+  }
+}

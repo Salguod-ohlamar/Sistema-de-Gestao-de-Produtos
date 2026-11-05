@@ -7,10 +7,13 @@ import {
   MoreVertical,
   LogOut,
   UserCheck,
+  ShoppingCart,
+  Receipt,
 } from 'lucide-react'
+import { useAuth } from '@/features/auth/context'
 import { NexoraBrand } from '@/components/common/NexoraLogo'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,12 +29,27 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps) {
-  const navItems = [
+  const { user } = useAuth()
+  const displayName = user?.name ?? 'Usuário'
+  const displayEmail = user?.email ?? ''
+  const displayRole = user?.role ?? ''
+  const initials = displayName
+    .split(' ')
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+
+  const allNavItems = [
+    { id: 'pdv', label: 'Frente de caixa', icon: ShoppingCart },
+    { id: 'historico', label: 'Histórico de vendas', icon: Receipt },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'produtos', label: 'Produtos (Consulta)', icon: Package },
     { id: 'novo-produto', label: 'Novo produto', icon: PlusSquare },
     { id: 'usuarios', label: 'Usuários', icon: Users },
   ]
+  const navItems =
+    user?.roleKey === 'operator' ? allNavItems.filter((item) => item.id === 'pdv') : allNavItems
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-[248px] bg-surface-1 border-r border-border z-40 flex flex-col justify-between select-none">
@@ -100,22 +118,18 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="relative shrink-0">
                 <Avatar className="w-9 h-9 border border-border">
-                  <AvatarImage
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
-                    alt="Rodrigo Silveira"
-                  />
                   <AvatarFallback className="bg-surface-elevated text-primary font-semibold text-xs">
-                    RS
+                    {initials}
                   </AvatarFallback>
                 </Avatar>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-cyan-accent rounded-full ring-2 ring-surface-1" />
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-sm font-medium text-text-primary truncate">
-                  Rodrigo Silveira
+                  {displayName}
                 </span>
                 <span className="text-xs text-text-muted truncate">
-                  Gerente de Operações
+                  {displayRole}
                 </span>
               </div>
             </div>
@@ -139,10 +153,10 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-semibold text-text-primary leading-none">
-                  Rodrigo Silveira
+                  {displayName}
                 </p>
                 <p className="text-xs text-text-muted leading-none font-mono">
-                  rodrigo@nexora.com.br
+                  {displayEmail}
                 </p>
               </div>
             </DropdownMenuLabel>

@@ -7,6 +7,10 @@ export interface UserProfile {
   role: string
   avatar: string
   status: 'Ativo' | 'Inativo'
+  /** Tipo de conta no backend (empresa, colaborador ou administração central) */
+  principalType?: 'root' | 'company' | 'collaborator'
+  /** Papel do colaborador no backend */
+  roleKey?: 'administrator' | 'manager' | 'operator'
 }
 
 export interface AuthContextType {
@@ -14,6 +18,8 @@ export interface AuthContextType {
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
+  /** Última mensagem de erro de login devolvida pelo servidor, em português */
+  loginError: string | null
 }
 
 export const DEFAULT_USER: UserProfile = {

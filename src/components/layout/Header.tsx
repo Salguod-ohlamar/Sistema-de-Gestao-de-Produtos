@@ -1,5 +1,6 @@
 import { Search, Bell } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useAuth } from '@/features/auth/context'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 interface HeaderProps {
   onOpenCommand?: () => void
@@ -7,6 +8,9 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
+  const { user } = useAuth()
+  const displayName = user?.name ?? 'Usuário'
+  const initials = displayName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
   return (
     <header className="fixed top-0 left-[248px] right-0 h-16 bg-surface-1/90 backdrop-blur-md border-b border-border z-30 px-8 flex items-center justify-between select-none">
       {/* Barra de Pesquisa Rápida */}
@@ -51,18 +55,14 @@ export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
         <div className="flex items-center gap-2.5 pl-1 cursor-pointer">
           <div className="relative shrink-0">
             <Avatar className="w-8 h-8 border border-border">
-              <AvatarImage
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
-                alt="Rodrigo Silveira"
-              />
               <AvatarFallback className="bg-surface-elevated text-primary font-semibold text-xs">
-                RS
+                {initials}
               </AvatarFallback>
             </Avatar>
             <span className="absolute bottom-0 right-0 w-2 h-2 bg-cyan-accent rounded-full ring-2 ring-surface-1" />
           </div>
           <span className="text-sm font-medium text-text-primary hidden lg:inline-block">
-            Rodrigo S.
+            {displayName}
           </span>
         </div>
       </div>
