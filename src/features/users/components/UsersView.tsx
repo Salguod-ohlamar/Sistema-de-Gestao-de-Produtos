@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { UserDrawer } from './UserDrawer'
 import { toast } from 'sonner'
+import { paginate, pageWindow } from '@/lib/pagination'
 
 interface UserItem {
   id: string
@@ -31,11 +32,14 @@ interface UserItem {
   status: 'Ativo' | 'Convite enviado' | 'Inativo'
 }
 
+const USERS_PAGE_SIZE = 4
+
 export function UsersView() {
   const [drawerOpen, setDrawerOpen] = useState(true) // Inicialmente aberto conforme o Stitch screenshot
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState('Todos')
   const [statusFilter, setStatusFilter] = useState('Todos')
+  const [page, setPage] = useState(1)
 
   const users: UserItem[] = [
     {
@@ -120,6 +124,8 @@ export function UsersView() {
     const matchesStatus = statusFilter === 'Todos' || u.status === statusFilter
     return matchesQuery && matchesRole && matchesStatus
   })
+
+  const pageData = paginate(filteredUsers, page, USERS_PAGE_SIZE)
 
   const handleExport = () => {
     toast.success('Lista de usuários exportada com sucesso!')
@@ -259,7 +265,7 @@ export function UsersView() {
               />
               <Input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); setPage(1) }}
                 placeholder="Buscar por nome ou e-mail..."
                 className="h-10 pl-9 pr-4 rounded-xl bg-surface-1 border-border text-sm"
               />
@@ -270,7 +276,7 @@ export function UsersView() {
               <select
                 aria-label="Filtrar por Perfil"
                 value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
+                onChange={(e) => { setRoleFilter(e.target.value); setPage(1) }}
                 className="w-full h-10 px-3.5 rounded-xl bg-surface-1 border border-border text-text-primary text-xs font-medium cursor-pointer focus:outline-none focus:border-border-highlight"
               >
                 <option value="Todos">Perfil: Todos</option>
@@ -286,7 +292,7 @@ export function UsersView() {
               <select
                 aria-label="Filtrar por Status"
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }}
                 className="w-full h-10 px-3.5 rounded-xl bg-surface-1 border border-border text-text-primary text-xs font-medium cursor-pointer focus:outline-none focus:border-border-highlight"
               >
                 <option value="Todos">Status: Todos</option>
@@ -308,6 +314,7 @@ export function UsersView() {
                 setSearchQuery('')
                 setRoleFilter('Todos')
                 setStatusFilter('Todos')
+                setPage(1)
                 toast.info('Lista de usuários atualizada')
               }}
               className="text-text-muted hover:text-text-primary cursor-pointer"
@@ -330,7 +337,7 @@ export function UsersView() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60 text-sm">
-              {filteredUsers.map((user) => (
+              {pageData.items.map((user) => (
                 <tr
                   key={user.id}
                   className="h-16 hover:bg-surface-elevated/40 transition-colors group"
@@ -462,40 +469,48 @@ export function UsersView() {
 
         {/* Paginação */}
         <div className="p-4 bg-surface-1 border-t border-border flex items-center justify-between text-xs">
-          <span className="text-text-muted font-mono">Página 1 de 4</span>
+          <span className="text-text-muted font-mono">
+            Página {pageData.page} de {pageData.totalPages}
+          </span>
           <div className="flex items-center gap-1 font-mono">
             <Button
               variant="secondary"
               size="icon-sm"
-              disabled
-              className="h-7 w-7 opacity-40 bg-surface-2"
+              aria-label="Página anterior"
+              disabled={pageData.page <= 1}
+              onClick={() => setPage(pageData.page - 1)}
+              className="h-7 w-7 bg-surface-2 disabled:opacity-40"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button
-              size="sm"
-              className="h-7 px-2.5 text-xs font-bold bg-primary text-text-primary"
-            >
-              1
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="h-7 px-2.5 text-xs bg-surface-2 text-text-muted hover:text-text-primary"
-            >
-              2
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="h-7 px-2.5 text-xs bg-surface-2 text-text-muted hover:text-text-primary"
-            >
-              3
-            </Button>
+            {pageWindow(pageData.page, pageData.totalPages).map((n, i) =>
+              n === null ? (
+                <span key={`gap-${i}`} className="text-text-muted px-1">
+                  ...
+                </span>
+              ) : n === pageData.page ? (
+                <Button key={n} size="sm" aria-current="page" className="h-7 px-2.5 text-xs font-bold bg-primary text-text-primary">
+                  {n}
+                </Button>
+              ) : (
+                <Button
+                  key={n}
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setPage(n)}
+                  className="h-7 px-2.5 text-xs bg-surface-2 text-text-muted hover:text-text-primary"
+                >
+                  {n}
+                </Button>
+              )
+            )}
             <Button
               variant="secondary"
               size="icon-sm"
-              className="h-7 w-7 bg-surface-2 text-text-muted hover:text-text-primary"
+              aria-label="Próxima página"
+              disabled={pageData.page >= pageData.totalPages}
+              onClick={() => setPage(pageData.page + 1)}
+              className="h-7 w-7 bg-surface-2 text-text-muted hover:text-text-primary disabled:opacity-40"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

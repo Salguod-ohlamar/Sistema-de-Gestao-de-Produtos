@@ -30,6 +30,63 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ProductDetailDrawer } from './ProductDetailDrawer'
 import { FloatingActionBar } from './FloatingActionBar'
 import { toast } from 'sonner'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  PRICE_OPTIONS,
+  STATUS_OPTIONS,
+  STOCK_OPTIONS,
+  filterProducts,
+  pageWindow,
+  paginate,
+  type PriceRange,
+  type StatusFilter,
+  type StockRange,
+} from '../productFilters'
+
+interface FilterMenuProps<T extends string> {
+  label: string
+  value: T
+  options: { value: T; label: string }[]
+  onChange: (v: T) => void
+}
+
+function FilterMenu<T extends string>({ label, value, options, onChange }: FilterMenuProps<T>) {
+  const active = value !== 'all'
+  const current = options.find((o) => o.value === value)?.label
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="secondary"
+          size="sm"
+          className={`h-9 px-3 gap-1.5 text-xs border-border cursor-pointer ${
+            active
+              ? 'bg-primary/15 border-primary/30 text-text-primary'
+              : 'bg-surface-elevated text-text-secondary hover:text-text-primary'
+          }`}
+        >
+          <span>{active ? `${label}: ${current}` : label}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-text-muted" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(v as T)}>
+          {options.map((o) => (
+            <DropdownMenuRadioItem key={o.value} value={o.value}>
+              {o.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
 
 interface ProductRow {
   id: string
@@ -53,8 +110,13 @@ interface ProductsViewProps {
 export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
   const [drawerOpen, setDrawerOpen] = useState(true) // Aberto por padrão para coincidir com a tela Stitch
   const [selectedIds, setSelectedIds] = useState<string[]>(['1', '2']) // Itens 1 e 2 selecionados conforme screenshot
-  const [searchQuery, setSearchQuery] = useState('Pulse X2')
-  const [categoryFilter, setCategoryFilter] = useState<string | null>('Eletrônicos')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [stockFilter, setStockFilter] = useState<StockRange>('all')
+  const [priceFilter, setPriceFilter] = useState<PriceRange>('all')
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(4)
 
   const products: ProductRow[] = [
     {
@@ -164,6 +226,33 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
     },
   ]
 
+  const filtered = filterProducts(products, {
+    query: searchQuery,
+    category: categoryFilter,
+    status: statusFilter,
+    stock: stockFilter,
+    price: priceFilter,
+  })
+  const pageData = paginate(filtered, page, pageSize)
+  const visible = pageData.items
+  const hasFilters =
+    searchQuery !== '' || categoryFilter !== null || statusFilter !== 'all' || stockFilter !== 'all' || priceFilter !== 'all'
+
+  /** Qualquer mudança de filtro volta para a página 1. */
+  const withReset = <A,>(fn: (a: A) => void) => (a: A) => {
+    fn(a)
+    setPage(1)
+  }
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setCategoryFilter(null)
+    setStatusFilter('all')
+    setStockFilter('all')
+    setPriceFilter('all')
+    setPage(1)
+  }
+
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -171,11 +260,9 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
   }
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === products.length) {
-      setSelectedIds([])
-    } else {
-      setSelectedIds(products.map((p) => p.id))
-    }
+    const visibleIds = visible.map((p) => p.id)
+    const allSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id))
+    setSelectedIds(allSelected ? selectedIds.filter((id) => !visibleIds.includes(id)) : [...new Set([...selectedIds, ...visibleIds])])
   }
 
   return (
@@ -237,7 +324,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
             />
             <Input
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => withReset(setSearchQuery)(e.target.value)}
               placeholder="Buscar por nome ou SKU..."
               className="h-9 pl-9 pr-14 rounded-lg bg-surface-elevated border-border text-sm"
             />
@@ -255,7 +342,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
               <span className="font-semibold text-primary">{categoryFilter}</span>
               <button
                 type="button"
-                onClick={() => setCategoryFilter(null)}
+                onClick={() => withReset(setCategoryFilter)(null)}
                 className="p-0.5 rounded hover:bg-primary/20 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
               >
                 <X className="h-3.5 w-3.5" />
@@ -263,35 +350,20 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
             </div>
           )}
 
-          {/* Filtro Status Dropdown */}
-          <Button
-            variant="secondary"
-            size="sm"
-            className="h-9 px-3 gap-1.5 text-xs bg-surface-elevated border-border text-text-secondary hover:text-text-primary cursor-pointer"
-          >
-            <span>Status</span>
-            <ChevronDown className="h-3.5 w-3.5 text-text-muted" />
-          </Button>
+          <FilterMenu label="Status" value={statusFilter} options={STATUS_OPTIONS} onChange={withReset(setStatusFilter)} />
+          <FilterMenu label="Estoque" value={stockFilter} options={STOCK_OPTIONS} onChange={withReset(setStockFilter)} />
+          <FilterMenu label="Preço" value={priceFilter} options={PRICE_OPTIONS} onChange={withReset(setPriceFilter)} />
 
-          {/* Filtro Faixa de estoque */}
-          <Button
-            variant="secondary"
-            size="sm"
-            className="h-9 px-3 gap-1.5 text-xs bg-surface-elevated border-border text-text-secondary hover:text-text-primary cursor-pointer"
-          >
-            <span>Faixa de estoque</span>
-            <ChevronDown className="h-3.5 w-3.5 text-text-muted" />
-          </Button>
-
-          {/* Filtro Preço */}
-          <Button
-            variant="secondary"
-            size="sm"
-            className="h-9 px-3 gap-1.5 text-xs bg-surface-elevated border-border text-text-secondary hover:text-text-primary cursor-pointer"
-          >
-            <span>Preço</span>
-            <ChevronDown className="h-3.5 w-3.5 text-text-muted" />
-          </Button>
+          {hasFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="h-9 px-2 text-xs text-text-muted hover:text-text-primary cursor-pointer"
+            >
+              Limpar filtros
+            </Button>
+          )}
         </div>
 
         {/* Controles de Visualização e Ordenação */}
@@ -335,9 +407,9 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                 <th className="w-12 px-4 text-center">
                   <Checkbox
                     checked={
-                      selectedIds.length === products.length
+                      visible.length > 0 && visible.every((p) => selectedIds.includes(p.id))
                         ? true
-                        : selectedIds.length > 0
+                        : visible.some((p) => selectedIds.includes(p.id))
                         ? 'indeterminate'
                         : false
                     }
@@ -354,7 +426,14 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60 text-sm">
-              {products.map((p) => {
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-sm text-text-muted">
+                    Nenhum produto encontrado com esses filtros.
+                  </td>
+                </tr>
+              )}
+              {visible.map((p) => {
                 const Icon = p.icon
                 const isSelected = selectedIds.includes(p.id)
                 const pct = Math.round((p.stockUnits / p.stockMax) * 100)
@@ -504,8 +583,11 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
         {/* Paginação (56px) */}
         <footer className="h-14 px-6 bg-surface-1 border-t border-border flex items-center justify-between gap-4 text-xs">
           <span className="text-text-muted">
-            Mostrando <strong className="text-text-primary font-semibold">1–8</strong> de{' '}
-            <strong className="text-text-primary font-semibold">1.248</strong> produtos
+            Mostrando{' '}
+            <strong className="text-text-primary font-semibold">
+              {pageData.from}–{pageData.to}
+            </strong>{' '}
+            de <strong className="text-text-primary font-semibold">{pageData.total}</strong> produtos
           </span>
 
           <div className="flex items-center gap-4">
@@ -513,11 +595,16 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
               <span className="text-text-muted hidden sm:inline">Exibir:</span>
               <select
                 aria-label="Itens por página"
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value))
+                  setPage(1)
+                }}
                 className="h-8 px-2.5 rounded-md bg-surface-elevated border border-border text-xs text-text-primary cursor-pointer focus:outline-none"
               >
-                <option>8 por página</option>
-                <option>16 por página</option>
-                <option>32 por página</option>
+                <option value={4}>4 por página</option>
+                <option value={8}>8 por página</option>
+                <option value={16}>16 por página</option>
               </select>
             </div>
 
@@ -525,43 +612,41 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
               <Button
                 variant="secondary"
                 size="icon-sm"
-                disabled
-                className="h-8 w-8 opacity-40 bg-surface-elevated"
+                aria-label="Página anterior"
+                disabled={pageData.page <= 1}
+                onClick={() => setPage(pageData.page - 1)}
+                className="h-8 w-8 bg-surface-elevated disabled:opacity-40"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button
-                size="sm"
-                className="h-8 w-8 text-xs font-bold bg-primary text-text-primary"
-              >
-                1
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-8 w-8 text-xs bg-surface-elevated text-text-muted hover:text-text-primary"
-              >
-                2
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-8 w-8 text-xs bg-surface-elevated text-text-muted hover:text-text-primary"
-              >
-                3
-              </Button>
-              <span className="text-text-muted px-1 text-xs">...</span>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-8 px-2 text-xs bg-surface-elevated text-text-muted hover:text-text-primary"
-              >
-                156
-              </Button>
+              {pageWindow(pageData.page, pageData.totalPages).map((n, i) =>
+                n === null ? (
+                  <span key={`gap-${i}`} className="text-text-muted px-1 text-xs">
+                    ...
+                  </span>
+                ) : n === pageData.page ? (
+                  <Button key={n} size="sm" aria-current="page" className="h-8 w-8 text-xs font-bold bg-primary text-text-primary">
+                    {n}
+                  </Button>
+                ) : (
+                  <Button
+                    key={n}
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setPage(n)}
+                    className="h-8 min-w-8 px-2 text-xs bg-surface-elevated text-text-muted hover:text-text-primary"
+                  >
+                    {n}
+                  </Button>
+                )
+              )}
               <Button
                 variant="secondary"
                 size="icon-sm"
-                className="h-8 w-8 bg-surface-elevated text-text-muted hover:text-text-primary"
+                aria-label="Próxima página"
+                disabled={pageData.page >= pageData.totalPages}
+                onClick={() => setPage(pageData.page + 1)}
+                className="h-8 w-8 bg-surface-elevated text-text-muted hover:text-text-primary disabled:opacity-40"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>

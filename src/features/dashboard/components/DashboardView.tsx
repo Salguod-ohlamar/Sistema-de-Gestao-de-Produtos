@@ -16,7 +16,11 @@ import { StockAlerts } from './StockAlerts'
 import { RecentSalesTable } from './RecentSalesTable'
 import { toast } from 'sonner'
 
-export function DashboardView() {
+interface DashboardViewProps {
+  onNavigate?: (view: string) => void
+}
+
+export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
   const [period, setPeriod] = useState<'7' | '30' | '90' | 'custom'>('30')
 
   const handleExport = () => {
@@ -160,13 +164,13 @@ export function DashboardView() {
 
       {/* Linha 3 — Listas Operacionais */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TopProducts />
-        <StockAlerts onReplenish={handleReplenish} />
+        <TopProducts onViewReport={() => onNavigate?.('historico')} />
+        <StockAlerts onReplenish={handleReplenish} onViewAll={() => onNavigate?.('produtos')} />
       </section>
 
       {/* Linha 4 — Tabela de Vendas Recentes */}
       <section>
-        <RecentSalesTable />
+        <RecentSalesTable onViewAll={() => onNavigate?.('historico')} />
       </section>
     </div>
   )

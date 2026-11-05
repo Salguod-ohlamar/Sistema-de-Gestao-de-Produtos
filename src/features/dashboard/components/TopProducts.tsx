@@ -8,7 +8,11 @@ import {
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 
-export function TopProducts() {
+interface TopProductsProps {
+  onViewReport?: () => void
+}
+
+export function TopProducts({ onViewReport }: TopProductsProps = {}) {
   const products = [
     {
       name: 'Fone Bluetooth Pulse X2',
@@ -66,6 +70,7 @@ export function TopProducts() {
         </div>
         <button
           type="button"
+          onClick={onViewReport}
           className="text-xs text-primary hover:underline flex items-center gap-1 font-medium cursor-pointer"
         >
           Ver relatório completo

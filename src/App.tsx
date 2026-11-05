@@ -61,7 +61,7 @@ function AppContent() {
       ) : currentView === 'historico' ? (
         <SalesHistoryView />
       ) : currentView === 'dashboard' ? (
-        <DashboardView />
+        <DashboardView onNavigate={handleNavigate} />
       ) : currentView === 'usuarios' ? (
         <UsersView />
       ) : currentView === 'produtos' ? (

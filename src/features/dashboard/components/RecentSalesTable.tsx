@@ -19,7 +19,11 @@ interface SaleRecord {
   datetime: string
 }
 
-export function RecentSalesTable() {
+interface RecentSalesTableProps {
+  onViewAll?: () => void
+}
+
+export function RecentSalesTable({ onViewAll }: RecentSalesTableProps = {}) {
   const sales: SaleRecord[] = [
     {
       id: '#10482',
@@ -262,6 +266,7 @@ export function RecentSalesTable() {
         </span>
         <button
           type="button"
+          onClick={onViewAll}
           className="text-primary hover:underline font-medium flex items-center gap-1 cursor-pointer"
         >
           Ver todas as vendas

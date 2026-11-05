@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button'
 
 interface StockAlertsProps {
   onReplenish?: (sku: string) => void
+  onViewAll?: () => void
 }
 
-export function StockAlerts({ onReplenish }: StockAlertsProps) {
+export function StockAlerts({ onReplenish, onViewAll }: StockAlertsProps) {
   const alerts = [
     {
       name: 'Webcam 4K UltraStream',
@@ -68,6 +69,7 @@ export function StockAlerts({ onReplenish }: StockAlertsProps) {
         </div>
         <button
           type="button"
+          onClick={onViewAll}
           className="text-xs text-primary hover:underline flex items-center gap-1 font-medium cursor-pointer"
         >
           Ver todos
