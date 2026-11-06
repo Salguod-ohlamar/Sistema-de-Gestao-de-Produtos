@@ -48,3 +48,15 @@ export async function requireCompanyManager(request, reply) {
         return reply.code(403).send({ error: 'Somente administradores podem gerenciar a equipe.' });
     }
 }
+
+// Financeiro (DRE e despesas): conta da empresa, administrador ou gerente. Operador não acessa.
+export async function requireFinanceAccess(request, reply) {
+    await requireCompanyAccess(request, reply);
+    if (reply.sent) return;
+
+    const allowed = request.auth.type === 'company' ||
+        request.auth.isAdmin || ['administrator', 'manager'].includes(request.auth.role);
+    if (!allowed) {
+        return reply.code(403).send({ error: 'Somente administradores e gerentes acessam o financeiro.' });
+    }
+}
