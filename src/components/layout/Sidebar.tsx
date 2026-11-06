@@ -9,6 +9,7 @@ import {
   UserCheck,
   ShoppingCart,
   Receipt,
+  Calculator,
 } from 'lucide-react'
 import { useAuth } from '@/features/auth/context'
 import { NexoraBrand } from '@/components/common/NexoraLogo'
@@ -44,6 +45,7 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
     { id: 'pdv', label: 'Frente de caixa', icon: ShoppingCart },
     { id: 'historico', label: 'Histórico de vendas', icon: Receipt },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'dre', label: 'DRE', icon: Calculator },
     { id: 'produtos', label: 'Produtos (Consulta)', icon: Package },
     { id: 'novo-produto', label: 'Novo produto', icon: PlusSquare },
     { id: 'usuarios', label: 'Usuários', icon: Users },

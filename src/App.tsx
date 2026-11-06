@@ -6,6 +6,7 @@ import { UsersView } from '@/features/users/components/UsersView'
 import { ProductsView } from '@/features/products/components/ProductsView'
 import { NewProductView } from '@/features/products/components/NewProductView'
 import { PosView } from '@/features/sales/components/PosView'
+import { DreView } from '@/features/finance/components/DreView'
 import { SalesHistoryView } from '@/features/sales/components/SalesHistoryView'
 import { LoginView } from '@/features/auth/components/LoginView'
 import { toast } from 'sonner'
@@ -33,6 +34,7 @@ function AppContent() {
       view === 'pdv' ||
       view === 'historico' ||
       view === 'dashboard' ||
+      view === 'dre' ||
       view === 'usuarios' ||
       view === 'produtos' ||
       view === 'novo-produto'
@@ -62,6 +64,8 @@ function AppContent() {
         <SalesHistoryView />
       ) : currentView === 'dashboard' ? (
         <DashboardView onNavigate={handleNavigate} />
+      ) : currentView === 'dre' ? (
+        <DreView />
       ) : currentView === 'usuarios' ? (
         <UsersView />
       ) : currentView === 'produtos' ? (
