@@ -1,23 +1,5 @@
 import expenseRepository from '../repository/Expense.repository.js';
-import { EXPENSE_CATEGORIES, buildDre, isValidDate } from '../dre.js';
-
-// Período padrão: mês atual (fuso de São Paulo)
-function currentMonthRange() {
-    const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-    const y = today.getFullYear();
-    const m = String(today.getMonth() + 1).padStart(2, '0');
-    const last = new Date(y, today.getMonth() + 1, 0).getDate();
-    return { from: `${y}-${m}-01`, to: `${y}-${m}-${String(last).padStart(2, '0')}` };
-}
-
-function parseRange(query) {
-    const def = currentMonthRange();
-    const from = query.from ?? def.from;
-    const to = query.to ?? def.to;
-    if (!isValidDate(from) || !isValidDate(to)) return { error: 'Datas devem estar no formato AAAA-MM-DD.' };
-    if (from > to) return { error: 'A data inicial não pode ser maior que a final.' };
-    return { from, to };
-}
+import { EXPENSE_CATEGORIES, buildDre, isValidDate, parseRange } from '../dre.js';
 
 async function createExpenseController(req, reply) {
     const { category, description, amount, incurred_on } = req.body ?? {};

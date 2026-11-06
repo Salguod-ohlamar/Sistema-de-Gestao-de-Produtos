@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildDre, isValidDate } from '../src/dre.js';
+import { buildDre, currentMonthRange, isValidDate, parseRange } from '../src/dre.js';
 
 test('DRE: receita, imposto, CMV, despesas e resultado', () => {
     const dre = buildDre({
@@ -28,4 +28,11 @@ test('datas: aceita só AAAA-MM-DD reais', () => {
     assert.equal(isValidDate('2026-11-06'), true);
     assert.equal(isValidDate('2026-02-30'), false);
     assert.equal(isValidDate('06/11/2026'), false);
+});
+
+test('parseRange: padrão é o mês atual e valida ordem das datas', () => {
+    assert.deepEqual(currentMonthRange(new Date('2026-11-06T15:00:00Z')), { from: '2026-11-01', to: '2026-11-30' });
+    assert.equal(parseRange({ from: '2026-11-10', to: '2026-11-01' }).error !== undefined, true);
+    assert.equal(parseRange({ from: '2026-11-01', to: '2026-11-30' }).from, '2026-11-01');
+    assert.equal(parseRange({ from: 'abc' }).error !== undefined, true);
 });

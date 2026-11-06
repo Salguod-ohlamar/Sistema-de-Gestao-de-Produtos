@@ -42,3 +42,21 @@ export function isValidDate(value) {
     const d = new Date(`${value}T00:00:00Z`);
     return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
 }
+
+// Período padrão: mês atual (fuso de São Paulo)
+export function currentMonthRange(now = new Date()) {
+    const sp = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+    const y = sp.getFullYear();
+    const m = String(sp.getMonth() + 1).padStart(2, '0');
+    const last = new Date(y, sp.getMonth() + 1, 0).getDate();
+    return { from: `${y}-${m}-01`, to: `${y}-${m}-${String(last).padStart(2, '0')}` };
+}
+
+export function parseRange(query) {
+    const def = currentMonthRange();
+    const from = query.from ?? def.from;
+    const to = query.to ?? def.to;
+    if (!isValidDate(from) || !isValidDate(to)) return { error: 'Datas devem estar no formato AAAA-MM-DD.' };
+    if (from > to) return { error: 'A data inicial não pode ser maior que a final.' };
+    return { from, to };
+}
