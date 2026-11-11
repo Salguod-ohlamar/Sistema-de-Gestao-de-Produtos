@@ -23,6 +23,17 @@ async function createSaleController(req, reply) {
     }   
 }
 
+async function listSalesController(req, reply) {
+    try {
+        const sales = await saleRepository.listSales(req.companyId);
+        return reply.send(sales);
+    } catch (error) {
+        req.log.error(error);
+        return reply.status(500).send({ error: 'Não foi possível carregar o histórico de vendas.' });
+    }
+}
+
 export {
-    createSaleController
+    createSaleController,
+    listSalesController
 };

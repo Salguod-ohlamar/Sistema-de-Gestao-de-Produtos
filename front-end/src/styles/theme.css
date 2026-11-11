@@ -1,0 +1,147 @@
+:root {
+  /* Tema claro (padrão) */
+  --background: #E8EBF2;
+  --foreground: #0E1526;
+
+  --surface-1: #F4F6FB;
+  --surface-2: #FFFFFF;
+  --surface-elevated: #EEF1F7;
+
+  --card: #FFFFFF;
+  --card-foreground: #0E1526;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #0E1526;
+
+  --border: #D9DEEA;
+  --border-subtle: #E3E7F0;
+  --border-highlight: #BFC8DC;
+  --input: #D9DEEA;
+
+  --primary: #2F6BFF;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #4C82FF;
+  --primary-pressed: #1F52D6;
+  --primary-glow: rgba(47, 107, 255, 0.2);
+  --blue-deep: #0B2A6F;
+
+  --secondary: #EEF1F7;
+  --secondary-foreground: #0E1526;
+  --cyan-accent: #0284C7;
+
+  --text-primary: #0E1526;
+  --text-secondary: #47536B;
+  --text-muted: #5B6784;
+  --text-disabled: #8A96B5;
+
+  --muted: #EEF1F7;
+  --muted-foreground: #5B6784;
+
+  --accent: #EEF1F7;
+  --accent-foreground: #0E1526;
+
+  --destructive: #C42A30;
+  --destructive-foreground: #FFFFFF;
+
+  --ring: #2F6BFF;
+
+  --status-success: #1F7A55;
+  --status-success-bg: rgba(31, 122, 85, 0.12);
+  --status-success-border: rgba(31, 122, 85, 0.25);
+
+  --status-warning: #8A5A00;
+  --status-warning-bg: rgba(138, 90, 0, 0.12);
+  --status-warning-border: rgba(138, 90, 0, 0.25);
+
+  --status-error: #B42318;
+  --status-error-bg: rgba(180, 35, 24, 0.12);
+  --status-error-border: rgba(180, 35, 24, 0.25);
+
+  --paper: #F4F6FB;
+  --paper-foreground: #0A0F1C;
+  --paper-muted: #3B4663;
+
+  --radius-card: 14px;
+  --radius-input: 10px;
+  --radius-btn: 10px;
+  --radius-pill: 9999px;
+  --radius: 10px;
+}
+
+.dark {
+  /* Fundo e Superfícies Base (Dark Mode Obrigatório) */
+  --background: #05070D;
+  --foreground: #EAF0FF;
+
+  --surface-1: #0A0F1C;
+  --surface-2: #0E1526;
+  --surface-elevated: #141C30;
+
+  --card: #0E1526;
+  --card-foreground: #EAF0FF;
+
+  --popover: #141C30;
+  --popover-foreground: #EAF0FF;
+
+  /* Bordas */
+  --border: #1B2540;
+  --border-subtle: #1B2540;
+  --border-highlight: #2A3A66;
+  --input: #1B2540;
+
+  /* Ação Primária */
+  --primary: #2F6BFF;
+  --primary-foreground: #EAF0FF;
+  --primary-hover: #4C82FF;
+  --primary-pressed: #1F52D6;
+  --primary-glow: rgba(47, 107, 255, 0.35);
+  --blue-deep: #0B2A6F;
+
+  /* Apoio e Secundários */
+  --secondary: #0E1526;
+  --secondary-foreground: #EAF0FF;
+  --cyan-accent: #38BDF8;
+
+  /* Textos e Contraste */
+  --text-primary: #EAF0FF;
+  --text-secondary: #9AA8C7;
+  --text-muted: #7A89AB;
+  --text-disabled: #5F6E8F;
+
+  --muted: #0E1526;
+  --muted-foreground: #7A89AB;
+
+  --accent: #141C30;
+  --accent-foreground: #EAF0FF;
+
+  --destructive: #F2555A;
+  --destructive-foreground: #EAF0FF;
+
+  /* Anel de foco */
+  --ring: #4C82FF;
+
+  /* Semânticas Operacionais (para fundos translúcidos 12%) */
+  --status-success: #34D399;
+  --status-success-bg: rgba(52, 211, 153, 0.12);
+  --status-success-border: rgba(52, 211, 153, 0.25);
+
+  --status-warning: #F5B544;
+  --status-warning-bg: rgba(245, 181, 68, 0.12);
+  --status-warning-border: rgba(245, 181, 68, 0.25);
+
+  --status-error: #F2555A;
+  --status-error-bg: rgba(242, 85, 90, 0.12);
+  --status-error-border: rgba(242, 85, 90, 0.25);
+
+  /* Papel do comprovante (único elemento claro: simula o papel impresso) */
+  --paper: #F4F6FB;
+  --paper-foreground: #0A0F1C;
+  --paper-muted: #3B4663;
+
+  /* Raios */
+  --radius-card: 14px;
+  --radius-input: 10px;
+  --radius-btn: 10px;
+  --radius-pill: 9999px;
+  --radius: 10px;
+}

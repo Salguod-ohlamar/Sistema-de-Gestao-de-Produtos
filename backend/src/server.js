@@ -4,6 +4,7 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import productsRouters from '../src/routes/RegisterProduct.routes.js'
 import saleRouters from '../src/routes/Sale.routes.js'
+import financeRouters from '../src/routes/Finance.routes.js'
 import companyRoutes from '../src/routes/Company.routes.js'
 import adminRoutes from '../src/routes/Admin.routes.js'
 import collaboratorRoutes from '../src/routes/Collaborator.routes.js'
@@ -33,6 +34,7 @@ await fastify.register(collaboratorRoutes)
 await fastify.register(companyWorkspaceRoutes)
 await fastify.register(productsRouters)
 await fastify.register(saleRouters)
+await fastify.register(financeRouters)
 
 
 // Status code 
