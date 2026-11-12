@@ -109,6 +109,9 @@ async function deleteById(req, reply) {
         }
         return reply.status(204).send();
     } catch (error) {
+        if (error.code === '23503') {
+            return reply.status(409).send({ error: 'Este produto já tem vendas registradas e não pode ser excluído. Zere o estoque se ele não é mais vendido.' });
+        }
         console.error("Erro interno no controller:", error);
         return reply.status(500).send({ error: 'Erro ao deletar produto' });
 
