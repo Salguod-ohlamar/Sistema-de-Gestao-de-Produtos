@@ -1,4 +1,4 @@
-import { createCollaborator } from '../controller/Collaborator.controller.js';
+import { createCollaborator, updateCollaborator } from '../controller/Collaborator.controller.js';
 import { requireCompanyAccess } from '../middleware/authorization.js';
 
 async function collaboratorRoutes(fastify) {
@@ -10,6 +10,7 @@ async function collaboratorRoutes(fastify) {
         if (!canManageTeam) return reply.code(403).send({ error: 'Somente administradores podem cadastrar colaboradores.' });
     });
     fastify.post('/colaboradores', createCollaborator);
+    fastify.put('/colaboradores/:id', updateCollaborator);
 }
 
 export default collaboratorRoutes;

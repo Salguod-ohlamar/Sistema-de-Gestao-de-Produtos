@@ -17,6 +17,17 @@ class CollaboratorRepository {
         `;
         return rows[0];
     }
+
+    async update(id, companyId, data) {
+        return sql`
+            UPDATE collaborators
+            SET name = ${data.name}, role = ${data.role}, phone = ${data.phone},
+                updated_at = now()
+            WHERE id = ${id} AND company_id = ${companyId}
+            RETURNING id, name, email, cpf, is_admin, phone, hire_date,
+                      termination_date, role, company_id, is_active;
+        `;
+    }
 }
 
 export default new CollaboratorRepository();
