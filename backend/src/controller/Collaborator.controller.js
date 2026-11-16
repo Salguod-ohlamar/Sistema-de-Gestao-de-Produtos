@@ -35,4 +35,30 @@ async function createCollaborator(request, reply) {
     }
 }
 
-export { createCollaborator };
+async function updateCollaborator(request, reply) {
+    const id = Number(request.params.id);
+    const body = request.body || {};
+    const data = {
+        name: String(body.name || '').trim(),
+        role: String(body.role || ''),
+        phone: String(body.phone || '').replace(/\D/g, '') || null
+    };
+    if (!Number.isInteger(id) || id <= 0 || !data.name || !allowedRoles.has(data.role) ||
+        (data.phone && ![10, 11].includes(data.phone.length))) {
+        return reply.code(400).send({ error: 'Confira o nome, a função e o telefone.' });
+    }
+    // evita o administrador remover o próprio acesso de gestão sem querer
+    if (request.auth.type === 'collaborator' && request.auth.id === id && data.role !== 'administrator') {
+        return reply.code(409).send({ error: 'Você não pode rebaixar a sua própria função.' });
+    }
+    try {
+        const rows = await CollaboratorRepository.update(id, request.companyId, data);
+        if (!rows.length) return reply.code(404).send({ error: 'Colaborador não encontrado nesta empresa.' });
+        return reply.send(rows[0]);
+    } catch (error) {
+        request.log.error(error);
+        return reply.code(500).send({ error: 'Não foi possível atualizar o colaborador.' });
+    }
+}
+
+export { createCollaborator, updateCollaborator };

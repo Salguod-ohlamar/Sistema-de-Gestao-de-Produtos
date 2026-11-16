@@ -9,6 +9,7 @@ import companyRoutes from '../src/routes/Company.routes.js'
 import adminRoutes from '../src/routes/Admin.routes.js'
 import collaboratorRoutes from '../src/routes/Collaborator.routes.js'
 import companyWorkspaceRoutes from '../src/routes/CompanyWorkspace.routes.js'
+import contactRoutes from '../src/routes/Contact.routes.js'
 import { sql } from './database.js'
 
 
@@ -23,7 +24,7 @@ const fastify = Fastify({
 //REGISTRA O CORS PARA PERMITIR REQUISIÇÃO DO FRONT END
 await fastify.register(cors, {
     origin: true, //Permite qualquer origem em modo de desenvolvimento
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 })
 
@@ -35,6 +36,7 @@ await fastify.register(companyWorkspaceRoutes)
 await fastify.register(productsRouters)
 await fastify.register(saleRouters)
 await fastify.register(financeRouters)
+await fastify.register(contactRoutes)
 
 
 // Status code 

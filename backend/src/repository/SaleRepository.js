@@ -14,7 +14,7 @@ class SaleRepository {
         return result.rows[0] || null;
     }
 
-    async createSale(company_id, collaborator_id, items) {
+    async createSale(company_id, collaborator_id, items, customer_cpf = null) {
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
@@ -40,10 +40,10 @@ class SaleRepository {
             }
             // 3) insere a venda (INSERT ... RETURNING id)
             const saleResult = await client.query(
-                `INSERT INTO sales (company_id, collaborator_id, total, status)
-                 VALUES ($1, $2, $3, 'completed')
+                `INSERT INTO sales (company_id, collaborator_id, total, status, customer_cpf)
+                 VALUES ($1, $2, $3, 'completed', $4)
                  RETURNING id, created_at`,
-                [company_id, collaborator_id,total]
+                [company_id, collaborator_id, total, customer_cpf]
             );
             const sale = saleResult.rows[0];
 
@@ -62,6 +62,7 @@ class SaleRepository {
                 created_at: sale.created_at,
                 total: total.toFixed(2),
                 status: 'completed',
+                customer_cpf,
                 // o custo nunca vai na resposta: o operador não deve ver
                 items: soldItems.map(({ unit_cost, ...publicItem }) => publicItem)
             };
@@ -79,6 +80,7 @@ class SaleRepository {
                     s.created_at,
                     s.total,
                     s.status,
+                    s.customer_cpf,
                     COALESCE(c.name, 'Empresa') AS operator_name,
                     COALESCE(SUM(si.quantity), 0)::int AS items_count
              FROM sales s
@@ -91,6 +93,30 @@ class SaleRepository {
             [company_id, limit]
         );
         return result.rows;
+    }
+
+    // Detalhe de uma venda para reimprimir o cupom. Nunca devolve custo.
+    async findSale(company_id, sale_id) {
+        const saleResult = await pool.query(
+            `SELECT s.id, s.created_at, s.total, s.status, s.customer_cpf,
+                    COALESCE(c.name, 'Empresa') AS operator_name
+             FROM sales s
+             LEFT JOIN collaborators c ON c.id = s.collaborator_id
+             WHERE s.id = $1 AND s.company_id = $2`,
+            [sale_id, company_id]
+        );
+        const sale = saleResult.rows[0];
+        if (!sale) return null;
+        const itemsResult = await pool.query(
+            `SELECT si.product_id, p.name, p.sku, si.quantity, si.unit_price,
+                    (si.quantity * si.unit_price)::numeric(10, 2) AS subtotal
+             FROM sales_items si
+             JOIN products p ON p.id = si.product_id
+             WHERE si.sale_id = $1
+             ORDER BY si.id`,
+            [sale_id]
+        );
+        return { ...sale, items: itemsResult.rows };
     }
 }
 
