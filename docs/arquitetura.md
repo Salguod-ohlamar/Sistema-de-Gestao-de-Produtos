@@ -27,6 +27,8 @@ O front-end e a API são aplicações independentes. Em desenvolvimento, o Vite 
 
 A navegação atual é coordenada por estado em `App.tsx`. React Query gerencia consultas e mutações; os hooks invalidam as chaves de cache relacionadas após alterações. O token não é persistido em `localStorage`: fica em memória e desaparece ao recarregar a página.
 
+Na barra lateral da empresa, Dashboard, DRE, Usuários e Espaço da empresa ficam agrupados no submenu expansível **Configurações**. Frente de caixa, histórico e produtos permanecem na navegação principal; root e operador mantêm menus restritos ao próprio perfil.
+
 ### `backend/src`
 
 - `server.js`: instancia Fastify, registra CORS e rotas, inicia na porta 3000.

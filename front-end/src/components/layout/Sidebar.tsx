@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   LayoutDashboard,
   Package,
@@ -12,6 +13,7 @@ import {
   Calculator,
   Building2,
   Shield,
+  ChevronDown,
 } from 'lucide-react'
 import { useAuth } from '@/features/auth/context'
 import { NexoraBrand } from '@/components/common/NexoraLogo'
@@ -33,6 +35,19 @@ interface SidebarProps {
 
 export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps) {
   const { user } = useAuth()
+  const settingsItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'dre', label: 'DRE', icon: Calculator },
+    { id: 'usuarios', label: 'Usuários', icon: Users },
+    { id: 'empresa', label: 'Espaço da empresa', icon: Building2 },
+  ]
+  const isSettingsView = settingsItems.some((item) => item.id === currentView)
+  const [settingsExpanded, setSettingsExpanded] = useState(isSettingsView)
+  const [collapsedForView, setCollapsedForView] = useState<string | null>(null)
+  const settingsMenuExpanded = isSettingsView
+    ? collapsedForView !== currentView
+    : settingsExpanded
+
   const displayName = user?.name ?? 'Usuário'
   const displayEmail = user?.email ?? ''
   const displayRole = user?.role ?? ''
@@ -46,12 +61,8 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
   const allNavItems = [
     { id: 'pdv', label: 'Frente de caixa', icon: ShoppingCart },
     { id: 'historico', label: 'Histórico de vendas', icon: Receipt },
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'dre', label: 'DRE', icon: Calculator },
     { id: 'produtos', label: 'Produtos (Consulta)', icon: Package },
     { id: 'novo-produto', label: 'Novo produto', icon: PlusSquare },
-    { id: 'usuarios', label: 'Usuários', icon: Users },
-    { id: 'empresa', label: 'Espaço da empresa', icon: Building2 },
     { id: 'admin', label: 'Administração', icon: Shield },
   ]
   const navItems =
@@ -60,6 +71,8 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
       : user?.roleKey === 'operator'
       ? allNavItems.filter((item) => item.id === 'pdv')
       : allNavItems.filter((item) => item.id !== 'admin')
+  const canAccessSettings =
+    user?.principalType !== 'root' && user?.roleKey !== 'operator'
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-[248px] bg-surface-1/80 backdrop-blur-xl border-r border-border z-40 flex flex-col justify-between select-none">
@@ -89,6 +102,7 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
                 <button
                   key={item.id}
                   type="button"
+                  aria-current={isActive ? 'page' : undefined}
                   onClick={() => onNavigate?.(item.id)}
                   className={`w-full flex items-center h-11 px-3.5 rounded-lg transition-all gap-3 text-sm cursor-pointer text-left ${
                     isActive
@@ -107,17 +121,68 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
               )
             })}
 
-            <div className="my-3 border-t border-border mx-2" />
+            {canAccessSettings && (
+              <>
+                <div className="my-3 border-t border-border mx-2" />
+                <button
+                  type="button"
+                  aria-expanded={settingsMenuExpanded}
+                  aria-controls="settings-navigation"
+                  onClick={() => {
+                    setSettingsExpanded(!settingsMenuExpanded)
+                    setCollapsedForView(
+                      isSettingsView && settingsMenuExpanded ? currentView : null
+                    )
+                  }}
+                  className={`w-full flex items-center h-11 px-3.5 rounded-lg transition-all gap-3 text-sm cursor-pointer text-left ${
+                    isSettingsView
+                      ? 'bg-primary/10 text-text-primary font-semibold'
+                      : 'text-text-secondary hover:bg-surface-2 hover:text-text-primary'
+                  }`}
+                >
+                  <Settings
+                    className={`h-5 w-5 shrink-0 ${isSettingsView ? 'text-primary' : 'text-text-muted'}`}
+                    strokeWidth={1.5}
+                  />
+                  <span className="flex-1 truncate">Configurações</span>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 transition-transform ${
+                      settingsMenuExpanded ? 'rotate-180' : ''
+                    }`}
+                    aria-hidden="true"
+                  />
+                </button>
+                {settingsMenuExpanded && (
+                  <div id="settings-navigation" className="ml-4 mt-1 space-y-1 border-l border-border pl-2">
+                    {settingsItems.map((item) => {
+                      const Icon = item.icon
+                      const isActive = currentView === item.id
 
-            {user?.principalType !== 'root' && (
-              <button
-                type="button"
-                onClick={() => onNavigate?.('configuracoes')}
-                className="w-full flex items-center h-11 px-3.5 rounded-lg transition-all gap-3 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary cursor-pointer text-left"
-              >
-                <Settings className="h-5 w-5 text-text-muted shrink-0" strokeWidth={1.5} />
-                <span className="truncate">Configurações</span>
-              </button>
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          aria-current={isActive ? 'page' : undefined}
+                          onClick={() => onNavigate?.(item.id)}
+                          className={`w-full flex items-center h-10 px-2.5 rounded-lg transition-all gap-2.5 text-sm cursor-pointer text-left ${
+                            isActive
+                              ? 'bg-primary/10 text-text-primary font-semibold'
+                              : 'text-text-secondary hover:bg-surface-2 hover:text-text-primary'
+                          }`}
+                        >
+                          <Icon
+                            className={`h-4 w-4 shrink-0 ${
+                              isActive ? 'text-primary' : 'text-text-muted'
+                            }`}
+                            strokeWidth={1.5}
+                          />
+                          <span className="truncate">{item.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </>
             )}
           </nav>
         </div>

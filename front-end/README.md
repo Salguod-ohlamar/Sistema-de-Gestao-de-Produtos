@@ -43,6 +43,8 @@ As chamadas passam pelo cliente em `src/lib/api/client.ts`, que serializa JSON, 
 
 `src/App.tsx` coordena as telas. Os módulos por funcionalidade ficam em `src/features/`; cada feature pode conter componentes, hooks e testes.
 
+Na navegação da empresa, Dashboard, DRE, Usuários e Espaço da empresa ficam no submenu **Configurações**. Frente de caixa, histórico e produtos continuam na navegação principal.
+
 ## Comandos
 
 | Comando | Uso |
