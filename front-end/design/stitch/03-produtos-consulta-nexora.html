@@ -1,0 +1,625 @@
+<!DOCTYPE html><html class="dark" lang="pt-BR"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-tertiary":"#0d2b70","surface-container-lowest":"#0b0e15","error":"#ffb4ab","inverse-on-surface":"#2e3038","surface":"#11131a","on-tertiary-container":"#000419","on-secondary-fixed-variant":"#004c69","outline":"#8d90a1","on-surface-variant":"#c3c5d8","error-container":"#93000a","tertiary-fixed":"#dbe1ff","primary-fixed":"#dbe1ff","on-surface":"#e1e2ec","secondary-fixed-dim":"#7bd0ff","on-primary-container":"#000318","surface-container-low":"#191b22","surface-container-highest":"#32353c","tertiary":"#b4c5ff","on-secondary-container":"#00374d","inverse-primary":"#0051e0","primary-container":"#2f6bff","on-background":"#e1e2ec","inverse-surface":"#e1e2ec","secondary-fixed":"#c4e7ff","background":"#11131a","outline-variant":"#434655","tertiary-container":"#5d74bc","on-primary-fixed-variant":"#003cac","on-primary-fixed":"#00174d","surface-tint":"#b5c4ff","on-error-container":"#ffdad6","primary":"#b5c4ff","surface-bright":"#373941","secondary-container":"#00a6e0","surface-variant":"#32353c","surface-dim":"#11131a","on-secondary-fixed":"#001e2c","primary-fixed-dim":"#b5c4ff","secondary":"#7bd0ff","on-primary":"#00297a","surface-container-high":"#272a31","tertiary-fixed-dim":"#b4c5ff","on-secondary":"#00354a","on-error":"#690005","surface-container":"#1d1f26","on-tertiary-fixed":"#00174c","on-tertiary-fixed-variant":"#2a4388"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-sm":"0.5rem","space-lg":"1.5rem","margin":"1rem","space-2xl":"3rem","gutter-desktop":"1.5rem","space-xl":"2rem","gutter":"1rem","space-xs":"0.25rem","space-md":"1rem","margin-desktop":"2rem"},fontFamily:{"label-data-tabular":["JetBrains Mono"],"body-lg":["Inter"],"body-medium":["Inter"],"headline-lg":["Manrope"],"label-code":["JetBrains Mono"],"headline-xl-mobile":["Manrope"],"kpi-metric":["Manrope"],"badge-mono":["JetBrains Mono"],"body-sm":["Inter"],"headline-xl":["Manrope"],"headline-md":["Manrope"],"body-base":["Inter"]},fontSize:{"label-data-tabular":["12px",{lineHeight:"16px",letterSpacing:"0em",fontWeight:"500"}],"body-lg":["16px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"400"}],"body-medium":["14px",{lineHeight:"20px",letterSpacing:"-0.005em",fontWeight:"500"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"600"}],"label-code":["13px",{lineHeight:"18px",letterSpacing:"-0.01em",fontWeight:"400"}],"headline-xl-mobile":["26px",{lineHeight:"34px",letterSpacing:"-0.025em",fontWeight:"700"}],"kpi-metric":["28px",{lineHeight:"32px",letterSpacing:"-0.03em",fontWeight:"700"}],"badge-mono":["11px",{lineHeight:"14px",letterSpacing:"0.04em",fontWeight:"600"}],"body-sm":["12px",{lineHeight:"16px",letterSpacing:"0em",fontWeight:"400"}],"headline-xl":["32px",{lineHeight:"40px",letterSpacing:"-0.03em",fontWeight:"700"}],"headline-md":["18px",{lineHeight:"24px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-base":["14px",{lineHeight:"20px",letterSpacing:"-0.005em",fontWeight:"400"}]}}}}</script></head><body class="bg-surface-container-lowest font-body-base text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-[248px] bg-surface-container-low border-r border-outline-variant/40 z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-5 border-b border-outline-variant/30 flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Nexora Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VnuFI70WtPFUw8zJ4EjxKVCVt9ADW_4RMVy3y0KnadlcpuXBZK5_JLeuHXN6Y4XIXeZY9oDhtnY7U_vkjH1ZQo0ow7ha6aMwjTKSmvf-m9iKVR4OERDPUrpb3xTYeWKoDZAAYjRhe2NCpa-DpVhhERBtWNyj2l71VlttB1qWZssPggoqqj2NrRjkMEe5b08npLG42jT_YJkbojFkamnKVVP2abI_rE12ujVaqdzMw0oguZYEgFN-h5A7I"><div class="flex flex-col leading-none"><span class="font-headline-md text-headline-md text-on-surface tracking-tight">Nexora</span></div></div><span class="px-2 py-0.5 rounded-full bg-surface-container-highest border border-outline-variant/50 font-badge-mono text-badge-mono text-on-surface-variant uppercase tracking-wider">v1.0</span></div><div class="px-3 pt-4"><span class="px-3 font-badge-mono text-badge-mono uppercase text-outline tracking-wider font-semibold">Navegação do Sistema</span><nav class="mt-2 space-y-1" data-active-classes="bg-primary-container/20 text-on-surface font-semibold border-l-[3px] border-primary-container pl-[13px]"><a class="flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all gap-3" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px] text-on-surface-variant">dashboard</span><span class="">Dashboard</span></a><a class="flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface font-semibold bg-primary-container/20 border-l-[3px] border-primary-container pl-[13px] gap-3" data-path="produtos-consulta" href="#"><span class="material-symbols-outlined text-[20px] text-primary">inventory_2</span><span class="">Produtos (Consulta)</span></a><a class="flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all gap-3" data-path="novo-produto" href="#"><span class="material-symbols-outlined text-[20px] text-on-surface-variant">add_box</span><span class="">Novo produto</span></a><a class="flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all gap-3" data-path="usuarios" href="#"><span class="material-symbols-outlined text-[20px] text-on-surface-variant">group</span><span class="">Usuários</span></a><div class="my-3 border-t border-outline-variant/40 mx-2"></div><a class="flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all gap-3" data-path="configuracoes" href="#"><span class="material-symbols-outlined text-[20px] text-on-surface-variant">settings</span><span class="">Configurações</span></a></nav></div></div><div class="p-3 border-t border-outline-variant/30 bg-surface-container-low"><div class="flex items-center justify-between p-2 rounded-xl bg-surface-container/60 border border-outline-variant/30 hover:border-outline-variant transition-colors"><div class="flex items-center gap-space-sm min-w-0"><div class="relative flex-shrink-0"><img alt="Profile" class="w-9 h-9 rounded-full object-cover ring-1 ring-outline-variant/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOounod8IM2O_wrpJ663H0XXdUkQupXy_ZSxVaGUs4mGcTRUcx2MyA8GmB9DSbgO0RWahYF6D9ypn0Iz5UcxIqppxb230qUH0zVbf6oaoHS-bWFU86PUfbWki-cSif9KlggUbxXO7VJhxbkIyUFOGTBRee4YdNHTE6DRHesscCuXMCmkIwDlNOYLLLPCDQI_WAp0wQUX5Lfu5xC_YeF47pBZq95CLz_g-Ahaayv7eqgbu9dlfs8n6L"><span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-secondary-container rounded-full ring-2 ring-surface-container-low"></span></div><div class="flex flex-col min-w-0"><span class="font-body-medium text-body-medium text-on-surface truncate">Rodrigo Silveira</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Gerente de Operações</span></div></div><button aria-label="Menu do usuário" class="p-1 text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">more_vert</span></button></div></div></aside><div class="pl-[248px]"><header class="fixed top-0 left-[248px] right-0 h-16 bg-surface-container-low/95 backdrop-blur-md border-b border-outline-variant/40 z-40 px-7 flex items-center justify-between"><div class="relative w-[360px]"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-10 pl-10 pr-16 bg-surface-container rounded-lg border border-outline-variant/40 font-body-base text-body-base text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Buscar produtos, SKUs, usuários..." type="text"><div class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/50 font-label-code text-[11px] text-outline select-none">Ctrl K</div></div><div class="flex items-center gap-space-md"><div class="relative"><button aria-label="Notificações" class="relative p-2 rounded-lg bg-surface-container border border-outline-variant/30 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_rgba(47,107,255,0.7)]"></span></button></div><div class="h-6 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-sm pl-1"><div class="relative flex-shrink-0"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOounod8IM2O_wrpJ663H0XXdUkQupXy_ZSxVaGUs4mGcTRUcx2MyA8GmB9DSbgO0RWahYF6D9ypn0Iz5UcxIqppxb230qUH0zVbf6oaoHS-bWFU86PUfbWki-cSif9KlggUbxXO7VJhxbkIyUFOGTBRee4YdNHTE6DRHesscCuXMCmkIwDlNOYLLLPCDQI_WAp0wQUX5Lfu5xC_YeF47pBZq95CLz_g-Ahaayv7eqgbu9dlfs8n6L"><span class="absolute bottom-0 right-0 w-2 h-2 bg-secondary-container rounded-full ring-2 ring-surface-container-low"></span></div><span class="font-body-medium text-body-medium text-on-surface hidden lg:inline-block">Rodrigo S.</span></div></div></header><main class="w-full pt-16 min-h-screen bg-surface-container-lowest"><div class="flex flex-col w-full relative">
+<!-- SCRIPT PARA ATIVAR O ITEM CORRETO NA SIDEBAR GLOBAL -->
+<script>
+    (function() {
+      const currentActive = document.querySelector('nav a[data-path="dashboard"]');
+      const targetNav = document.querySelector('nav a[data-path="produtos-consulta"]');
+      if (currentActive && targetNav) {
+        currentActive.className = "flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all gap-3";
+        const iconOld = currentActive.querySelector('.material-symbols-outlined');
+        if (iconOld) iconOld.className = "material-symbols-outlined text-[20px] text-on-surface-variant";
+
+        targetNav.className = "flex items-center h-11 px-4 rounded-lg font-body-medium text-body-medium text-on-surface font-semibold bg-primary-container/20 border-l-[3px] border-primary-container pl-[13px] gap-3";
+        const iconNew = targetNav.querySelector('.material-symbols-outlined');
+        if (iconNew) iconNew.className = "material-symbols-outlined text-[20px] text-primary";
+      }
+    })();
+  </script>
+<!-- CONTAINER DE OPERAÇÃO CENTRAL -->
+<div class="w-full max-w-[1440px] mx-auto px-6 lg:px-8 py-6 space-y-6">
+<!-- CABEÇALHO DA PÁGINA (72px) -->
+<header class="h-[72px] flex items-center justify-between gap-4">
+<div class="flex flex-col justify-center min-w-0">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-xl text-kpi-metric text-on-surface tracking-tight font-bold">Produtos</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high font-badge-mono text-badge-mono text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+            CATÁLOGO ATIVO
+          </span>
+</div>
+<p class="font-body-medium text-body-medium text-outline mt-0.5">1.248 itens cadastrados no inventário central</p>
+</div>
+<div class="flex items-center gap-3 flex-shrink-0">
+<button class="h-10 px-4 rounded-lg bg-surface-container text-on-surface font-body-medium text-body-medium hover:bg-surface-container-high transition-all flex items-center gap-2 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">file_download</span>
+<span class="">Importar CSV</span>
+</button>
+<button class="h-10 px-5 rounded-lg bg-primary-container text-on-primary-container font-body-medium text-body-medium font-semibold hover:bg-primary transition-all flex items-center gap-2 shadow-[0_0_16px_rgba(47,107,255,0.35)]" type="button">
+<span class="material-symbols-outlined text-[19px]">add</span>
+<span class="">Novo produto</span>
+</button>
+</div>
+</header>
+<!-- BARRA DE FERRAMENTAS E FILTROS (56px) -->
+<section class="min-h-[56px] py-2 px-3 rounded-xl bg-surface-container-low flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-0">
+<!-- Input de busca -->
+<div class="relative w-full sm:w-[340px]">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full h-9 pl-9 pr-14 bg-surface-container-lowest rounded-lg font-body-medium text-body-medium text-on-surface placeholder:text-outline/70 focus:outline-none focus:ring-1 focus:ring-primary-container" placeholder="Buscar por nome ou SKU..." type="text" value="Pulse X2">
+<div class="absolute right-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-surface-container font-label-code text-[10px] text-outline select-none">
+            ⌘K
+          </div>
+</div>
+<!-- Divisor sutil -->
+<div class="h-5 w-px bg-surface-container-highest hidden sm:block"></div>
+<!-- Filtro Ativo: Categoria -->
+<div class="inline-flex items-center gap-1.5 h-9 pl-3 pr-2 rounded-lg bg-primary-container/20 text-on-surface font-body-medium text-body-medium">
+<span class="text-outline text-body-sm">Cat:</span>
+<span class="font-semibold text-primary">Eletrônicos</span>
+<button class="p-0.5 rounded hover:bg-primary-container/40 text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</div>
+<!-- Filtro Status Dropdown -->
+<button class="h-9 px-3 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-body-medium text-body-medium flex items-center gap-1.5 transition-colors" type="button">
+<span class="">Status</span>
+<span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+</button>
+<!-- Filtro Faixa de estoque -->
+<button class="h-9 px-3 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-body-medium text-body-medium flex items-center gap-1.5 transition-colors" type="button">
+<span class="">Faixa de estoque</span>
+<span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+</button>
+<!-- Filtro Preço -->
+<button class="h-9 px-3 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-body-medium text-body-medium flex items-center gap-1.5 transition-colors" type="button">
+<span class="">Preço</span>
+<span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+</button>
+</div>
+<!-- Controles de Visualização e Ordenação -->
+<div class="flex items-center gap-3">
+<button class="h-9 px-3 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-body-medium text-body-medium flex items-center gap-2 transition-colors" type="button">
+<span class="text-outline font-body-sm">Ordenar:</span>
+<span class="text-on-surface font-medium">Mais recentes</span>
+<span class="material-symbols-outlined text-[16px] text-outline">unfold_more</span>
+</button>
+<div class="flex items-center p-0.5 rounded-lg bg-surface-container-lowest">
+<button aria-label="Visualização em Lista" class="h-8 w-8 rounded-md bg-surface-container-high text-primary flex items-center justify-center shadow-inner" type="button">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+</button>
+<button aria-label="Visualização em Grade" class="h-8 w-8 rounded-md text-outline hover:text-on-surface flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+</button>
+</div>
+</div>
+</section>
+<!-- CARD DA TABELA PRINCIPAL (1128px max-centered / full width) -->
+<div class="w-full bg-surface-container-low rounded-xl shadow-xl overflow-hidden flex flex-col">
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse select-none min-w-[1020px]">
+<!-- CABEÇALHO TABELA (44px) -->
+<thead>
+<tr class="h-11 bg-surface-container-lowest text-outline font-body-medium text-body-sm tracking-wider uppercase">
+<th class="w-12 px-4 text-center">
+<input checked="" class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</th>
+<th class="py-3 px-4 font-semibold">Produto</th>
+<th class="py-3 px-4 font-semibold">Categoria</th>
+<th class="py-3 px-4 font-semibold text-right">Preço</th>
+<th class="py-3 px-6 font-semibold">Estoque</th>
+<th class="py-3 px-4 font-semibold">Status</th>
+<th class="py-3 px-4 font-semibold">Atualizado em</th>
+<th class="w-20 py-3 px-4 text-right font-semibold">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-highest/20 font-body-medium text-body-medium">
+<!-- LINHA 1: SELECIONADA -->
+<tr class="h-16 bg-primary-container/10 hover:bg-primary-container/15 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input checked="" class="w-4 h-4 rounded accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="High tech wireless matte black over-ear headphones isolated with rim blue lighting on deep dark minimal backdrop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwLpGyF5mz0ATXh0YLVBfXIdPVdDZw4W62uHTMdG82I--n0H9kOhncs5kssfEM7u-w46TPTIOQmAy-qN7nyubwA4XND5LyouSioZdldPxrMhKBDwl6c1uxLu9ZibSngDYTdE7cMQQ0r1xueEGI06vf560RysGsPk0BPLB9zqwxQjvKLkQIhDrEyIzvupe9CqDRwvM0UFioV9QBDWobIZyTtTdBfAMg66ff40gkFc1Z-4wIgCARLRQE">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Fone Bluetooth Pulse X2</span>
+<span class="font-label-code text-badge-mono text-outline">PLS-X2-BLK</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Eletrônicos</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 249,90</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-on-surface">42 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim w-4/5 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed-dim/15 text-secondary-fixed-dim font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+                  Em estoque
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">Hoje, 14:20</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1"><button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="p-1 rounded hover:bg-error-container/30 text-outline hover:text-error transition-colors" title="Excluir produto" type="button" onclick="document.getElementById('modal-delete-confirm').classList.remove('hidden')"><span class="material-symbols-outlined text-[18px]">delete</span></button><button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button></div>
+</td>
+</tr>
+<!-- LINHA 2: SELECIONADA -->
+<tr class="h-16 bg-primary-container/10 hover:bg-primary-container/15 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input checked="" class="w-4 h-4 rounded accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Ergonomic futuristic black matte gaming mouse glowing with electric blue cyan accents in dark studio setup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVYXIhOgF8tQvZ98ScUM53APObsBxMX3PTH4gRvgusqhDsBThGgy_KH-vVqe_kgzA5ur3jNA2IKchQMaHVjD7h8XsDt9kJj6lKsJOcU4RmKZnw3QTF4K2zfbCBZr9_vqri7e43HyIBNd1bNgx6CBtbQLTDq1h2zj_yqfmC6txK_M72L5_VaPh-Mt8uR6HzBFbGYqgccGjik1BcfpAKI_AODqwhNfKoQvX7Hb6KfqUuYlULEA9bufLT">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Mouse Sem Fio Aero M3</span>
+<span class="font-label-code text-badge-mono text-outline">MOU-AER-M3</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Eletrônicos</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 189,00</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-on-surface">18 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim w-1/2 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed-dim/15 text-secondary-fixed-dim font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+                  Em estoque
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">Hoje, 11:05</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1"><button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="p-1 rounded hover:bg-error-container/30 text-outline hover:text-error transition-colors" title="Excluir produto" type="button" onclick="document.getElementById('modal-delete-confirm').classList.remove('hidden')"><span class="material-symbols-outlined text-[18px]">delete</span></button><button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button></div>
+</td>
+</tr>
+<!-- LINHA 3: COM ESTADO DE HOVER DESTACADO (Barra azul à esquerda) -->
+<tr class="h-16 bg-surface-container-high/60 transition-colors relative group cursor-pointer shadow-inner">
+<td class="px-4 text-center relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+<input class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Mechanical compact 75 percent keyboard with sleek dark gray keycaps and discreet neon blue backlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzDvI1jnDOvKt2BLjh9kD-Fw-8PRxsUf4rwY9bwV_z0qDAPcSU-pNlX0olbgTJ-Qd8YaVD66LHPgdJtJDoRCwSaVQCksRM3klaHrfTVkHCyZ_0V-t6yhW4lRKkQFAJsw5U-3MkpuKd5HU0cjoEBwMVy67XBr4cUIr2pZkV75d63_cj9izbbfTZe4lIUEDISW45zENFX3rFbf8XdcXGnSH5yaOiwKMy3jcu0xJMzLMCIbn9eCmfvv5u">
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate text-primary">Teclado Mecânico Forge 75</span>
+<span class="font-label-code text-badge-mono text-outline">KBD-FRG-75</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Eletrônicos</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 540,00</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-tertiary">5 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-tertiary w-1/5 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-container/30 text-tertiary font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Estoque baixo
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">Ontem</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1"><button class="p-1 rounded bg-surface-container text-primary hover:bg-surface-container-highest transition-colors" title="Editar" type="button"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="p-1 rounded bg-surface-container text-outline hover:text-error hover:bg-error-container/30 transition-colors" title="Excluir produto" type="button" onclick="document.getElementById('modal-delete-confirm').classList.remove('hidden')"><span class="material-symbols-outlined text-[18px]">delete</span></button><button class="p-1 rounded bg-surface-container text-on-surface hover:bg-surface-container-highest transition-colors" title="Mais opções" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button></div>
+</td>
+</tr>
+<!-- LINHA 4: SEM ESTOQUE -->
+<tr class="h-16 hover:bg-surface-container-high/40 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Hub USB-C 7 em 1</span>
+<span class="font-label-code text-badge-mono text-outline">HUB-7IN1-GRY</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Acessórios</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 169,90</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-error">0 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-error w-0 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-error-container/40 text-error font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Sem estoque
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">12 out</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- LINHA 5 -->
+<tr class="h-16 hover:bg-surface-container-high/40 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[20px]">videocam</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Webcam Full HD Vision</span>
+<span class="font-label-code text-badge-mono text-outline">CAM-FHD-VIS</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Eletrônicos</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 310,00</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-on-surface">24 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim w-3/5 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed-dim/15 text-secondary-fixed-dim font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+                  Em estoque
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">10 out</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- LINHA 6 -->
+<tr class="h-16 hover:bg-surface-container-high/40 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[20px]">chair</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Cadeira Ergonômica Lumbar Pro</span>
+<span class="font-label-code text-badge-mono text-outline">CAD-LMB-PRO</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Escritório</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 1.290,00</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-on-surface">8 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim w-1/4 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed-dim/15 text-secondary-fixed-dim font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+                  Em estoque
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">08 out</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- LINHA 7 -->
+<tr class="h-16 hover:bg-surface-container-high/40 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[20px]">laptop_chromebook</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">Suporte para Notebook Alumínio</span>
+<span class="font-label-code text-badge-mono text-outline">SUP-NOT-ALM</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Acessórios</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 129,00</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-tertiary">3 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-tertiary w-1/6 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-container/30 text-tertiary font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Estoque baixo
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">05 out</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- LINHA 8 -->
+<tr class="h-16 hover:bg-surface-container-high/40 transition-colors group cursor-pointer">
+<td class="px-4 text-center">
+<input class="w-4 h-4 rounded bg-surface-container accent-primary-container cursor-pointer" type="checkbox">
+</td>
+<td class="py-2 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[20px]">hard_drive</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-on-surface font-semibold truncate group-hover:text-primary transition-colors">SSD Externo 1TB Pro</span>
+<span class="font-label-code text-badge-mono text-outline">SSD-EXT-1TB</span>
+</div>
+</div>
+</td>
+<td class="py-2 px-4 text-on-surface-variant">Eletrônicos</td>
+<td class="py-2 px-4 text-right font-label-data-tabular text-body-medium text-on-surface font-semibold">R$ 489,00</td>
+<td class="py-2 px-6">
+<div class="flex flex-col gap-1.5 w-24">
+<span class="font-label-data-tabular text-badge-mono text-on-surface">32 un</span>
+<div class="w-full h-1 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim w-2/3 rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="py-2 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed-dim/15 text-secondary-fixed-dim font-badge-mono text-badge-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+                  Em estoque
+                </span>
+</td>
+<td class="py-2 px-4 font-label-data-tabular text-body-sm text-outline">03 out</td>
+<td class="py-2 px-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Editar" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Mais opções" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- PAGINAÇÃO (56px) -->
+<footer class="h-14 px-6 bg-surface-container-lowest flex items-center justify-between gap-4">
+<span class="font-body-medium text-body-medium text-outline">
+          Mostrando <strong class="text-on-surface font-semibold">1–8</strong> de <strong class="text-on-surface font-semibold">1.248</strong> produtos
+        </span>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-outline hidden sm:inline">Exibir:</span>
+<select class="h-8 px-2.5 rounded-md bg-surface-container font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container cursor-pointer">
+<option>8 por página</option>
+<option>16 por página</option>
+<option>32 por página</option>
+<option>64 por página</option>
+</select>
+</div>
+<nav aria-label="Navegação da Tabela" class="flex items-center gap-1">
+<button class="h-8 w-8 rounded-md flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container disabled:opacity-40" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="h-8 w-8 rounded-md bg-primary-container text-on-primary-container font-body-medium text-body-sm font-semibold flex items-center justify-center shadow-sm" type="button">1</button>
+<button class="h-8 w-8 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-body-medium text-body-sm flex items-center justify-center" type="button">2</button>
+<button class="h-8 w-8 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-body-medium text-body-sm flex items-center justify-center" type="button">3</button>
+<span class="text-outline px-1 text-body-sm">...</span>
+<button class="h-8 w-8 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-body-medium text-body-sm flex items-center justify-center" type="button">156</button>
+<button class="h-8 w-8 rounded-md flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</nav>
+</div>
+</footer>
+</div>
+</div>
+<!-- BARRA FLUTUANTE DE AÇÕES EM LOTE (Fixada inferior central, 56px) -->
+<aside class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 h-14 px-5 rounded-xl bg-surface-container-high/95 backdrop-blur-md shadow-[0_12px_32px_rgba(0,0,0,0.7),0_0_20px_rgba(47,107,255,0.25)] flex items-center gap-5">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+<span class="font-body-medium text-body-medium text-on-surface font-semibold tracking-tight">2 produtos selecionados</span>
+</div>
+<div class="h-5 w-px bg-surface-container-highest"></div>
+<div class="flex items-center gap-2">
+<button class="h-9 px-3 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-highest font-body-medium text-body-medium transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">edit_note</span>
+<span class="">Editar em lote</span>
+</button>
+<button class="h-9 px-3 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-highest font-body-medium text-body-medium transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">file_upload</span>
+<span class="">Exportar</span>
+</button>
+<button class="h-9 px-3 rounded-lg bg-error-container/30 text-error hover:bg-error-container/50 font-body-medium text-body-medium transition-colors flex items-center gap-1.5" type="button" onclick="document.getElementById('modal-delete-confirm').classList.remove('hidden')">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+<span class="">Excluir</span>
+</button>
+</div>
+</aside>
+<!-- DRAWER LATERAL DE DETALHE (Aberto à direita, 420px de largura) -->
+<!-- Backdrop sutil para foco cirúrgico -->
+<div class="fixed inset-0 bg-surface-container-lowest/60 backdrop-blur-[2px] z-50 transition-opacity" id="product-drawer-backdrop"></div>
+<!-- Drawer Container -->
+<div class="fixed right-0 top-0 bottom-0 w-full sm:w-[420px] bg-surface-container-low shadow-[0_0_50px_rgba(0,0,0,0.8)] z-50 flex flex-col justify-between overflow-hidden" id="product-drawer">
+<!-- Header do Drawer (H-16) -->
+<div class="h-16 px-6 bg-surface-container-lowest flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Detalhes do produto</h2>
+</div>
+<button aria-label="Fechar painel" class="h-8 w-8 rounded-lg bg-surface-container hover:bg-surface-container-high text-outline hover:text-on-surface flex items-center justify-center transition-colors" onclick="document.getElementById('product-drawer').style.display='none'; document.getElementById('product-drawer-backdrop').style.display='none';" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Conteúdo com Scroll Suave -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Imagem Hero do Produto (200px) -->
+<div class="relative w-full h-48 rounded-xl bg-surface-container-lowest overflow-hidden group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Futuristic black wireless headphones with deep blue led rim light on clean dark technical surface high-end industrial design product view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnX65bRzdqnlwagqwILL76QIM7J0_aWkXyE6e9cU1SwKkOhigbI60VyYUw4ODNPZpJiLqgtD5ZeZRyml45-_CelarWiVil6FQMF83RPjDIY8L9C0l25Ws52hPzgs-x3MesGKept0BSEGtBkDQQZwpSC-bu7-UuJvtAZoasmXzKX9Shm7VZNWV1EzQpPAS7g4evzu1AHzw0KdIqYUChRgl_gIUwfUARZMwIIghL6IfTFxNR6Yw0NG3U">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-80"></div>
+<span class="absolute bottom-3 left-3 px-2 py-0.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-md font-badge-mono text-badge-mono text-secondary">
+          IMG-01 · HD VIEW
+        </span>
+</div>
+<!-- Título & Metadados -->
+<div class="space-y-1.5">
+<div class="flex items-start justify-between gap-3">
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold leading-tight">Fone Bluetooth Pulse X2</h3>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed-dim/15 text-secondary-fixed-dim font-badge-mono text-badge-mono flex-shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+            Em estoque
+          </span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-code text-label-code text-outline">SKU: PLS-X2-BLK</span>
+<span class="text-outline text-body-sm">·</span>
+<span class="font-body-medium text-body-sm text-tertiary">Eletrônicos &gt; Áudio</span>
+</div>
+</div>
+<!-- Bloco de Métricas Financeiras -->
+<div class="grid grid-cols-3 gap-3 p-4 rounded-xl bg-surface-container-lowest">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-outline">Preço Venda</span>
+<span class="font-label-data-tabular text-body-lg text-on-surface font-bold mt-1">R$ 249,90</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-outline">Custo Médio</span>
+<span class="font-label-data-tabular text-body-lg text-on-surface-variant font-medium mt-1">R$ 120,00</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-body-sm text-body-sm text-outline">Margem Bruta</span>
+<span class="font-label-data-tabular text-body-lg text-primary font-bold mt-1">+52,0%</span>
+</div>
+</div>
+<!-- Bloco de Estoque & Capacidade -->
+<div class="p-4 rounded-xl bg-surface-container space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Níveis de Estoque</span>
+<span class="font-label-data-tabular text-body-sm text-secondary-fixed-dim font-bold">42 de 50 un (84%)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+<div class="h-full bg-primary-container w-[84%] rounded-full shadow-[0_0_8px_rgba(47,107,255,0.7)]"></div>
+</div>
+<div class="flex items-center justify-between text-body-sm text-outline">
+<span class="">Mínimo operacional: <strong class="text-on-surface">15 un</strong></span>
+<span class="">Armazém: <strong class="text-on-surface">Setor B-04</strong></span>
+</div>
+</div>
+<!-- Mini Timeline: Movimentações Recentes -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h4 class="font-body-medium text-body-medium text-on-surface font-semibold">Movimentações Recentes</h4>
+<span class="font-badge-mono text-badge-mono text-outline uppercase tracking-wider">AUDITORIA</span>
+</div>
+<div class="relative pl-6 space-y-5 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-surface-container-highest">
+<!-- Item 1: Entrada -->
+<div class="relative">
+<div class="absolute -left-[23px] top-1 w-3 h-3 rounded-full bg-secondary-fixed-dim ring-4 ring-surface-container-low"></div>
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-body-medium text-body-medium font-semibold text-secondary-fixed-dim">+50 un</span>
+<span class="font-label-data-tabular text-body-sm text-outline">10/10</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Recebimento NF-e #4921 (Fornecedor Matrix)</p>
+</div>
+</div>
+<!-- Item 2: Venda -->
+<div class="relative">
+<div class="absolute -left-[23px] top-1 w-3 h-3 rounded-full bg-primary-container ring-4 ring-surface-container-low"></div>
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-body-medium text-body-medium font-semibold text-primary">-2 un</span>
+<span class="font-label-data-tabular text-body-sm text-outline">Ontem</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Venda checkout (Pedido #10482)</p>
+</div>
+</div>
+<!-- Item 3: Ajuste -->
+<div class="relative">
+<div class="absolute -left-[23px] top-1 w-3 h-3 rounded-full bg-error ring-4 ring-surface-container-low"></div>
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-body-medium text-body-medium font-semibold text-error">-1 un</span>
+<span class="font-label-data-tabular text-body-sm text-outline">08/10</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ajuste técnico (Avaria em expedição)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Rodapé Fixo do Drawer -->
+<div class="p-5 bg-surface-container-lowest flex items-center gap-3 flex-shrink-0"><button class="h-10 px-3 rounded-lg border border-outline-variant/40 bg-surface-container text-error hover:bg-error-container/30 transition-colors flex items-center justify-center gap-1.5 group" title="Excluir produto permanente" type="button" onclick="document.getElementById('modal-delete-confirm').classList.remove('hidden')"><span class="material-symbols-outlined text-[18px] text-error">delete</span><span class="font-body-medium text-body-sm font-medium">Excluir</span></button><button class="flex-1 h-10 px-4 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-body-medium text-body-medium font-medium transition-colors flex items-center justify-center gap-2" type="button"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">content_copy</span><span class="">Duplicar</span></button><button class="flex-1 h-10 px-4 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary font-body-medium text-body-medium font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(47,107,255,0.35)]" type="button"><span class="material-symbols-outlined text-[18px]">edit</span><span class="">Editar produto</span></button></div>
+</div>
+<div id="modal-delete-confirm" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-container-lowest/80 backdrop-blur-sm hidden"><div class="w-full sm:w-[420px] rounded-xl bg-surface-container-low border border-outline-variant/40 shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden animate-in fade-in zoom-in-95"><div class="p-6 space-y-4"><div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center flex-shrink-0 text-error ring-4 ring-surface-container-high"><span class="material-symbols-outlined text-[20px]">warning</span></div><div class="flex flex-col min-w-0"><h3 class="font-headline-md text-headline-md text-on-surface font-bold">Confirmar exclusão</h3><p class="font-body-medium text-body-sm text-on-surface-variant mt-1">Tem certeza que deseja excluir este item do inventário central? Esta ação não poderá ser desfeita.</p></div></div><div class="p-3 rounded-lg bg-surface-container border border-outline-variant/30 flex items-center gap-3"><div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-outline flex-shrink-0"><span class="material-symbols-outlined text-[16px]">inventory_2</span></div><div class="flex flex-col min-w-0"><span class="font-body-medium text-body-sm text-on-surface font-semibold truncate">Fone Bluetooth Pulse X2</span><span class="font-label-code text-[11px] text-outline truncate">SKU: PLS-X2-BLK</span></div></div></div><div class="px-6 py-4 bg-surface-container-lowest border-t border-outline-variant/30 flex items-center justify-end gap-3"><button class="h-9 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-body-sm font-medium transition-colors" type="button" onclick="document.getElementById('modal-delete-confirm').classList.add('hidden')">Cancelar</button><button class="h-9 px-4 rounded-lg bg-error-container/40 hover:bg-error-container/50 border border-error/30 text-error font-body-medium text-body-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm" type="button" onclick="document.getElementById('modal-delete-confirm').classList.add('hidden'); document.getElementById('product-drawer').style.display='none'; document.getElementById('product-drawer-backdrop').style.display='none';"><span class="material-symbols-outlined text-[16px]">delete</span><span class="">Sim, excluir</span></button></div></div></div></div></main></div>
+
+</body></html>
