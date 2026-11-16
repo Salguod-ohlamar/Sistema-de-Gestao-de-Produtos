@@ -1,56 +1,57 @@
-# Nexora — Sistema de Gestão Empresarial (Frontend)
+# Front-end SGP / Nexora
 
-Cockpit e ERP web moderno para controle e gestão integrada de produtos, catálogo, estoque, usuários e inteligência de vendas.
+Aplicação web React para empresas, colaboradores e administração central. O código de produto está em `src/features/`, e a integração HTTP está centralizada em `src/lib/api/`.
 
-## Stack Tecnológica
+## Tecnologias
 
-- **Framework & Core:** React 19 + TypeScript (strict) + Vite 6
-- **Estilização & Tokens:** Tailwind CSS v4 + Radix UI Primitives (Design System Shadcn customizado para tema dark)
-- **Ícones:** Lucide React (`stroke-width: 1.5`, padrão 20px)
-- **Tipografia Local:** Manrope (headings), Inter (interface e corpo), JetBrains Mono (códigos, moedas e SKUs) via `@fontsource`
-- **Roteamento:** React Router v7
-- **Gerenciamento de Estado de Servidor:** TanStack Query (React Query v5)
-- **Tabelas de Dados:** TanStack Table v9
-- **Formulários & Validação:** React Hook Form + Zod (mensagens em pt-BR)
-- **Gráficos & Dashboards:** Recharts
-- **Notificações:** Sonner (Dark Mode)
-- **Mocks & APIs:** MSW v2 (Mock Service Worker) isolado em `src/lib/api`
-- **Testes & Qualidade:** Vitest + Testing Library + ESLint + Prettier
+- React 19, TypeScript e Vite.
+- Tailwind CSS v4 e componentes Radix UI.
+- TanStack Query para estado/cache de dados remotos.
+- Vitest e Testing Library para testes.
+- ESLint para análise estática.
 
-## Design System & Identidade Visual
+## Execução local
 
-- **Tema Exclusivo:** Dark Mode único de alta fidelidade
-  - Background base: `#05070D`
-  - Superfícies: `#0A0F1C` (Sidebar / Menus), `#0E1526` (Cards / Painéis), `#141C30` (Modais / Popovers)
-  - Bordas: `#1B2540` (padrão) e `#2A3A66` (destaque / hover)
-  - Primário / Acento: `#2F6BFF` (hover `#4C82FF`, active `#1F52D6`)
-  - Tipografia: `#EAF0FF` (títulos e ênfase), `#9AA8C7` (secundário), `#7A89AB` (auxiliar com contraste AA)
-- **Raios de Borda:** Cards 14px (`rounded-[14px]`), Inputs & Botões 10px (`rounded-[10px]`), Badges em pílula (`rounded-full`).
+Requer Node.js 22.12+ e npm 10+.
 
-## Instalação e Execução
-
-### Pré-requisitos
-- Node.js >= 20.x
-- npm >= 10.x
-
-### Instalação
-```bash
-npm install
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+npm ci
+npm run dev
 ```
 
-### Variáveis de Ambiente
-Copie o arquivo `.env.example` para `.env`:
-```bash
-cp .env.example .env
-```
-Variáveis disponíveis:
-- `VITE_API_URL`: URL base da API (padrão `/api`)
-- `VITE_USE_MOCKS`: `true` para rodar com MSW mocks no navegador
+O Vite serve a aplicação em `http://localhost:5173`. Por padrão, `VITE_API_URL=/api`; `vite.config.ts` encaminha esse prefixo para `http://localhost:3000` e o remove ao chamar o backend.
 
-### Scripts Disponíveis
-- `npm run dev`: Inicia o servidor Vite de desenvolvimento
-- `npm run build`: Compila e gera o build de produção
-- `npm run typecheck`: Executa validação estrita de tipos do TypeScript
-- `npm run lint`: Executa a verificação estática do ESLint
-- `npm run test`: Executa a suite de testes unitários com Vitest
-- `npm run preview`: Visualiza o bundle de produção localmente
+Em produção, defina `VITE_API_URL` para a URL da API ou configure um proxy `/api` no servidor web.
+
+## Variáveis de ambiente
+
+| Variável | Descrição |
+|---|---|
+| `VITE_API_URL` | URL base da API; padrão `/api`. |
+
+As chamadas passam pelo cliente em `src/lib/api/client.ts`, que serializa JSON, propaga erros HTTP e inclui o token Bearer quando autenticado. O token fica somente em memória: atualizar a página encerra a sessão.
+
+## Funcionalidades
+
+- Login, cadastro empresarial sujeito a aprovação e contato público.
+- Solicitação e redefinição de senha por token recebido por e-mail.
+- Dashboard, catálogo/estoque, PDV e histórico de vendas.
+- Usuários/colaboradores e espaço da empresa.
+- DRE e despesas.
+- Administração root de empresas, colaboradores e solicitações de contato.
+
+`src/App.tsx` coordena as telas. Os módulos por funcionalidade ficam em `src/features/`; cada feature pode conter componentes, hooks e testes.
+
+## Comandos
+
+| Comando | Uso |
+|---|---|
+| `npm run dev` | Servidor de desenvolvimento. |
+| `npm run build` | Verifica TypeScript e gera `dist/`. |
+| `npm run typecheck` | Verificação de tipos. |
+| `npm run lint` | ESLint. |
+| `npm test` | Suíte Vitest. |
+| `npm run preview` | Visualiza localmente o build. |
+
+Consulte [arquitetura](../docs/arquitetura.md) e [API](../docs/api.md) para os fluxos e contratos.

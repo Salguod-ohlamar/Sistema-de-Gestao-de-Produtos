@@ -1,482 +1,237 @@
-import { useState } from 'react'
-import {
-  Camera,
-  Shield,
-  FolderSync,
-  Tag,
-  Boxes,
-  CheckCircle2,
-  Send,
-  Loader2,
-} from 'lucide-react'
+import { useState, type FormEvent } from 'react'
+import { Loader2, UserPlus } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetDescription,
   SheetFooter,
+  SheetHeader,
+  SheetTitle,
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
+import { useAuth } from '@/features/auth/context'
+import {
+  useCreateCollaborator,
+  useUpdateCollaborator,
+} from '@/features/company/hooks/useCompanyWorkspace'
+import { ApiError, type CollaboratorRole, type CompanyCollaborator } from '@/lib/api'
 import { toast } from 'sonner'
 
 interface UserDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  collaborator?: CompanyCollaborator | null
   onSuccess?: () => void
 }
 
-type RoleType = 'admin' | 'gerente' | 'vendedor' | 'estoquista'
+function localDateString() {
+  const date = new Date()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${date.getFullYear()}-${month}-${day}`
+}
 
-export function UserDrawer({ open, onOpenChange, onSuccess }: UserDrawerProps) {
-  const [role, setRole] = useState<RoleType>('gerente')
-  const [name, setName] = useState('Mariana Siqueira')
-  const [email, setEmail] = useState('mariana.s@nexora.io')
-  const [phone, setPhone] = useState('(11) 98765-4321')
-  const [sendInvite, setSendInvite] = useState(true)
-  const [requirePasswordChange, setRequirePasswordChange] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+function roleLabel(role: CollaboratorRole) {
+  if (role === 'administrator') return 'Administrador'
+  if (role === 'manager') return 'Gerente'
+  return 'Operador / Vendedor'
+}
 
-  // Matriz de permissões
-  const [permissions, setPermissions] = useState({
-    dashboard: { view: true, create: false, edit: true, delete: false },
-    produtos: { view: true, create: true, edit: true, delete: false },
-    usuarios: { view: true, create: true, edit: true, delete: false },
-  })
+export function UserDrawer({
+  open,
+  onOpenChange,
+  collaborator = null,
+  onSuccess,
+}: UserDrawerProps) {
+  const { user } = useAuth()
+  const companyId = user?.principalType === 'root' ? null : user?.id ?? null
+  const createMutation = useCreateCollaborator(companyId)
+  const updateMutation = useUpdateCollaborator(companyId)
+  const isEditing = collaborator !== null
+  const isSubmitting = createMutation.isPending || updateMutation.isPending
+  const [name, setName] = useState(collaborator?.name ?? '')
+  const [email, setEmail] = useState(collaborator?.email ?? '')
+  const [cpf, setCpf] = useState(collaborator?.cpf ?? '')
+  const [phone, setPhone] = useState(collaborator?.phone ?? '')
+  const [hireDate, setHireDate] = useState(
+    collaborator?.hire_date.slice(0, 10) ?? localDateString()
+  )
+  const [role, setRole] = useState<CollaboratorRole>(collaborator?.role ?? 'manager')
+  const [password, setPassword] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    setTimeout(() => {
-      setIsSubmitting(false)
-      toast.success(`Convite institucional enviado para ${email}`)
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    try {
+      if (collaborator) {
+        await updateMutation.mutateAsync({
+          id: collaborator.id,
+          input: { name: name.trim(), role, phone: phone || null },
+        })
+        toast.success('Colaborador atualizado.')
+      } else {
+        await createMutation.mutateAsync({
+          name: name.trim(),
+          email: email.trim(),
+          cpf,
+          phone: phone || null,
+          hire_date: hireDate,
+          role,
+          is_admin: role === 'administrator',
+          password,
+        })
+        toast.success('Colaborador cadastrado.')
+      }
       onSuccess?.()
       onOpenChange(false)
-    }, 700)
+    } catch (error) {
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : `Não foi possível ${isEditing ? 'atualizar' : 'cadastrar'} o colaborador.`
+      )
+    }
   }
-
-  const roleOptions = [
-    {
-      id: 'admin' as RoleType,
-      title: 'Administrador',
-      desc: 'Acesso irrestrito a todos os módulos e faturamento',
-      icon: Shield,
-    },
-    {
-      id: 'gerente' as RoleType,
-      title: 'Gerente',
-      desc: 'Relatórios, produtos e gestão de equipe operacional',
-      icon: FolderSync,
-    },
-    {
-      id: 'vendedor' as RoleType,
-      title: 'Vendedor',
-      desc: 'Frente de caixa (PDV) e consulta de pedidos',
-      icon: Tag,
-    },
-    {
-      id: 'estoquista' as RoleType,
-      title: 'Estoquista',
-      desc: 'Movimentação física e controle de estoque',
-      icon: Boxes,
-    },
-  ]
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-[440px] bg-surface-2 border-l border-border p-0 flex flex-col justify-between"
+        className="w-full sm:max-w-[440px] bg-surface-2 border-l border-border p-0 flex flex-col"
       >
-        {/* Cabeçalho do Drawer */}
-        <SheetHeader className="h-[72px] px-6 bg-surface-2 border-b border-border flex items-center justify-between shrink-0">
-          <div className="flex flex-col text-left">
-            <SheetTitle className="font-headline text-lg font-bold text-text-primary tracking-tight">
-              Novo usuário
-            </SheetTitle>
-            <SheetDescription className="text-xs text-text-muted mt-0.5">
-              Envie um convite institucional por e-mail
-            </SheetDescription>
-          </div>
+        <SheetHeader className="px-6 py-5 bg-surface-2 border-b border-border text-left">
+          <SheetTitle className="font-headline text-lg font-bold text-text-primary">
+            {isEditing ? 'Editar colaborador' : 'Novo colaborador'}
+          </SheetTitle>
+          <SheetDescription className="text-xs text-text-muted">
+            {isEditing
+              ? 'Atualize os dados permitidos para este acesso.'
+              : 'Cadastre o acesso à equipe desta empresa.'}
+          </SheetDescription>
         </SheetHeader>
 
-        {/* Conteúdo com scroll */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-          {/* Upload de Avatar */}
-          <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-1 border border-border shadow-sm">
-            <div className="w-[72px] h-[72px] rounded-full bg-surface-elevated border border-border flex flex-col items-center justify-center text-text-muted hover:border-primary hover:text-primary transition-colors shrink-0 cursor-pointer">
-              <Camera className="h-6 w-6" strokeWidth={1.5} />
-            </div>
-            <div className="flex flex-col space-y-1">
-              <span className="text-sm font-semibold text-text-primary">
-                Foto de perfil
-              </span>
-              <p className="text-xs text-text-muted">PNG, JPG até 2MB</p>
-              <button
-                type="button"
-                className="text-left text-xs text-primary hover:underline font-medium cursor-pointer"
-              >
-                Adicionar foto
-              </button>
-            </div>
-          </div>
-
-          {/* Campos Básicos de Informação */}
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <label
-                htmlFor="user-fullname"
-                className="block text-xs font-medium text-text-secondary"
-              >
-                Nome completo
-              </label>
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+            <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+              Nome completo
               <Input
-                id="user-fullname"
+                autoComplete="name"
+                required
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Ex: Mariana Siqueira"
-                className="h-10 bg-surface-1 border-border text-sm"
+                onChange={(event) => setName(event.target.value)}
+                maxLength={255}
               />
-            </div>
+            </label>
 
-            <div className="space-y-1.5">
-              <label
-                htmlFor="user-email"
-                className="block text-xs font-medium text-text-secondary"
-              >
-                E-mail corporativo
-              </label>
-              <Input
-                id="user-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="mariana.s@nexora.io"
-                className="h-10 bg-surface-1 border-border font-mono text-sm"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="user-phone"
-                className="block text-xs font-medium text-text-secondary"
-              >
-                Telefone celular
-              </label>
-              <Input
-                id="user-phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="(11) 98765-4321"
-                className="h-10 bg-surface-1 border-border text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Seleção de Perfil (Cards Clicáveis) */}
-          <div className="space-y-2.5">
-            <span className="block text-xs font-medium text-text-secondary">
-              Perfil de Acesso
-            </span>
-            <div className="grid grid-cols-1 gap-2.5">
-              {roleOptions.map((opt) => {
-                const Icon = opt.icon
-                const isSelected = role === opt.id
-
-                return (
-                  <div
-                    key={opt.id}
-                    onClick={() => setRole(opt.id)}
-                    className={`p-3 rounded-xl border transition-all flex items-start gap-3 cursor-pointer ${
-                      isSelected
-                        ? 'bg-primary/10 border-primary shadow-[0_0_12px_rgba(47,107,255,0.18)]'
-                        : 'bg-surface-1 border-border hover:bg-surface-elevated/60 hover:border-border-highlight'
-                    }`}
-                  >
-                    <Icon
-                      className={`h-5 w-5 mt-0.5 shrink-0 ${
-                        isSelected ? 'text-primary' : 'text-text-muted'
-                      }`}
-                      strokeWidth={1.5}
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`text-sm font-semibold ${
-                            isSelected ? 'text-primary' : 'text-text-primary'
-                          }`}
-                        >
-                          {opt.title}
-                        </span>
-                        {isSelected && (
-                          <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                        )}
-                      </div>
-                      <p className="text-xs text-text-muted mt-0.5">{opt.desc}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Matriz de Permissões Compacta */}
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-                Permissões Específicas
-              </span>
-              <Badge
-                variant="outline"
-                className="text-[10px] font-mono text-primary bg-primary/10 border-primary/30 font-bold uppercase tracking-wider"
-              >
-                Perfil Gerente
-              </Badge>
-            </div>
-
-            <div className="rounded-xl bg-surface-1 border border-border overflow-hidden shadow-sm">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="bg-surface-elevated text-text-muted font-mono border-b border-border">
-                    <th className="py-2.5 pl-3 font-medium">Módulo</th>
-                    <th className="py-2.5 text-center font-medium">Ver</th>
-                    <th className="py-2.5 text-center font-medium">Criar</th>
-                    <th className="py-2.5 text-center font-medium">Editar</th>
-                    <th className="py-2.5 pr-3 text-center font-medium">Excluir</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/60 font-mono">
-                  {/* Linha Dashboard */}
-                  <tr>
-                    <td className="py-2.5 pl-3 text-text-primary font-medium font-sans">
-                      Dashboard
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.dashboard.view}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              dashboard: { ...p.dashboard, view: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox checked={false} disabled className="opacity-30" />
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.dashboard.edit}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              dashboard: { ...p.dashboard, edit: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center pr-3">
-                      <div className="flex justify-center">
-                        <Checkbox checked={false} disabled className="opacity-30" />
-                      </div>
-                    </td>
-                  </tr>
-
-                  {/* Linha Produtos */}
-                  <tr>
-                    <td className="py-2.5 pl-3 text-text-primary font-medium font-sans">
-                      Produtos
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.produtos.view}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              produtos: { ...p.produtos, view: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.produtos.create}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              produtos: { ...p.produtos, create: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.produtos.edit}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              produtos: { ...p.produtos, edit: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center pr-3">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.produtos.delete}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              produtos: { ...p.produtos, delete: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                  </tr>
-
-                  {/* Linha Usuários */}
-                  <tr>
-                    <td className="py-2.5 pl-3 text-text-primary font-medium font-sans">
-                      Usuários
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.usuarios.view}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              usuarios: { ...p.usuarios, view: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.usuarios.create}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              usuarios: { ...p.usuarios, create: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.usuarios.edit}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              usuarios: { ...p.usuarios, edit: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td className="text-center pr-3">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={permissions.usuarios.delete}
-                          onCheckedChange={(c) =>
-                            setPermissions((p) => ({
-                              ...p,
-                              usuarios: { ...p.usuarios, delete: !!c },
-                            }))
-                          }
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Switches de Configuração */}
-          <div className="space-y-4 pt-2">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-text-primary">
-                  Enviar convite por e-mail
-                </span>
-                <span className="text-xs text-text-muted">
-                  Gera token com 48h de validade
-                </span>
-              </div>
-              <Switch checked={sendInvite} onCheckedChange={setSendInvite} />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-text-primary">
-                  Exigir troca de senha
-                </span>
-                <span className="text-xs text-text-muted">
-                  Obrigatório no primeiro login
-                </span>
-              </div>
-              <Switch
-                checked={requirePasswordChange}
-                onCheckedChange={setRequirePasswordChange}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Rodapé fixo do Drawer */}
-        <SheetFooter className="h-[72px] px-6 bg-surface-2 border-t border-border flex flex-row items-center justify-end gap-3 shrink-0">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => onOpenChange(false)}
-            className="h-10 px-4 text-text-secondary hover:text-text-primary cursor-pointer"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="h-10 px-5 gap-2 font-medium cursor-pointer"
-          >
-            {isSubmitting ? (
+            {!isEditing && (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Enviando...</span>
-              </>
-            ) : (
-              <>
-                <Send className="h-4 w-4" strokeWidth={1.5} />
-                <span>Enviar convite</span>
+                <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+                  E-mail
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    maxLength={100}
+                  />
+                </label>
+                <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+                  CPF
+                  <Input
+                    inputMode="numeric"
+                    autoComplete="off"
+                    required
+                    value={cpf}
+                    onChange={(event) => setCpf(event.target.value)}
+                    maxLength={14}
+                    placeholder="11 dígitos"
+                  />
+                </label>
+                <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+                  Data de contratação
+                  <Input
+                    type="date"
+                    required
+                    value={hireDate}
+                    onChange={(event) => setHireDate(event.target.value)}
+                  />
+                </label>
               </>
             )}
-          </Button>
-        </SheetFooter>
+
+            <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+              Telefone
+              <Input
+                type="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                maxLength={20}
+              />
+            </label>
+
+            <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+              Perfil
+              <select
+                value={role}
+                onChange={(event) => setRole(event.target.value as CollaboratorRole)}
+                className="h-10 w-full rounded-lg border border-border bg-surface-1 px-3 text-sm text-text-primary focus:outline-none focus:border-primary"
+              >
+                {(['administrator', 'manager', 'operator'] as const).map((value) => (
+                  <option key={value} value={value}>
+                    {roleLabel(value)}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {!isEditing && (
+              <>
+                <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+                  Senha inicial
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                </label>
+                <p className="text-xs leading-relaxed text-text-muted">
+                  A API atual cadastra o colaborador com uma senha inicial; ela não envia convite por e-mail.
+                </p>
+              </>
+            )}
+
+            {isEditing && (
+              <label className="block space-y-1.5 text-xs font-medium text-text-secondary">
+                E-mail
+                <Input value={email} readOnly disabled />
+              </label>
+            )}
+          </div>
+
+          <SheetFooter className="px-6 py-4 bg-surface-2 border-t border-border flex-row justify-end gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => onOpenChange(false)}
+              disabled={isSubmitting}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isSubmitting || companyId === null} className="gap-2">
+              {isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <UserPlus className="h-4 w-4" />
+              )}
+              {isEditing ? 'Salvar alterações' : 'Cadastrar colaborador'}
+            </Button>
+          </SheetFooter>
+        </form>
       </SheetContent>
     </Sheet>
   )

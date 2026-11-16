@@ -24,5 +24,6 @@ export function profileFromLogin(data: LoginResponse): UserProfile {
     status: 'Ativo',
     principalType: data.principalType,
     roleKey: data.role,
+    isAdmin: data.principalType === 'collaborator' && data.isAdmin === true,
   }
 }

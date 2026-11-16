@@ -13,12 +13,14 @@ async function getDashboardController(req, reply) {
     }
 
     try {
-        const [totals, top, stagnant, lowStock, lowStockCount] = await Promise.all([
+        const [totals, top, stagnant, lowStock, lowStockCount, dailySales, stockByCategory] = await Promise.all([
             expenseRepository.salesTotals(req.companyId, range.from, range.to),
             dashboardRepository.topProducts(req.companyId, range.from, range.to, limit),
             dashboardRepository.stagnantProducts(req.companyId, range.from, range.to, limit),
             dashboardRepository.lowStock(req.companyId, 50),
             dashboardRepository.lowStockCount(req.companyId),
+            dashboardRepository.salesByDay(req.companyId, range.from, range.to),
+            dashboardRepository.stockByCategory(req.companyId),
         ]);
 
         const revenueCents = Math.round(Number(totals.revenue) * 100);
@@ -34,6 +36,8 @@ async function getDashboardController(req, reply) {
             top_products: top,
             stagnant_products: stagnant,
             low_stock: lowStock,
+            daily_sales: dailySales,
+            stock_by_category: stockByCategory,
         });
     } catch (error) {
         req.log.error(error);

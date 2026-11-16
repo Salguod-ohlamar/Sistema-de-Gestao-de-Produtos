@@ -82,13 +82,7 @@ class CompanyWorkspaceRepository {
                             * INTERVAL '1 month'
                         )
                    END AS next_due_date,
-                   COUNT(collaborators.id) FILTER (WHERE collaborators.is_active)::integer AS active_collaborator_count,
-                   1000::numeric AS setup_fee,
-                   250::numeric AS monthly_base,
-                   50::numeric AS collaborator_rate,
-                   (250 + COUNT(collaborators.id) FILTER (WHERE collaborators.is_active) * 50)::numeric AS estimated_monthly_amount,
-                   (1000 + (250 + COUNT(collaborators.id) FILTER (WHERE collaborators.is_active) * 50)
-                       * COALESCE(companies.plan_term_months, 0))::numeric AS estimated_contract_total
+                   COUNT(collaborators.id) FILTER (WHERE collaborators.is_active)::integer AS active_collaborator_count
             FROM companies
             LEFT JOIN collaborators ON collaborators.company_id = companies.id
             WHERE companies.id = ${companyId} AND companies.is_active = TRUE

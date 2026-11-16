@@ -4,20 +4,31 @@ class CompanyRepository {
     async create(company, passwordHash) {
         const rows = await sql`
             WITH new_company AS (
-                INSERT INTO companies (trade_name, legal_name, email, cnpj, phone, segment, is_active)
+                INSERT INTO companies (
+                    trade_name, legal_name, email, cnpj, phone, segment, is_active, approved_at
+                )
                 VALUES (
                     ${company.trade_name}, ${company.legal_name}, ${company.email},
-                    ${company.cnpj}, ${company.phone}, ${company.segment}, TRUE
+                    ${company.cnpj}, ${company.phone}, ${company.segment}, FALSE, NULL
                 )
                 RETURNING id, trade_name, email
             ), new_credentials AS (
                 INSERT INTO company_credentials (company_id, password_hash)
                 SELECT id, ${passwordHash} FROM new_company
                 RETURNING company_id
+            ), new_contact AS (
+                INSERT INTO contact_requests (
+                    name, phone, email, company_name, source, company_id
+                )
+                SELECT trade_name, ${company.phone}, email, trade_name,
+                       'company_registration', id
+                FROM new_company
+                RETURNING company_id
             )
             SELECT new_company.id, new_company.trade_name, new_company.email
             FROM new_company
-            JOIN new_credentials ON new_credentials.company_id = new_company.id;
+            JOIN new_credentials ON new_credentials.company_id = new_company.id
+            JOIN new_contact ON new_contact.company_id = new_company.id;
         `;
         return rows[0];
     }

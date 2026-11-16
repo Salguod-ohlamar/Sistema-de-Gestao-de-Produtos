@@ -1,143 +1,98 @@
-import { MoreVertical } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import type { DashboardCategoryStock } from '@/lib/api'
 
-export function CategoryDonut() {
-  const categories = [
-    {
-      name: 'Eletrônicos',
-      skus: '3.204 SKUs',
-      pct: '38%',
-      color: '#2F6BFF',
-    },
-    {
-      name: 'Acessórios',
-      skus: '2.276 SKUs',
-      pct: '27%',
-      color: '#38BDF8',
-    },
-    {
-      name: 'Escritório',
-      skus: '1.770 SKUs',
-      pct: '21%',
-      color: '#B4C5FF',
-    },
-    {
-      name: 'Outros',
-      skus: '1.182 SKUs',
-      pct: '14%',
-      color: '#5D74BC',
-    },
-  ]
+interface CategoryDonutProps {
+  categories: DashboardCategoryStock[]
+}
+
+const COLORS = ['#2F6BFF', '#38BDF8', '#B4C5FF', '#5D74BC', '#7C8BA8']
+const CIRCUMFERENCE = 2 * Math.PI * 38
+
+export function CategoryDonut({ categories }: CategoryDonutProps) {
+  const totalStock = categories.reduce((sum, item) => sum + item.stock_units, 0)
+  const visible = categories.slice(0, 4)
+  const rest = categories.slice(4)
+  if (rest.length) {
+    visible.push({
+      category: 'Outros',
+      products_count: rest.reduce((sum, item) => sum + item.products_count, 0),
+      stock_units: rest.reduce((sum, item) => sum + item.stock_units, 0),
+    })
+  }
+
+  const segments = visible.map((item, index) => {
+    const length = totalStock ? (item.stock_units / totalStock) * CIRCUMFERENCE : 0
+    const offset = visible
+      .slice(0, index)
+      .reduce(
+        (sum, previous) => sum + (totalStock ? (previous.stock_units / totalStock) * CIRCUMFERENCE : 0),
+        0
+      )
+    return { ...item, color: COLORS[index % COLORS.length], length, offset }
+  })
 
   return (
     <Card className="p-6 bg-surface-2 border-border shadow-md flex flex-col justify-between">
-      {/* Cabeçalho */}
-      <div className="flex items-center justify-between pb-3 border-b border-border/60">
-        <div>
-          <h2 className="font-headline text-lg font-semibold text-text-primary">
-            Estoque por categoria
-          </h2>
-          <span className="text-xs text-text-muted">
-            Distribuição de 4 departamentos
-          </span>
-        </div>
-        <button
-          type="button"
-          aria-label="Mais opções"
-          className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-surface-elevated transition-colors cursor-pointer"
-        >
-          <MoreVertical className="h-4 w-4" strokeWidth={1.5} />
-        </button>
+      <div className="pb-3 border-b border-border/60">
+        <h2 className="font-headline text-lg font-semibold text-text-primary">
+          Estoque por categoria
+        </h2>
+        <span className="text-xs text-text-muted">
+          Distribuição do estoque cadastrado
+        </span>
       </div>
 
-      {/* Gráfico Donut SVG */}
       <div className="relative flex items-center justify-center my-4">
-        <svg className="w-44 h-44 -rotate-90" viewBox="0 0 100 100">
-          {/* Círculo Base Fundo */}
-          <circle
-            cx="50"
-            cy="50"
-            r="38"
-            fill="none"
-            stroke="#141C30"
-            strokeWidth="10"
-          />
-          {/* Eletrônicos (38%) */}
-          <circle
-            cx="50"
-            cy="50"
-            r="38"
-            fill="none"
-            stroke="#2F6BFF"
-            strokeWidth="10"
-            strokeDasharray="90.7 238.7"
-            strokeDashoffset="0"
-          />
-          {/* Acessórios (27%) */}
-          <circle
-            cx="50"
-            cy="50"
-            r="38"
-            fill="none"
-            stroke="#38BDF8"
-            strokeWidth="10"
-            strokeDasharray="64.4 238.7"
-            strokeDashoffset="-90.7"
-          />
-          {/* Escritório (21%) */}
-          <circle
-            cx="50"
-            cy="50"
-            r="38"
-            fill="none"
-            stroke="#B4C5FF"
-            strokeWidth="10"
-            strokeDasharray="50.1 238.7"
-            strokeDashoffset="-155.1"
-          />
-          {/* Outros (14%) */}
-          <circle
-            cx="50"
-            cy="50"
-            r="38"
-            fill="none"
-            stroke="#5D74BC"
-            strokeWidth="10"
-            strokeDasharray="33.4 238.7"
-            strokeDashoffset="-205.2"
-          />
+        <svg className="w-44 h-44 -rotate-90" viewBox="0 0 100 100" role="img" aria-label="Estoque por categoria">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#141C30" strokeWidth="10" />
+          {segments.map((segment) => (
+            <circle
+              key={segment.category}
+              cx="50"
+              cy="50"
+              r="38"
+              fill="none"
+              stroke={segment.color}
+              strokeWidth="10"
+              strokeDasharray={`${segment.length} ${CIRCUMFERENCE - segment.length}`}
+              strokeDashoffset={-segment.offset}
+            />
+          ))}
         </svg>
 
-        {/* Centro Vazado do Donut */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <span className="font-headline text-2xl font-bold text-text-primary leading-none">
-            8.432
+            {totalStock.toLocaleString('pt-BR')}
           </span>
-          <span className="text-xs text-text-muted mt-0.5">itens totais</span>
+          <span className="text-xs text-text-muted mt-0.5">unidades</span>
         </div>
       </div>
 
-      {/* Legenda Detalhada */}
       <div className="space-y-2.5 pt-2 border-t border-border/60 text-xs">
-        {categories.map((cat) => (
-          <div key={cat.name} className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span
-                className="w-2.5 h-2.5 rounded-full shrink-0"
-                style={{ backgroundColor: cat.color }}
-              />
-              <span className="text-text-primary font-medium">{cat.name}</span>
+        {segments.length ? segments.map((segment) => {
+          const percentage = totalStock ? Math.round((segment.stock_units / totalStock) * 100) : 0
+          return (
+            <div key={segment.category} className="flex items-center justify-between gap-2">
+              <div className="flex min-w-0 items-center gap-2">
+                <span
+                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: segment.color }}
+                />
+                <span className="truncate text-text-primary font-medium">{segment.category}</span>
+              </div>
+              <div className="flex shrink-0 items-center gap-3">
+                <span className="font-mono text-text-muted tabular-nums">
+                  {segment.products_count} produto(s)
+                </span>
+                <span className="font-mono font-bold text-text-primary tabular-nums">
+                  {percentage}%
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-text-muted tabular-nums">
-                {cat.skus}
-              </span>
-              <span className="font-mono font-bold text-text-primary tabular-nums">
-                {cat.pct}
-              </span>
-            </div>
-          </div>
-        ))}
+          )
+        }) : (
+          <p className="py-2 text-center text-text-muted">Nenhum produto cadastrado.</p>
+        )}
       </div>
     </Card>
   )

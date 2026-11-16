@@ -28,12 +28,8 @@ async function registerCompany(request, reply) {
 
     try {
         const passwordHash = await hashPassword(password);
-        const companyRecord = await CompanyRepository.create(company, passwordHash);
-        return reply.code(201).send({
-            company: publicCompany(companyRecord),
-            principalType: 'company',
-            accessToken: createAccessToken(companyRecord)
-        });
+        await CompanyRepository.create(company, passwordHash);
+        return reply.code(202).send({ ok: true, pendingApproval: true });
     } catch (error) {
         if (error.code === '23505') {
             return reply.code(409).send({ error: 'Já existe uma empresa com este e-mail ou CNPJ.' });
@@ -85,7 +81,15 @@ async function loginCompany(request, reply) {
         }
 
         const company = await CompanyRepository.findCredentialsByEmail(email);
-        if (!company || !company.is_active || !(await verifyPassword(password, company.password_hash))) {
+        if (!company) {
+            return reply.code(401).send({ error: 'E-mail ou senha inválidos.' });
+        }
+        if (!company.is_active) {
+            return reply.code(403).send({
+                error: 'Acesso desativado ou cadastro aguardando aprovação da administração central.'
+            });
+        }
+        if (!(await verifyPassword(password, company.password_hash))) {
             return reply.code(401).send({ error: 'E-mail ou senha inválidos.' });
         }
 

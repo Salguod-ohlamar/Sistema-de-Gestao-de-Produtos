@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 interface KpiCardProps {
   title: string
   value: string
-  delta: string
+  delta?: string
   isPositive?: boolean
   deltaLabel?: string
   icon: LucideIcon
@@ -72,84 +72,17 @@ export function KpiCard({
               <span className="w-1.5 h-1.5 rounded-full bg-status-warning animate-pulse" />
               {attentionText}
             </Badge>
-          ) : (
+          ) : delta ? (
             <Badge
               variant={isPositive ? 'success' : 'destructive'}
               className="px-1.5 py-0.5 text-[10px] font-mono font-bold"
             >
               {delta}
             </Badge>
-          )}
-          <span className="text-xs text-text-muted">{deltaLabel}</span>
+          ) : null}
+          {deltaLabel && <span className="text-xs text-text-muted">{deltaLabel}</span>}
         </div>
       </div>
-
-      {/* Mini Sparkline SVG no fundo */}
-      <svg
-        className="absolute right-2 bottom-1.5 w-24 h-10 pointer-events-none opacity-40 group-hover:opacity-75 transition-opacity"
-        fill="none"
-        viewBox="0 0 100 40"
-      >
-        <defs>
-          <linearGradient
-            id={`grad-${sparklineVariant}`}
-            x1="0"
-            x2="0"
-            y1="0"
-            y2="1"
-          >
-            <stop
-              offset="0%"
-              stopColor={
-                sparklineVariant === 'cyan'
-                  ? '#38BDF8'
-                  : sparklineVariant === 'amber'
-                  ? '#F5B544'
-                  : '#2F6BFF'
-              }
-            />
-            <stop
-              offset="100%"
-              stopColor={
-                sparklineVariant === 'cyan'
-                  ? '#38BDF8'
-                  : sparklineVariant === 'amber'
-                  ? '#F5B544'
-                  : '#2F6BFF'
-              }
-              stopOpacity="0"
-            />
-          </linearGradient>
-        </defs>
-        {isPositive ? (
-          <>
-            <path
-              d="M0 32 Q 25 30, 45 22 T 75 14 T 100 4"
-              stroke={
-                sparklineVariant === 'cyan'
-                  ? '#38BDF8'
-                  : sparklineVariant === 'amber'
-                  ? '#F5B544'
-                  : '#2F6BFF'
-              }
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M0 32 Q 25 30, 45 22 T 75 14 T 100 4 L 100 40 L 0 40 Z"
-              fill={`url(#grad-${sparklineVariant})`}
-              opacity="0.35"
-            />
-          </>
-        ) : (
-          <path
-            d="M0 10 Q 30 16, 50 18 T 80 28 T 100 32"
-            stroke="#38BDF8"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        )}
-      </svg>
     </Card>
   )
 }

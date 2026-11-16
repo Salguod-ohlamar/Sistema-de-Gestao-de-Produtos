@@ -35,38 +35,76 @@ import {
 } from '@/components/ui/dialog'
 import { formatCurrency } from '@/lib/utils/formatters'
 import { toast } from 'sonner'
+import { ApiError, type ApiProduct, type ProductInput } from '@/lib/api'
+import {
+  useCreateProduct,
+  useDeleteProduct,
+  useProduct,
+  useUpdateProduct,
+} from '../hooks/useProducts'
 
 interface NewProductViewProps {
   onBack?: () => void
+  productId?: number | null
 }
 
-export function NewProductView({ onBack }: NewProductViewProps) {
+export function NewProductView({ onBack, productId = null }: NewProductViewProps) {
+  const productQuery = useProduct(productId)
+
+  if (productId !== null && productQuery.isLoading) {
+    return <div className="p-8 text-center text-text-secondary" role="status">Carregando produto...</div>
+  }
+
+  if (productId !== null && (productQuery.isError || !productQuery.data)) {
+    const message = productQuery.error instanceof ApiError
+      ? productQuery.error.message
+      : 'Não foi possível carregar o produto.'
+    return (
+      <div className="flex flex-col items-center gap-4 p-8 text-center" role="alert">
+        <p className="text-text-primary">{message}</p>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => void productQuery.refetch()}>Tentar novamente</Button>
+          <Button onClick={onBack}>Voltar aos produtos</Button>
+        </div>
+      </div>
+    )
+  }
+
+  return <ProductEditor product={productQuery.data ?? null} onBack={onBack} />
+}
+
+function ProductEditor({
+  product,
+  onBack,
+}: {
+  product: ApiProduct | null
+  onBack?: () => void
+}) {
+  const isEditing = product !== null
+  const productId = product?.id ?? null
+  const createProduct = useCreateProduct()
+  const updateProduct = useUpdateProduct()
+  const deleteProduct = useDeleteProduct()
   // Estado do Formulário
-  const [name, setName] = useState('Teclado Mecânico ErgoPro')
-  const [sku, setSku] = useState('KBD-ERG-99')
-  const [barcode, setBarcode] = useState('7898956421034')
-  const [category, setCategory] = useState('Eletrônicos & Periféricos')
-  const [brand, setBrand] = useState('Nexora Gear')
-  const [description, setDescription] = useState(
-    'Teclado mecânico com layout ergonômico dividido, switches táteis silenciosos com lubrificação de fábrica, iluminação per-key customizável e conectividade dual wireless 2.4GHz e Bluetooth 5.2 de ultra-baixa latência.'
-  )
-  const [salePrice, setSalePrice] = useState<number>(540.0)
-  const [costPrice, setCostPrice] = useState<number>(310.0)
+  const [name, setName] = useState(product?.name ?? '')
+  const [sku, setSku] = useState(product?.sku ?? '')
+  const [barcode, setBarcode] = useState(product?.barcode ?? '')
+  const [category, setCategory] = useState(product?.category ?? '')
+  const [brand, setBrand] = useState(product?.brand ?? '')
+  const [description, setDescription] = useState('')
+  const [salePrice, setSalePrice] = useState<number>(Number(product?.sale_price ?? 0))
+  const [costPrice, setCostPrice] = useState<number>(Number(product?.cost_price ?? 0))
   const [allowDiscount, setAllowDiscount] = useState<boolean>(true)
-  const [currentStock, setCurrentStock] = useState<number>(25)
-  const [minStock, setMinStock] = useState<number>(30)
-  const [unit, setUnit] = useState('un (Unidade)')
+  const [currentStock, setCurrentStock] = useState<number>(Number(product?.stock_quantity ?? 0))
+  const [minStock, setMinStock] = useState<number>(Number(product?.min_stock_quantity ?? 0))
+  const [unit, setUnit] = useState(product?.unit ?? 'UN')
   const [alertMinStock, setAlertMinStock] = useState<boolean>(true)
   const [status, setStatus] = useState<'ativo' | 'rascunho' | 'inativo'>('ativo')
   const [publicCatalog, setPublicCatalog] = useState<boolean>(true)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
 
   // Imagens da galeria
-  const [images, setImages] = useState<string[]>([
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBOQ92dPaHASDQEhNOTlBeSbLP1joS8-zBnfgHg-qr9nuKciL7HASe3WTpJy9xJSAR2aorXLbfx5nE5fb2b6hM02zuOE39x20Y6rKY54TuiWJmE_tRt3vhyGX1hA1YjMvXHErjVoUvEp7Y-yRDrBI55wIcjvXavXLllhT5WbwkqYk2R2NjthZRbtOqnGlfQkacVEtoSbSbZULulRkrQqlf3sPneCo6a3B5HlVI-GX2j7fBCb99v0evJ',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuDWhf4zdgilhsa0cnfyX-9Sdv6CCfmCY39RdjmX9798e-CZtQsKU5zvCb8Ei-cbavdn61k3vklui5aTsSmCcRjuFTPvAYLydxIHAHt9XJEXoEWJMGnIZphXUDMsnLWw9qJsOq2ODHkfX73PEMhe2f5xiDtE91nY_VZO2vCxIGQFovK6NMKZ3BF68CjwnRnxfPq-rp5cs96ct5s452kCrwI1aSJMVHmA1PHf9VX2k27ESKxb4dX0qI0R',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuDHNJ9Jv-oKdXnELEfsAFURhIT_5AX0Q-f-oA8jU6r6PaPqY4QRgl4X4JQoSSiOuEIT500xs0yCs213ODXIBLUgczT7bjYx1xyIxTScD9-LIIQGnZCOwqctLlQ2481oCt7J7mwf8EJnKRfa2_DP14m762D_tTYMkVL-3QENpjer2Opp-zzfGnrHrhPL1zfqdKLdOnxrtykUixDtMz-HlybbkQIMI4GosCPiq1OJp3lFG3tBqnIp2Lx1',
-  ])
+  const [images, setImages] = useState<string[]>([])
 
   // Cálculos financeiros e de estoque
   const marginPercent =
@@ -74,7 +112,8 @@ export function NewProductView({ onBack }: NewProductViewProps) {
   const markup = costPrice > 0 ? (salePrice / costPrice).toFixed(2) : '0,00'
   const totalStockValue = currentStock * salePrice
   const projectedProfit = currentStock * (salePrice - costPrice)
-  const isStockMinError = minStock > currentStock
+  const isBelowMinStock = minStock > currentStock
+  const isSaving = createProduct.isPending || updateProduct.isPending
 
   // Contador de campos mandatórios (6 campos obrigatórios)
   const mandatoryCount = [
@@ -109,22 +148,69 @@ export function NewProductView({ onBack }: NewProductViewProps) {
     toast.info('Imagem removida da galeria.')
   }
 
-  const handleSaveDraft = () => {
-    toast.success('Rascunho salvo com sucesso!')
-  }
-
   const handleSaveProduct = () => {
-    if (isStockMinError) {
-      toast.error('Corrija os erros de validação antes de salvar o produto.')
+    if (
+      !name.trim() ||
+      !sku.trim() ||
+      !category.trim() ||
+      !Number.isFinite(salePrice) ||
+      salePrice <= 0 ||
+      !Number.isFinite(costPrice) ||
+      costPrice < 0 ||
+      !Number.isInteger(currentStock) ||
+      currentStock < 0 ||
+      !Number.isInteger(minStock) ||
+      minStock < 0
+    ) {
+      toast.error('Preencha nome, SKU, categoria e valores válidos para salvar o produto.')
       return
     }
-    toast.success('Produto salvo e sincronizado com sucesso no catálogo!')
+
+    const input: ProductInput = {
+      name: name.trim(),
+      sku: sku.trim(),
+      barcode: barcode.trim(),
+      category: category.trim(),
+      brand: brand.trim(),
+      sale_price: salePrice,
+      cost_price: costPrice,
+      final_price: salePrice,
+      markup: costPrice > 0 ? salePrice / costPrice : 0,
+      stock_quantity: currentStock,
+      min_stock_quantity: minStock,
+      unit: unit.trim() || 'UN',
+    }
+    const onSuccess = () => {
+      toast.success(
+        isEditing
+          ? 'Produto atualizado. Descrição, imagens e preferências ainda não são suportadas pela API.'
+          : 'Produto cadastrado. Descrição, imagens e preferências ainda não são suportadas pela API.'
+      )
+      onBack?.()
+    }
+    const onError = (error: Error) => {
+      toast.error(error instanceof ApiError ? error.message : 'Não foi possível salvar o produto.')
+    }
+
+    if (productId !== null) {
+      updateProduct.mutate({ id: productId, input }, { onSuccess, onError })
+    } else {
+      createProduct.mutate(input, { onSuccess, onError })
+    }
   }
 
   const handleDeleteConfirm = () => {
-    setIsDeleteDialogOpen(false)
-    toast.success(`Produto ${sku} excluído permanentemente.`)
-    onBack?.()
+    if (productId === null) return
+    deleteProduct.mutate(productId, {
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false)
+        toast.success(`Produto ${sku} excluído.`)
+        onBack?.()
+      },
+      onError: (error) => {
+        toast.error(error instanceof ApiError ? error.message : 'Não foi possível excluir o produto.')
+      },
+    })
   }
 
   return (
@@ -143,7 +229,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
               <span>Produtos</span>
             </button>
             <span className="text-border-highlight font-mono text-[11px]">/</span>
-            <span className="text-text-secondary font-medium">Novo produto</span>
+            <span className="text-text-secondary font-medium">{isEditing ? 'Editar produto' : 'Novo produto'}</span>
           </nav>
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-elevated text-text-muted font-mono text-[11px] border border-border">
@@ -157,7 +243,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="font-headline text-2xl lg:text-[28px] text-text-primary tracking-tight font-bold flex items-center gap-3">
-              <span>Novo produto</span>
+              <span>{isEditing ? 'Editar produto' : 'Novo produto'}</span>
               <span className="px-2 py-0.5 rounded bg-primary/15 text-primary border border-primary/25 font-mono text-[11px] uppercase tracking-wider font-semibold">
                 SKU Cockpit
               </span>
@@ -505,19 +591,19 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                     </div>
                   </div>
 
-                  {/* Estoque Mínimo (Com Erro Intencional do Stitch) */}
+                  {/* Estoque mínimo pode exceder o saldo atual para sinalizar reposição. */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <label
                         htmlFor="stock-min"
                         className={`block text-xs font-medium ${
-                          isStockMinError ? 'text-destructive' : 'text-text-secondary'
+                          isBelowMinStock ? 'text-status-warning' : 'text-text-secondary'
                         }`}
                       >
                         Estoque mínimo <span className="text-destructive">*</span>
                       </label>
-                      {isStockMinError && (
-                        <AlertCircle className="h-4 w-4 text-destructive" />
+                      {isBelowMinStock && (
+                        <AlertCircle className="h-4 w-4 text-status-warning" />
                       )}
                     </div>
                     <div className="relative flex items-center">
@@ -527,22 +613,22 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         value={minStock}
                         onChange={(e) => setMinStock(parseInt(e.target.value) || 0)}
                         className={`w-full h-11 pl-3.5 pr-8 rounded-lg font-mono text-[15px] font-semibold tracking-wide transition-all tabular-nums ${
-                          isStockMinError
-                            ? 'bg-destructive/10 text-destructive border-2 border-destructive focus:ring-destructive focus:outline-none'
+                          isBelowMinStock
+                            ? 'bg-status-warning/10 text-text-primary border border-status-warning focus:ring-status-warning focus:outline-none'
                             : 'bg-surface-1 text-text-primary border border-border focus:ring-1 focus:ring-primary focus:border-primary'
                         }`}
                       />
                       <span
                         className={`absolute right-3 font-mono text-[11px] ${
-                          isStockMinError ? 'text-destructive' : 'text-text-muted'
+                          isBelowMinStock ? 'text-status-warning' : 'text-text-muted'
                         }`}
                       >
                         un
                       </span>
                     </div>
-                    {isStockMinError && (
-                      <p className="mt-1.5 text-xs text-destructive flex items-start gap-1 leading-tight font-medium">
-                        <span>O estoque mínimo deve ser menor que a quantidade atual</span>
+                    {isBelowMinStock && (
+                      <p className="mt-1.5 text-xs text-status-warning flex items-start gap-1 leading-tight font-medium">
+                        <span>O estoque atual está abaixo do mínimo cadastrado.</span>
                       </p>
                     )}
                   </div>
@@ -621,16 +707,15 @@ export function NewProductView({ onBack }: NewProductViewProps) {
               </div>
 
               {/* Área de Upload Tracejada */}
-              <div className="w-full h-44 rounded-xl bg-surface-1 p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-elevated/50 transition-all group relative overflow-hidden border border-dashed border-border-highlight">
+              <div className="w-full h-44 rounded-xl bg-surface-1 p-4 flex flex-col items-center justify-center text-center group relative overflow-hidden border border-dashed border-border-highlight">
                 <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center text-primary mb-2.5 group-hover:scale-105 group-hover:bg-primary/25 transition-all shadow-[0_0_16px_rgba(47,107,255,0.25)]">
                   <UploadCloud className="h-6 w-6" />
                 </div>
                 <p className="text-sm text-text-primary font-semibold leading-snug">
-                  Arraste uma imagem ou{' '}
-                  <span className="text-primary underline underline-offset-2">clique</span>
+                  Upload de imagens indisponível
                 </p>
                 <p className="text-[11px] text-text-muted mt-1 font-mono">
-                  PNG ou JPG, até 5 MB (1200×1200px rec.)
+                  A API atual não oferece suporte a imagens.
                 </p>
               </div>
 
@@ -675,7 +760,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                   <button
                     type="button"
                     onClick={() => {
-                      toast.info('Selecione uma imagem do computador para upload.')
+                      toast.info('O upload de imagens ainda não é suportado pela API.')
                     }}
                     title="Adicionar outra imagem"
                     className="w-14 h-14 rounded-lg bg-surface-1 hover:bg-surface-elevated text-text-muted hover:text-text-primary flex items-center justify-center transition-all shrink-0 border border-border cursor-pointer"
@@ -857,25 +942,25 @@ export function NewProductView({ onBack }: NewProductViewProps) {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-accent" />
           </div>
           <span className="text-sm text-text-primary font-medium">
-            Alterações não salvas
-          </span>
-          <span className="hidden sm:inline-block font-mono text-[11px] text-text-muted ml-1">
-            · Última sincronização há 4 min
+            {isSaving ? 'Salvando produto...' : isEditing ? 'Edição do produto' : 'Novo produto'}
           </span>
         </div>
 
         {/* Botões de Ação Direita */}
         <div className="flex items-center gap-3">
           {/* Botão Excluir Produto (Destructive) */}
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            className="h-10 px-3.5 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/30 hover:border-destructive/60 text-sm font-medium transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span>Excluir produto</span>
-          </Button>
+          {isEditing && (
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={deleteProduct.isPending}
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="h-10 px-3.5 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/30 hover:border-destructive/60 text-sm font-medium transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>Excluir produto</span>
+            </Button>
+          )}
 
           {/* Botão Cancelar */}
           <Button
@@ -891,7 +976,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
           <Button
             type="button"
             variant="outline"
-            onClick={handleSaveDraft}
+            onClick={() => toast.warning('A API ainda não oferece suporte a rascunhos; nada foi salvo.')}
             className="h-10 px-4 rounded-lg bg-surface-elevated hover:bg-surface-elevated/80 text-text-primary border-border text-sm transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <Save className="h-4 w-4 text-text-muted" />
@@ -901,11 +986,12 @@ export function NewProductView({ onBack }: NewProductViewProps) {
           {/* Botão Primário: Salvar Produto */}
           <Button
             type="button"
+            disabled={isSaving}
             onClick={handleSaveProduct}
             className="h-10 px-6 rounded-lg bg-primary hover:bg-primary-hover text-text-primary text-sm font-semibold shadow-[0_0_16px_rgba(47,107,255,0.4)] hover:shadow-[0_0_20px_rgba(47,107,255,0.6)] transition-all flex items-center gap-2 cursor-pointer"
           >
             <CheckCircle2 className="h-4 w-4" />
-            <span>Salvar produto</span>
+            <span>{isSaving ? 'Salvando...' : isEditing ? 'Atualizar produto' : 'Salvar produto'}</span>
           </Button>
         </div>
       </div>
@@ -946,6 +1032,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
             </Button>
             <Button
               type="button"
+              disabled={deleteProduct.isPending}
               onClick={handleDeleteConfirm}
               className="h-10 px-5 rounded-lg bg-destructive hover:bg-destructive/90 text-text-primary text-sm font-semibold shadow-md flex items-center gap-2 cursor-pointer"
             >

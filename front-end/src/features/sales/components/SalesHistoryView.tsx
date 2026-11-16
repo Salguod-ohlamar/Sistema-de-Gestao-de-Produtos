@@ -14,6 +14,7 @@ import {
 import { ApiError, type SaleSummary } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils/formatters'
 import { useSalesHistory } from '../hooks/useSales'
+import { useAuth } from '@/features/auth/context'
 
 const dateTimeFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 
@@ -43,7 +44,8 @@ function StatusBadge({ status }: { status: SaleSummary['status'] }) {
 }
 
 export function SalesHistoryView() {
-  const { data: sales, isLoading, isError, error, refetch } = useSalesHistory()
+  const { user } = useAuth()
+  const { data: sales, isLoading, isError, error, refetch } = useSalesHistory(user?.id ?? null)
   const [search, setSearch] = useState('')
 
   const stats = useMemo(() => {

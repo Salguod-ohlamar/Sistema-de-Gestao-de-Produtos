@@ -28,7 +28,7 @@ export class ApiError extends Error {
 type Json = Record<string, unknown> | unknown[]
 
 interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: Json
   signal?: AbortSignal
 }
@@ -56,7 +56,9 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
     const message =
       data && typeof data === 'object' && 'error' in data && typeof data.error === 'string'
         ? data.error
-        : 'Não foi possível concluir a operação.'
+        : data && typeof data === 'object' && 'message' in data && typeof data.message === 'string'
+          ? data.message
+          : 'Não foi possível concluir a operação.'
     throw new ApiError(message, response.status)
   }
 

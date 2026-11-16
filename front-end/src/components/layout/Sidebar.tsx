@@ -10,6 +10,8 @@ import {
   ShoppingCart,
   Receipt,
   Calculator,
+  Building2,
+  Shield,
 } from 'lucide-react'
 import { useAuth } from '@/features/auth/context'
 import { NexoraBrand } from '@/components/common/NexoraLogo'
@@ -49,9 +51,15 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
     { id: 'produtos', label: 'Produtos (Consulta)', icon: Package },
     { id: 'novo-produto', label: 'Novo produto', icon: PlusSquare },
     { id: 'usuarios', label: 'Usuários', icon: Users },
+    { id: 'empresa', label: 'Espaço da empresa', icon: Building2 },
+    { id: 'admin', label: 'Administração', icon: Shield },
   ]
   const navItems =
-    user?.roleKey === 'operator' ? allNavItems.filter((item) => item.id === 'pdv') : allNavItems
+    user?.principalType === 'root'
+      ? allNavItems.filter((item) => item.id === 'admin')
+      : user?.roleKey === 'operator'
+      ? allNavItems.filter((item) => item.id === 'pdv')
+      : allNavItems.filter((item) => item.id !== 'admin')
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-[248px] bg-surface-1/80 backdrop-blur-xl border-r border-border z-40 flex flex-col justify-between select-none">
@@ -101,14 +109,16 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
 
             <div className="my-3 border-t border-border mx-2" />
 
-            <button
-              type="button"
-              onClick={() => onNavigate?.('configuracoes')}
-              className="w-full flex items-center h-11 px-3.5 rounded-lg transition-all gap-3 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary cursor-pointer text-left"
-            >
-              <Settings className="h-5 w-5 text-text-muted shrink-0" strokeWidth={1.5} />
-              <span className="truncate">Configurações</span>
-            </button>
+            {user?.principalType !== 'root' && (
+              <button
+                type="button"
+                onClick={() => onNavigate?.('configuracoes')}
+                className="w-full flex items-center h-11 px-3.5 rounded-lg transition-all gap-3 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary cursor-pointer text-left"
+              >
+                <Settings className="h-5 w-5 text-text-muted shrink-0" strokeWidth={1.5} />
+                <span className="truncate">Configurações</span>
+              </button>
+            )}
           </nav>
         </div>
       </div>

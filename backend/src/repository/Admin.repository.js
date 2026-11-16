@@ -5,7 +5,7 @@ class AdminRepository {
         return sql`
             SELECT companies.id, companies.trade_name, companies.legal_name, companies.email,
                    companies.cnpj, companies.phone, companies.segment, companies.is_active,
-                     companies.created_at, companies.plan_code, companies.plan_started_at,
+                     companies.created_at, companies.approved_at, companies.plan_code, companies.plan_started_at,
                      companies.plan_term_months,
                      companies.plan_started_at + (companies.plan_term_months * INTERVAL '1 month') AS plan_end_date,
                      COUNT(collaborators.id)::integer AS collaborator_count,
@@ -30,9 +30,25 @@ class AdminRepository {
 
     async setCompanyActive(id, isActive) {
         return sql`
-            UPDATE companies SET is_active = ${isActive}, updated_at = now()
-            WHERE id = ${id}
-            RETURNING id, trade_name, is_active;
+            WITH updated_company AS (
+                UPDATE companies
+                SET is_active = ${isActive},
+                    approved_at = CASE
+                        WHEN ${isActive} THEN COALESCE(approved_at, now())
+                        ELSE approved_at
+                    END,
+                    updated_at = now()
+                WHERE id = ${id}
+                RETURNING id, trade_name, is_active, approved_at
+            ), handled_registration AS (
+                UPDATE contact_requests
+                SET handled = TRUE
+                WHERE source = 'company_registration'
+                  AND company_id = (SELECT id FROM updated_company)
+                  AND ${isActive}
+                RETURNING id
+            )
+            SELECT * FROM updated_company;
         `;
     }
 

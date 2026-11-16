@@ -8,27 +8,32 @@ import {
   AlertCircle,
   X,
   ShieldCheck,
-  CloudUpload,
+  Boxes,
   Users2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/features/auth/context'
+import { useAuth, type UserProfile } from '@/features/auth/context'
 import { toast } from 'sonner'
 
 interface LoginViewProps {
-  onLoginSuccess?: () => void
+  onLoginSuccess?: (user: UserProfile) => void
+  onCompanyRegistration?: () => void
+  onContact?: () => void
+  onForgotPassword?: () => void
   initialErrorState?: boolean
 }
 
 export function LoginView({
   onLoginSuccess,
+  onCompanyRegistration,
+  onContact,
+  onForgotPassword,
   initialErrorState = false,
 }: LoginViewProps) {
   const { login, loginError } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe] = useState(true)
   const [hasError, setHasError] = useState(initialErrorState)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -42,10 +47,10 @@ export function LoginView({
     }
 
     setIsLoading(true)
-    const success = await login(email, password)
+    const user = await login(email, password)
     setIsLoading(false)
 
-    if (!success) {
+    if (!user) {
       setHasError(true)
       toast.error('Não foi possível entrar. Verifique e-mail e senha.')
       return
@@ -53,11 +58,7 @@ export function LoginView({
 
     setHasError(false)
     toast.success('Autenticação realizada com sucesso!')
-    onLoginSuccess?.()
-  }
-
-  const handleGoogleLogin = () => {
-    toast.info('Login com Google ainda não está disponível. Use e-mail e senha.')
+    onLoginSuccess?.(user)
   }
 
   return (
@@ -158,7 +159,7 @@ export function LoginView({
                   tabIndex={4}
                   onClick={(e) => {
                     e.preventDefault()
-                    toast.info('Instruções de recuperação enviadas para o e-mail.')
+                    onForgotPassword?.()
                   }}
                   className="text-xs font-medium text-primary hover:underline hover:text-cyan-accent transition-colors duration-150"
                 >
@@ -216,39 +217,7 @@ export function LoginView({
               )}
             </div>
 
-            {/* 5. Manter conectado */}
-            <div className="flex items-center pt-1 pb-1">
-              <label className="relative flex items-center gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  tabIndex={5}
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="peer sr-only"
-                />
-                <div className="h-[18px] w-[18px] rounded-[5px] border border-border-highlight bg-surface-1 transition-all duration-150 peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center">
-                  <svg
-                    className={`h-3 w-3 text-text-primary transition-opacity duration-150 ${
-                      rememberMe ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="2.5 6 4.8 8.5 9.5 3.5" />
-                  </svg>
-                </div>
-                <span className="text-[13px] text-text-secondary">
-                  Manter conectado por 30 dias
-                </span>
-              </label>
-            </div>
-
-            {/* 6. Botão Primário "Entrar" */}
+            {/* Botão primário de acesso */}
             <Button
               type="submit"
               id="submitBtn"
@@ -260,46 +229,28 @@ export function LoginView({
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Button>
 
-            {/* 7. Divisor "ou" */}
-            <div className="relative py-2 flex items-center justify-center">
-              <div className="w-full border-t border-border" />
-              <span className="absolute bg-background px-3 font-sans text-xs text-text-muted">
-                ou
-              </span>
-            </div>
-
-            {/* Botão Secundário Google Monocromático */}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleGoogleLogin}
-              className="group flex h-12 w-full items-center justify-center gap-3 rounded-[10px] border border-border-highlight bg-transparent text-sm font-medium text-text-primary transition-all duration-150 hover:bg-surface-elevated hover:border-primary/40 active:scale-[0.98] cursor-pointer"
-            >
-              <svg
-                className="h-4 w-4 text-text-secondary group-hover:text-text-primary transition-colors"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
-              </svg>
-              <span>Entrar com conta corporativa Google</span>
-            </Button>
           </form>
 
-          {/* 8. Fale com o Administrador */}
-          <div className="mt-8 text-center">
+          <div className="mt-7 space-y-3 text-center text-[13px] text-text-secondary">
             <p className="text-[13px] text-text-secondary">
-              Não tem acesso?
-              <a
-                href="#suporte"
-                onClick={(e) => {
-                  e.preventDefault()
-                  toast.info('Canal de suporte ao administrador aberto.')
-                }}
-                className="font-medium text-primary hover:underline hover:text-cyan-accent transition-colors ml-1"
+              Não tem uma conta?{' '}
+              <button
+                type="button"
+                onClick={onCompanyRegistration}
+                className="font-medium text-primary hover:underline"
               >
-                Fale com o administrador
-              </a>
+                Cadastre sua empresa
+              </button>
+            </p>
+            <p>
+              Precisa falar com a equipe?{' '}
+              <button
+                type="button"
+                onClick={onContact}
+                className="font-medium text-primary hover:underline"
+              >
+                Entre em contato
+              </button>
             </p>
           </div>
         </div>
@@ -307,18 +258,8 @@ export function LoginView({
         {/* 9. Rodapé Fixo da Coluna Esquerda */}
         <footer className="mt-auto flex items-center justify-between pt-6 border-t border-border/60 text-xs text-text-muted">
           <div>© 2026 Nexora Tecnologia S.A.</div>
-          <div className="flex items-center gap-4">
-            <a href="#suporte" className="hover:text-text-secondary transition-colors">
-              Suporte
-            </a>
-            <span className="text-border">•</span>
-            <a href="#privacidade" className="hover:text-text-secondary transition-colors">
-              Privacidade
-            </a>
-            <span className="text-border">•</span>
-            <a href="#termos" className="hover:text-text-secondary transition-colors">
-              Termos
-            </a>
+          <div className="text-right">
+            Acesso com e-mail e senha
           </div>
         </footer>
       </section>
@@ -341,10 +282,10 @@ export function LoginView({
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/80 px-3.5 py-1.5 backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-status-success shadow-[0_0_8px_#34D399]" />
             <span className="font-mono text-[11px] font-medium tracking-wide text-text-secondary">
-              SISTEMAS ONLINE · 99.98% UPTIME
+              PRÉVIA ILUSTRATIVA · DADOS DE DEMONSTRAÇÃO
             </span>
           </div>
-          <div className="text-xs font-mono text-text-muted">ENC: AES-256 GCM</div>
+          <div className="text-xs font-mono text-text-muted">NEXORA</div>
         </div>
 
         {/* COMPOSIÇÃO CENTRAL: Fragmento do Dashboard em Perspectiva Suave */}
@@ -357,12 +298,12 @@ export function LoginView({
                 <span className="h-2.5 w-2.5 rounded-full bg-status-warning/60" />
                 <span className="h-2.5 w-2.5 rounded-full bg-status-success/60" />
                 <span className="ml-2 font-mono text-[11px] text-text-muted">
-                  dashboard.nexora.app / cockpit-live
+                  Prévia ilustrativa do painel
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="rounded bg-surface-elevated px-2 py-0.5 font-mono text-[10px] text-cyan-accent">
-                  LIVE FEED
+                  EXEMPLO
                 </span>
               </div>
             </div>
@@ -549,14 +490,14 @@ export function LoginView({
           <div className="mt-6 flex items-center gap-4 border-t border-border pt-5 text-xs text-text-secondary">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />
-              <span>Dados criptografados</span>
+              <span>Acesso autenticado</span>
             </div>
 
             <span className="h-3 w-[1px] bg-border" />
 
             <div className="flex items-center gap-2">
-              <CloudUpload className="h-4 w-4 text-primary" />
-              <span>Backup diário</span>
+              <Boxes className="h-4 w-4 text-primary" />
+              <span>Gestão de estoque</span>
             </div>
 
             <span className="h-3 w-[1px] bg-border" />

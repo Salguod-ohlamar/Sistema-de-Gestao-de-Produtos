@@ -13,14 +13,7 @@ import {
   Edit2,
   Trash2,
   MoreVertical,
-  Headphones,
-  Mouse,
-  Keyboard,
-  Cpu,
-  Video,
-  Armchair,
-  Laptop,
-  HardDrive,
+  Package,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -30,6 +23,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ProductDetailDrawer } from './ProductDetailDrawer'
 import { FloatingActionBar } from './FloatingActionBar'
 import { toast } from 'sonner'
+import { ApiError, type ApiProduct } from '@/lib/api'
+import { formatCurrency } from '@/lib/utils/formatters'
+import { useDeleteProduct, useFindProductByCode, useProducts } from '../hooks/useProducts'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,17 +95,47 @@ interface ProductRow {
   status: 'Em estoque' | 'Estoque baixo' | 'Esgotado'
   statusVariant: 'success' | 'warning' | 'destructive'
   updatedAt: string
-  icon: React.ElementType
+  icon: typeof Package
   image?: string
+  product: ApiProduct
 }
 
 interface ProductsViewProps {
-  onNavigate?: (view: string) => void
+  onNavigate?: (view: string, productId?: number) => void
+}
+
+function toProductRow(product: ApiProduct): ProductRow {
+  const stockUnits = Number(product.stock_quantity) || 0
+  const minStock = Number(product.min_stock_quantity) || 0
+  const status =
+    stockUnits === 0 ? 'Esgotado' : stockUnits <= minStock ? 'Estoque baixo' : 'Em estoque'
+  const updatedAt = product.updated_at ?? product.created_at
+
+  return {
+    id: String(product.id),
+    name: product.name,
+    sku: product.sku,
+    category: product.category ?? 'Sem categoria',
+    price: formatCurrency(Number(product.sale_price)),
+    stockUnits,
+    stockMax: Math.max(stockUnits, minStock, 1),
+    status,
+    statusVariant:
+      status === 'Esgotado' ? 'destructive' : status === 'Estoque baixo' ? 'warning' : 'success',
+    updatedAt: updatedAt ? new Date(updatedAt).toLocaleDateString('pt-BR') : '—',
+    icon: Package,
+    image: product.image_url ?? undefined,
+    product,
+  }
 }
 
 export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
-  const [drawerOpen, setDrawerOpen] = useState(true) // Aberto por padrão para coincidir com a tela Stitch
-  const [selectedIds, setSelectedIds] = useState<string[]>(['1', '2']) // Itens 1 e 2 selecionados conforme screenshot
+  const productsQuery = useProducts()
+  const deleteProduct = useDeleteProduct()
+  const findByCode = useFindProductByCode()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<ProductRow | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
@@ -118,113 +144,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(4)
 
-  const products: ProductRow[] = [
-    {
-      id: '1',
-      name: 'Fone Bluetooth Pulse X2',
-      sku: 'PLS-X2-BLK',
-      category: 'Eletrônicos',
-      price: 'R$ 249,90',
-      stockUnits: 42,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: 'Hoje, 14:20',
-      icon: Headphones,
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80&h=80&fit=crop',
-    },
-    {
-      id: '2',
-      name: 'Mouse Sem Fio Aero M3',
-      sku: 'MOU-AER-M3',
-      category: 'Eletrônicos',
-      price: 'R$ 189,00',
-      stockUnits: 18,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: 'Hoje, 11:05',
-      icon: Mouse,
-    },
-    {
-      id: '3',
-      name: 'Teclado Mecânico Forge 75',
-      sku: 'KBD-FRG-75',
-      category: 'Eletrônicos',
-      price: 'R$ 549,00',
-      stockUnits: 8,
-      stockMax: 40,
-      status: 'Estoque baixo',
-      statusVariant: 'warning',
-      updatedAt: 'Ontem, 16:40',
-      icon: Keyboard,
-    },
-    {
-      id: '4',
-      name: 'Hub USB-C 7 em 1',
-      sku: 'HUB-7IN1-GRY',
-      category: 'Acessórios',
-      price: 'R$ 169,90',
-      stockUnits: 0,
-      stockMax: 30,
-      status: 'Esgotado',
-      statusVariant: 'destructive',
-      updatedAt: 'Ontem, 09:12',
-      icon: Cpu,
-    },
-    {
-      id: '5',
-      name: 'Webcam Full HD Vision',
-      sku: 'CAM-FHD-VIS',
-      category: 'Eletrônicos',
-      price: 'R$ 215,00',
-      stockUnits: 24,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: '10 out',
-      icon: Video,
-    },
-    {
-      id: '6',
-      name: 'Cadeira Ergonômica Lumbar Pro',
-      sku: 'CAD-LMB-PRO',
-      category: 'Escritório',
-      price: 'R$ 1.390,00',
-      stockUnits: 12,
-      stockMax: 20,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: '08 out',
-      icon: Armchair,
-    },
-    {
-      id: '7',
-      name: 'Suporte para Notebook Alumínio',
-      sku: 'SUP-NOT-ALM',
-      category: 'Acessórios',
-      price: 'R$ 129,00',
-      stockUnits: 3,
-      stockMax: 30,
-      status: 'Estoque baixo',
-      statusVariant: 'warning',
-      updatedAt: '05 out',
-      icon: Laptop,
-    },
-    {
-      id: '8',
-      name: 'SSD Externo 1TB Pro',
-      sku: 'SSD-EXT-1TB',
-      category: 'Eletrônicos',
-      price: 'R$ 489,00',
-      stockUnits: 32,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: '03 out',
-      icon: HardDrive,
-    },
-  ]
+  const products = (productsQuery.data ?? []).map(toProductRow)
 
   const filtered = filterProducts(products, {
     query: searchQuery,
@@ -265,6 +185,60 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
     setSelectedIds(allSelected ? selectedIds.filter((id) => !visibleIds.includes(id)) : [...new Set([...selectedIds, ...visibleIds])])
   }
 
+  const handleDelete = (product: ProductRow) => {
+    deleteProduct.mutate(Number(product.id), {
+      onSuccess: () => {
+        setSelectedIds((ids) => ids.filter((id) => id !== product.id))
+        if (selectedProduct?.id === product.id) {
+          setSelectedProduct(null)
+          setDrawerOpen(false)
+        }
+        toast.success(`Produto ${product.sku} excluído.`)
+      },
+      onError: (error) => {
+        toast.error(error instanceof ApiError ? error.message : 'Não foi possível excluir o produto.')
+      },
+    })
+  }
+
+  const handleCodeSearch = () => {
+    const code = searchQuery.trim()
+    if (!code) return
+
+    findByCode.mutate(code, {
+      onSuccess: (product) => {
+        setSelectedProduct(toProductRow(product))
+        setDrawerOpen(true)
+      },
+      onError: (error) => {
+        toast.error(
+          error instanceof ApiError && error.status === 404
+            ? 'Nenhum produto encontrado com esse código.'
+            : error instanceof ApiError
+              ? error.message
+              : 'Não foi possível buscar o produto.'
+        )
+      },
+    })
+  }
+
+  const handleDeleteSelected = async () => {
+    const results = await Promise.allSettled(
+      selectedIds.map((id) => deleteProduct.mutateAsync(Number(id)))
+    )
+    const succeeded = results.filter((result) => result.status === 'fulfilled').length
+    const failed = results.filter((result) => result.status === 'rejected')
+    setSelectedIds([])
+
+    if (failed.length > 0) {
+      const error = failed[0].reason
+      const detail = error instanceof ApiError ? ` ${error.message}` : ''
+      toast.error(`${succeeded} produto(s) excluído(s); ${failed.length} falharam.${detail}`)
+    } else {
+      toast.success(`${succeeded} produto(s) excluído(s).`)
+    }
+  }
+
   return (
     <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-8 py-6 space-y-6">
       {/* Cabeçalho da Página (72px) */}
@@ -283,7 +257,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
             </Badge>
           </div>
           <p className="text-sm text-text-muted mt-0.5">
-            1.248 itens cadastrados no inventário central
+            {products.length.toLocaleString('pt-BR')} itens cadastrados no inventário central
           </p>
         </div>
 
@@ -325,11 +299,15 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
             <Input
               value={searchQuery}
               onChange={(e) => withReset(setSearchQuery)(e.target.value)}
-              placeholder="Buscar por nome ou SKU..."
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleCodeSearch()
+              }}
+              placeholder="Buscar nome ou SKU; Enter consulta código..."
+              aria-label="Buscar produto por nome, SKU ou código"
               className="h-9 pl-9 pr-14 rounded-lg bg-surface-elevated border-border text-sm"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-surface-1 border border-border font-mono text-[10px] text-text-muted select-none">
-              ⌘K
+              Enter
             </div>
           </div>
 
@@ -428,8 +406,19 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
             <tbody className="divide-y divide-border/60 text-sm">
               {visible.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-sm text-text-muted">
-                    Nenhum produto encontrado com esses filtros.
+                  <td colSpan={8} className="py-12 text-center text-sm text-text-muted" role={productsQuery.isError ? 'alert' : 'status'}>
+                    {productsQuery.isLoading
+                      ? 'Carregando produtos...'
+                      : productsQuery.isError
+                        ? productsQuery.error instanceof ApiError
+                          ? productsQuery.error.message
+                          : 'Não foi possível carregar os produtos.'
+                        : 'Nenhum produto encontrado com esses filtros.'}
+                    {productsQuery.isError && (
+                      <Button variant="outline" size="sm" onClick={() => void productsQuery.refetch()} className="ml-3">
+                        Tentar novamente
+                      </Button>
+                    )}
                   </td>
                 </tr>
               )}
@@ -442,6 +431,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                   <tr
                     key={p.id}
                     onClick={() => {
+                      setSelectedProduct(p)
                       setDrawerOpen(true)
                     }}
                     className={`h-16 transition-colors group cursor-pointer ${
@@ -548,7 +538,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          onClick={() => toast.info(`Editando ${p.name}`)}
+                          onClick={() => onNavigate?.('novo-produto', Number(p.id))}
                           className="text-text-muted hover:text-text-primary cursor-pointer"
                           title="Editar"
                         >
@@ -557,7 +547,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          onClick={() => toast.error(`Item excluído: ${p.sku}`)}
+                          onClick={() => handleDelete(p)}
                           className="text-text-muted hover:text-destructive cursor-pointer"
                           title="Excluir produto"
                         >
@@ -660,28 +650,20 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
         selectedCount={selectedIds.length}
         onBatchEdit={() => toast.info(`Editar em lote: ${selectedIds.length} itens`)}
         onExport={() => toast.success(`Exportando ${selectedIds.length} itens selecionados...`)}
-        onDelete={() => {
-          setSelectedIds([])
-          toast.error('Produtos selecionados excluídos do catálogo.')
-        }}
+        onDelete={() => void handleDeleteSelected()}
       />
 
       {/* Drawer Lateral de Detalhes do Produto */}
       <ProductDetailDrawer
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+        product={selectedProduct?.product}
         onEdit={() => {
-          if (onNavigate) {
-            onNavigate('novo-produto')
-          } else {
-            toast.info('Abrindo editor para Fone Bluetooth Pulse X2')
-          }
+          if (!selectedProduct) return
+          onNavigate?.('novo-produto', Number(selectedProduct.id))
         }}
-        onDuplicate={() => toast.success('Produto duplicado como rascunho!')}
-        onDelete={() => {
-          setDrawerOpen(false)
-          toast.error('Produto excluído com sucesso.')
-        }}
+        onDuplicate={() => toast.info('Duplicação ainda não é suportada pela API.')}
+        onDelete={() => selectedProduct && handleDelete(selectedProduct)}
       />
     </div>
   )

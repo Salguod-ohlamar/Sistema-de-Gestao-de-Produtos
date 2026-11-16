@@ -41,8 +41,9 @@ export async function createContact(request, reply) {
 export async function listContacts(request, reply) {
     try {
         return reply.send(await sql`
-            SELECT id, name, phone, email, company_name, created_at, handled
-            FROM contact_requests ORDER BY created_at DESC LIMIT 200
+            SELECT id, name, phone, email, company_name, source, company_id,
+                   created_at, handled
+            FROM contact_requests ORDER BY created_at DESC
         `);
     } catch (error) {
         request.log.error(error);

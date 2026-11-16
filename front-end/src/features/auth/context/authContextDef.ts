@@ -1,4 +1,5 @@
 import { createContext } from 'react'
+import type { CompanyRegistrationInput } from '@/lib/api'
 
 export interface UserProfile {
   id: string
@@ -11,12 +12,14 @@ export interface UserProfile {
   principalType?: 'root' | 'company' | 'collaborator'
   /** Papel do colaborador no backend */
   roleKey?: 'administrator' | 'manager' | 'operator'
+  isAdmin?: boolean
 }
 
 export interface AuthContextType {
   user: UserProfile | null
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<boolean>
+  login: (email: string, password: string) => Promise<UserProfile | null>
+  registerCompany: (input: CompanyRegistrationInput) => Promise<boolean>
   logout: () => void
   /** Última mensagem de erro de login devolvida pelo servidor, em português */
   loginError: string | null
