@@ -2,15 +2,8 @@
 // instanciando o fastify
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import productsRouters from '../src/routes/RegisterProduct.routes.js'
-import saleRouters from '../src/routes/Sale.routes.js'
-import financeRouters from '../src/routes/Finance.routes.js'
-import companyRoutes from '../src/routes/Company.routes.js'
-import adminRoutes from '../src/routes/Admin.routes.js'
-import collaboratorRoutes from '../src/routes/Collaborator.routes.js'
-import companyWorkspaceRoutes from '../src/routes/CompanyWorkspace.routes.js'
-import contactRoutes from '../src/routes/Contact.routes.js'
 import { createCorsOriginChecker, getCorsOrigins } from './corsConfig.js'
+import { registerApiRoutes } from './apiRoutes.js'
 
 
 if (!process.env.AUTH_TOKEN_SECRET || process.env.AUTH_TOKEN_SECRET.length < 32) {
@@ -29,26 +22,7 @@ await fastify.register(cors, {
     allowedHeaders: ['Content-Type', 'Authorization']
 })
 
-//REGISTRA AS ROTAS PUBLICAS E PROTEGIDAS
-await fastify.register(companyRoutes)
-await fastify.register(adminRoutes)
-await fastify.register(collaboratorRoutes)
-await fastify.register(companyWorkspaceRoutes)
-await fastify.register(productsRouters)
-await fastify.register(saleRouters)
-await fastify.register(financeRouters)
-await fastify.register(contactRoutes)
-
-
-// Status code 
-
-// informativo - 100 até 199
-// tudo certo - 200 até 299
-// direcionamento - 300 até 399
-// erro do usuario - 400 até 499
-// erro do servidor - 500 até 599
-
-
+await registerApiRoutes(fastify)
 
 // Run the server!
 fastify.listen({ port: 3000 }, function (err, address) {

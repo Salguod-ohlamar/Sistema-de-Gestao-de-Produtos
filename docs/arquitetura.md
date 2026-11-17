@@ -6,13 +6,13 @@
 Navegador (React)
   └─ features + hooks (TanStack Query)
       └─ src/lib/api/client.ts
-          └─ /api (proxy do Vite em desenvolvimento)
+          └─ /api/* (proxy do Vite local ou roteamento multi-service Vercel)
               └─ Fastify (backend, porta 3000)
                   └─ routes → middleware → controllers → repositories
                       └─ PostgreSQL / Neon
 ```
 
-O front-end e a API são aplicações independentes. Em desenvolvimento, o Vite encaminha `/api` para o backend local. Em produção, `VITE_API_URL` ou um proxy do servidor web deve apontar para a API publicada.
+O front-end e a API são serviços independentes no mesmo projeto Vercel. Em desenvolvimento, o Vite encaminha `/api` para o backend local sem remover o prefixo; em produção, as rewrites do `vercel.json` encaminham `/api/*` ao Fastify e todo o restante à interface. As rotas Fastify estão registradas sob `/api`.
 
 ## Estrutura do código
 

@@ -89,5 +89,5 @@ O backend usa o test runner nativo do Node (`node --test`). Veja [Desenvolviment
 
 - Use segredos fortes e exclusivos; nunca publique `.env`, `DATABASE_URL`, chaves SMTP ou `AUTH_TOKEN_SECRET`.
 - Configure `FRONTEND_URL` para o domínio público correto e SMTP antes de habilitar recuperação de senha.
-- Restrinja as origens CORS no backend ao domínio do front-end; a configuração atual aceita qualquer origem.
+- Configure `CORS_ORIGINS` com a origem HTTPS do domínio Vercel; o backend recusa origem não permitida.
 - Aplique as migrações no banco correto e mantenha backup antes de mudanças de esquema.

@@ -65,10 +65,10 @@ O inventário completo de endpoints está em [docs/api.md](../docs/api.md); os f
 
 ## Observações operacionais
 
-- O servidor atualmente escuta na porta `3000` configurada no código.
-- O CORS está aberto (`origin: true`) para desenvolvimento. Restrinja-o ao domínio publicado antes de produção.
+- O servidor local escuta na porta `3000`; todas as rotas da API são prefixadas com `/api`.
+- O CORS usa `CORS_ORIGINS`; em desenvolvimento, sem a variável, permite somente os domínios locais do Vite.
 - O endpoint de recuperação exige SMTP configurado; sem isso retorna indisponibilidade, embora registre a solicitação na fila administrativa.
 - Cadastros novos de empresa permanecem inativos até aprovação pelo root.
 - O limitador de tentativas atual é em memória por instância; em Vercel/serverless complemente com limite compartilhado no Firewall ou armazenamento distribuído.
 
-Veja o guia de [deploy na Vercel](../docs/deploy-vercel.md) para a configuração de dois projetos.
+Veja o guia de [deploy na Vercel](../docs/deploy-vercel.md) para a configuração multi-service em um único projeto.

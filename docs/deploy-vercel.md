@@ -1,13 +1,16 @@
 # Preparar o deploy na Vercel
 
-## Arquitetura recomendada para o código atual
+## Arquitetura selecionada
 
-Publique dois projetos Vercel independentes:
+O repositório usa um único projeto Vercel com dois serviços definidos em [`vercel.json`](../vercel.json):
 
-1. **Backend** com Root Directory `backend/`. A API Fastify pode ser detectada pela Vercel pelo entrypoint existente `src/server.js`.
-2. **Front-end** com Root Directory `front-end/` e preset Vite. O navegador chama o backend diretamente por HTTPS; esta arquitetura não usa BFF nem associação interna entre serviços.
+- `backend` (Fastify) recebe os caminhos públicos `/api/*`.
+- `front-end` (Vite) recebe `/` e os demais caminhos.
+- `front-end-legacy` não existe neste checkout e não foi incluído.
 
-Como o browser chama a API, o backend é público. Suas rotas protegidas continuam exigindo token e autorização no servidor; CORS apenas controla quais origens de navegador podem ler respostas.
+Ambos os serviços são alcançáveis através do roteador público do mesmo domínio. O browser chama `/api` no próprio domínio; não há BFF nem service binding. O backend é público em `/api/*`, mas suas rotas empresariais e administrativas continuam protegidas por autenticação e autorização.
+
+**Atenção ao prefixo:** a Vercel encaminha a URL original ao serviço; `/api/produtos` chega ao backend como `/api/produtos`. Por isso, todas as rotas Fastify estão registradas sob `/api`, e o proxy local do Vite preserva o prefixo.
 
 ## Preparação local
 
@@ -40,31 +43,26 @@ Como o browser chama a API, o backend é público. Suas rotas protegidas continu
 
 Não execute seed ou migração contra produção sem confirmar o banco selecionado.
 
-## Deploy do backend
+## Configuração do projeto Vercel
 
-Crie um projeto Vercel conectado ao repositório, com Root Directory `backend/`. Configure as variáveis no painel Vercel (Production e Preview conforme aplicável):
+Conecte este repositório a **um projeto Vercel** com Root Directory na raiz do repositório; o `vercel.json` coordena os dois serviços. A configuração proposta separa `/api/*` do front-end e encaminha o restante para a interface. O Fastify pode ser detectado pelo entrypoint existente `backend/src/server.js`.
+
+Configure as variáveis no painel do projeto Vercel (Production e Preview conforme aplicável):
 
 | Variável | Valor |
 |---|---|
-| `DATABASE_URL` | URL PostgreSQL do ambiente correspondente. |
+| `DATABASE_URL` | URL PostgreSQL do ambiente correspondente; consumida pelo backend. |
 | `AUTH_TOKEN_SECRET` | Segredo aleatório de pelo menos 32 caracteres; use segredo separado por ambiente. |
-| `CORS_ORIGINS` | Origem HTTPS exata do front-end, sem caminho nem barra final. |
-| `FRONTEND_URL` | URL pública do front-end usada nos links de redefinição. |
+| `CORS_ORIGINS` | Origem HTTPS exata do domínio do projeto, sem caminho nem barra final. |
+| `FRONTEND_URL` | URL pública do projeto usada nos links de redefinição. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | Credenciais do provedor de e-mail. |
+| `VITE_API_URL` | `/api`, valor público compilado no front-end. |
 
 `CORS_ORIGINS` aceita uma lista de origens separadas por vírgula. Em produção o servidor recusa iniciar se a variável estiver vazia ou se alguma origem não usar HTTPS. Não use `*`, caminhos (`/app`) nem URL do backend nessa variável.
 
-Depois do primeiro deploy, copie o domínio HTTPS do projeto do front-end para `CORS_ORIGINS` e `FRONTEND_URL` no backend e faça novo deploy. Configure também os domínios de Preview necessários, preferencialmente com alias estável; a allowlist é exata e não aceita curingas.
+Como o domínio do projeto só fica conhecido após vinculá-lo à Vercel, configure `CORS_ORIGINS` e `FRONTEND_URL` com esse domínio HTTPS antes ou depois do primeiro deploy e então redeploy. Para Preview, configure as origens HTTPS que pretende permitir; a allowlist é exata e não aceita curingas.
 
-## Deploy do front-end
-
-Crie um segundo projeto Vercel, com Root Directory `front-end/` e framework Vite. Defina:
-
-| Variável | Escopo | Valor |
-|---|---|---|
-| `VITE_API_URL` | Build/Preview/Production | URL HTTPS pública do backend, por exemplo `https://api.seudominio.com`, sem `/` final. |
-
-`VITE_API_URL` é incorporada ao bundle e é **pública**. Não coloque nela segredos, tokens, credenciais de banco ou SMTP. Não há associação de serviço nesta arquitetura: o browser acessa a URL pública da API.
+`VITE_API_URL` é incorporada ao bundle e é **pública**. O valor deve ser `/api`; não coloque segredos, tokens ou credenciais nessa variável. Não crie binding entre os serviços: a interface estática é executada no navegador e chama a rota pública `/api/*`.
 
 ## Rate limit em serverless
 
@@ -72,11 +70,11 @@ A aplicação limita login, cadastro, contato e recuperação por IP usando um c
 
 Antes de liberar tráfego público, configure limites compartilhados no Vercel Firewall/planos disponíveis ou adote um armazenamento distribuído (por exemplo, Redis) para essas rotas:
 
-- `POST /auth/login`
-- `POST /empresas`
-- `POST /contatos`
-- `POST /auth/forgot-password`
-- `POST /auth/reset-password`
+- `POST /api/auth/login`
+- `POST /api/empresas`
+- `POST /api/contatos`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
 
 Valide também alertas/custos de envio SMTP e monitore respostas `429`.
 
@@ -93,4 +91,4 @@ Valide também alertas/custos de envio SMTP e monitore respostas `429`.
 
 ## Referência Vercel
 
-A documentação oficial descreve suporte sem configuração adicional para Fastify em entrypoints como `src/server.js`: [Fastify on Vercel](https://vercel.com/docs/frameworks/backend/fastify). A Vercel transforma a aplicação em Function; limites e comportamento serverless se aplicam.
+A documentação oficial descreve suporte sem configuração adicional para Fastify em entrypoints como `src/server.js`: [Fastify on Vercel](https://vercel.com/docs/frameworks/backend/fastify). Os [serviços Vercel](https://vercel.com/docs/services) e [roteamento entre serviços](https://vercel.com/docs/services/routing) são recursos Beta. O rewrite da API preserva o prefixo `/api`; veja o `registerApiRoutes` do backend.

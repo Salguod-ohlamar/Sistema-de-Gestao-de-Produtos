@@ -2,7 +2,8 @@
 
 ## Convenções
 
-- Base local: `http://localhost:3000`; no front-end local a URL é `/api` via proxy Vite.
+- Base local: `http://localhost:3000/api`; no front-end local a URL `/api` é encaminhada pelo proxy Vite sem remover o prefixo.
+- Em todos os caminhos da tabela abaixo, acrescente o prefixo `/api` (por exemplo, `POST /api/auth/login`).
 - Corpos e respostas usam JSON, salvo respostas `204` sem conteúdo.
 - Rotas protegidas recebem `Authorization: Bearer <accessToken>`.
 - Token de acesso expira em oito horas.

@@ -20,9 +20,9 @@ npm ci
 npm run dev
 ```
 
-O Vite serve a aplicação em `http://localhost:5173`. Por padrão, `VITE_API_URL=/api`; `vite.config.ts` encaminha esse prefixo para `http://localhost:3000` e o remove ao chamar o backend.
+O Vite serve a aplicação em `http://localhost:5173`. Por padrão, `VITE_API_URL=/api`; `vite.config.ts` encaminha esse prefixo para `http://localhost:3000` e o preserva, igual ao roteamento multi-service da Vercel.
 
-Em produção, defina `VITE_API_URL` para a URL da API ou configure um proxy `/api` no servidor web.
+Em produção na Vercel, mantenha `VITE_API_URL=/api`; o roteador multi-service encaminha essas chamadas ao Fastify.
 
 ## Variáveis de ambiente
 
