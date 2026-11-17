@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
 describe('NewProductView business calculations and validation', () => {
-  it('calcula margem de lucro e markup corretamente para os valores do design', () => {
+  it('calcula margem de lucro e markup corretamente para os valores de exemplo', () => {
     const salePrice = 540.0
     const costPrice = 310.0
 
@@ -42,9 +42,9 @@ describe('NewProductView business calculations and validation', () => {
 
   it('valida o preenchimento de todos os 6 campos mandatórios', () => {
     const formData = {
-      name: 'Teclado Mecânico ErgoPro',
-      sku: 'KBD-ERG-99',
-      category: 'Eletrônicos & Periféricos',
+      name: 'Produto de teste',
+      sku: 'TST-01',
+      category: 'Hardware & Componentes',
       salePrice: 540.0,
       currentStock: 25,
       minStock: 30,

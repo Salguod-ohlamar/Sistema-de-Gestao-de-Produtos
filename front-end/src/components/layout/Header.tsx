@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Search, Bell } from 'lucide-react'
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { useAuth } from '@/features/auth/context'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { ProfileDialog } from './ProfileDialog'
 
 interface HeaderProps {
   onOpenCommand?: () => void
@@ -10,6 +12,7 @@ interface HeaderProps {
 
 export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
   const { user } = useAuth()
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const displayName = user?.name ?? 'Usuário'
   const initials = displayName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
   return (
@@ -55,7 +58,12 @@ export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
         <div className="h-6 w-px bg-border" />
 
         {/* Mini perfil do Header */}
-        <div className="flex items-center gap-2.5 pl-1 cursor-pointer">
+        <button
+          type="button"
+          onClick={() => setIsProfileOpen(true)}
+          aria-label="Ver meu perfil"
+          className="flex items-center gap-2.5 pl-1 cursor-pointer rounded-lg"
+        >
           <div className="relative shrink-0">
             <Avatar className="w-8 h-8 border border-border">
               <AvatarFallback className="bg-surface-elevated text-primary font-semibold text-xs">
@@ -67,8 +75,14 @@ export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
           <span className="text-sm font-medium text-text-primary hidden lg:inline-block">
             {displayName}
           </span>
-        </div>
+        </button>
       </div>
+      <ProfileDialog
+        user={user}
+        initials={initials}
+        open={isProfileOpen}
+        onOpenChange={setIsProfileOpen}
+      />
     </header>
   )
 }

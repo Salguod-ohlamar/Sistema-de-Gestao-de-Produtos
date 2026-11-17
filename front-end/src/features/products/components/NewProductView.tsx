@@ -13,60 +13,65 @@ import {
   BellRing,
   ImagePlus,
   UploadCloud,
-  Trash2,
-  Plus,
   Eye,
   Store,
   Wallet,
   CheckCircle2,
   Save,
-  AlertTriangle,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { formatCurrency } from '@/lib/utils/formatters'
+import { ApiError } from '@/lib/api'
 import { toast } from 'sonner'
+import { useCreateProduct } from '../hooks/useCreateProduct'
+import {
+  BARCODE_MAX_LENGTH,
+  EMPTY_PRODUCT_FORM,
+  buildCreateProductPayload,
+  parseNumber,
+  validateNewProduct,
+  type NewProductForm,
+} from '../newProductForm'
 
 interface NewProductViewProps {
   onBack?: () => void
 }
 
-export function NewProductView({ onBack }: NewProductViewProps) {
-  // Estado do Formulário
-  const [name, setName] = useState('Teclado Mecânico ErgoPro')
-  const [sku, setSku] = useState('KBD-ERG-99')
-  const [barcode, setBarcode] = useState('7898956421034')
-  const [category, setCategory] = useState('Eletrônicos & Periféricos')
-  const [brand, setBrand] = useState('Nexora Gear')
-  const [description, setDescription] = useState(
-    'Teclado mecânico com layout ergonômico dividido, switches táteis silenciosos com lubrificação de fábrica, iluminação per-key customizável e conectividade dual wireless 2.4GHz e Bluetooth 5.2 de ultra-baixa latência.'
-  )
-  const [salePrice, setSalePrice] = useState<number>(540.0)
-  const [costPrice, setCostPrice] = useState<number>(310.0)
-  const [allowDiscount, setAllowDiscount] = useState<boolean>(true)
-  const [currentStock, setCurrentStock] = useState<number>(25)
-  const [minStock, setMinStock] = useState<number>(30)
-  const [unit, setUnit] = useState('un (Unidade)')
-  const [alertMinStock, setAlertMinStock] = useState<boolean>(true)
-  const [status, setStatus] = useState<'ativo' | 'rascunho' | 'inativo'>('ativo')
-  const [publicCatalog, setPublicCatalog] = useState<boolean>(true)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
+const NOT_AVAILABLE = 'ainda não está disponível'
 
-  // Imagens da galeria
-  const [images, setImages] = useState<string[]>([
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBOQ92dPaHASDQEhNOTlBeSbLP1joS8-zBnfgHg-qr9nuKciL7HASe3WTpJy9xJSAR2aorXLbfx5nE5fb2b6hM02zuOE39x20Y6rKY54TuiWJmE_tRt3vhyGX1hA1YjMvXHErjVoUvEp7Y-yRDrBI55wIcjvXavXLllhT5WbwkqYk2R2NjthZRbtOqnGlfQkacVEtoSbSbZULulRkrQqlf3sPneCo6a3B5HlVI-GX2j7fBCb99v0evJ',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuDWhf4zdgilhsa0cnfyX-9Sdv6CCfmCY39RdjmX9798e-CZtQsKU5zvCb8Ei-cbavdn61k3vklui5aTsSmCcRjuFTPvAYLydxIHAHt9XJEXoEWJMGnIZphXUDMsnLWw9qJsOq2ODHkfX73PEMhe2f5xiDtE91nY_VZO2vCxIGQFovK6NMKZ3BF68CjwnRnxfPq-rp5cs96ct5s452kCrwI1aSJMVHmA1PHf9VX2k27ESKxb4dX0qI0R',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuDHNJ9Jv-oKdXnELEfsAFURhIT_5AX0Q-f-oA8jU6r6PaPqY4QRgl4X4JQoSSiOuEIT500xs0yCs213ODXIBLUgczT7bjYx1xyIxTScD9-LIIQGnZCOwqctLlQ2481oCt7J7mwf8EJnKRfa2_DP14m762D_tTYMkVL-3QENpjer2Opp-zzfGnrHrhPL1zfqdKLdOnxrtykUixDtMz-HlybbkQIMI4GosCPiq1OJp3lFG3tBqnIp2Lx1',
-  ])
+function notAvailable(feature: string) {
+  toast.info(`${feature} ${NOT_AVAILABLE}.`)
+}
+
+/** Número do input para os cálculos ao vivo (inválido/vazio conta como 0). */
+function toNumber(value: string): number {
+  const n = parseNumber(value)
+  return Number.isFinite(n) ? n : 0
+}
+
+export function NewProductView({ onBack }: NewProductViewProps) {
+  const createProduct = useCreateProduct()
+  const isSaving = createProduct.isPending
+
+  // Estado do Formulário (começa vazio)
+  const [name, setName] = useState(EMPTY_PRODUCT_FORM.name)
+  const [sku, setSku] = useState(EMPTY_PRODUCT_FORM.sku)
+  const [barcode, setBarcode] = useState(EMPTY_PRODUCT_FORM.barcode)
+  const [category, setCategory] = useState(EMPTY_PRODUCT_FORM.category)
+  const [brand, setBrand] = useState(EMPTY_PRODUCT_FORM.brand)
+  const [salePriceInput, setSalePriceInput] = useState(EMPTY_PRODUCT_FORM.salePrice)
+  const [costPriceInput, setCostPriceInput] = useState(EMPTY_PRODUCT_FORM.costPrice)
+  const [currentStockInput, setCurrentStockInput] = useState(EMPTY_PRODUCT_FORM.currentStock)
+  const [minStockInput, setMinStockInput] = useState(EMPTY_PRODUCT_FORM.minStock)
+  const [unit, setUnit] = useState(EMPTY_PRODUCT_FORM.unit)
+
+  const salePrice = toNumber(salePriceInput)
+  const costPrice = toNumber(costPriceInput)
+  const currentStock = toNumber(currentStockInput)
+  const minStock = toNumber(minStockInput)
 
   // Cálculos financeiros e de estoque
   const marginPercent =
@@ -74,7 +79,8 @@ export function NewProductView({ onBack }: NewProductViewProps) {
   const markup = costPrice > 0 ? (salePrice / costPrice).toFixed(2) : '0,00'
   const totalStockValue = currentStock * salePrice
   const projectedProfit = currentStock * (salePrice - costPrice)
-  const isStockMinError = minStock > currentStock
+  // Aviso (não bloqueia): o produto já entraria com estoque baixo
+  const isStockMinError = minStockInput !== '' && minStock > currentStock
 
   // Contador de campos mandatórios (6 campos obrigatórios)
   const mandatoryCount = [
@@ -82,8 +88,8 @@ export function NewProductView({ onBack }: NewProductViewProps) {
     sku.trim().length > 0,
     category.trim().length > 0,
     salePrice > 0,
-    currentStock >= 0,
-    minStock >= 0,
+    currentStockInput.trim() !== '' && currentStock >= 0,
+    minStockInput.trim() !== '' && minStock >= 0,
   ].filter(Boolean).length
 
   // Geração automática de SKU
@@ -99,32 +105,38 @@ export function NewProductView({ onBack }: NewProductViewProps) {
     toast.info(`Novo SKU gerado: ${generated}`)
   }
 
-  // Deletar imagem da galeria
-  const handleRemoveImage = (index: number) => {
-    if (images.length <= 1) {
-      toast.warning('O produto deve manter ao menos uma imagem principal.')
-      return
-    }
-    setImages(images.filter((_, i) => i !== index))
-    toast.info('Imagem removida da galeria.')
-  }
-
-  const handleSaveDraft = () => {
-    toast.success('Rascunho salvo com sucesso!')
-  }
-
   const handleSaveProduct = () => {
-    if (isStockMinError) {
-      toast.error('Corrija os erros de validação antes de salvar o produto.')
+    if (isSaving) return
+
+    const form: NewProductForm = {
+      name,
+      sku,
+      category,
+      brand,
+      barcode,
+      unit,
+      salePrice: salePriceInput,
+      costPrice: costPriceInput,
+      currentStock: currentStockInput,
+      minStock: minStockInput,
+    }
+    const validationError = validateNewProduct(form)
+    if (validationError) {
+      toast.error(validationError)
       return
     }
-    toast.success('Produto salvo e sincronizado com sucesso no catálogo!')
-  }
 
-  const handleDeleteConfirm = () => {
-    setIsDeleteDialogOpen(false)
-    toast.success(`Produto ${sku} excluído permanentemente.`)
-    onBack?.()
+    createProduct.mutate(buildCreateProductPayload(form), {
+      onSuccess: (product) => {
+        toast.success(`Produto ${product?.name ?? form.name.trim()} cadastrado com sucesso.`)
+        onBack?.()
+      },
+      onError: (error) => {
+        toast.error(
+          error instanceof ApiError ? error.message : 'Não foi possível salvar o produto.'
+        )
+      },
+    })
   }
 
   return (
@@ -221,6 +233,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                     id="product-name"
                     type="text"
                     value={name}
+                    placeholder="Ex.: Caneta esferográfica azul"
                     onChange={(e) => setName(e.target.value)}
                     className="w-full h-11 px-3.5 bg-surface-1 rounded-lg text-text-primary text-sm placeholder:text-text-muted border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                   />
@@ -261,13 +274,16 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                       htmlFor="product-barcode"
                       className="block text-xs text-text-secondary font-medium mb-1.5"
                     >
-                      Código de barras (EAN-13)
+                      Código de barras (até {BARCODE_MAX_LENGTH} dígitos)
                     </label>
                     <div className="relative flex items-center">
                       <Barcode className="absolute left-3 text-text-muted h-4 w-4" />
                       <input
                         id="product-barcode"
                         type="text"
+                        inputMode="numeric"
+                        maxLength={BARCODE_MAX_LENGTH}
+                        placeholder="Opcional"
                         value={barcode}
                         onChange={(e) => setBarcode(e.target.value)}
                         className="w-full h-11 pl-10 pr-3.5 bg-surface-1 rounded-lg text-text-primary font-mono text-sm tracking-wider border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
@@ -293,6 +309,9 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         onChange={(e) => setCategory(e.target.value)}
                         className="w-full h-11 pl-3.5 pr-10 bg-surface-1 rounded-lg text-text-primary text-sm appearance-none border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer"
                       >
+                        <option value="" disabled>
+                          Selecione a categoria
+                        </option>
                         <option value="Eletrônicos & Periféricos">Eletrônicos & Periféricos</option>
                         <option value="Hardware & Componentes">Hardware & Componentes</option>
                         <option value="Acessórios de Ergonomia">Acessórios de Ergonomia</option>
@@ -313,6 +332,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                     <input
                       id="product-brand"
                       type="text"
+                      placeholder="Opcional"
                       value={brand}
                       onChange={(e) => setBrand(e.target.value)}
                       className="w-full h-11 px-3.5 bg-surface-1 rounded-lg text-text-primary text-sm placeholder:text-text-muted border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
@@ -330,22 +350,16 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                       Descrição técnica
                     </label>
                     <span className="font-mono text-[11px] text-text-muted">
-                      HTML limpo suportado
+                      {NOT_AVAILABLE}
                     </span>
                   </div>
-                  <div className="relative">
-                    <textarea
-                      id="product-desc"
-                      rows={4}
-                      value={description}
-                      maxLength={500}
-                      onChange={(e) => setDescription(e.target.value)}
-                      className="w-full min-h-[120px] p-3.5 pb-8 bg-surface-1 rounded-lg text-text-primary text-sm placeholder:text-text-muted border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all resize-none leading-relaxed"
-                    />
-                    <div className="absolute bottom-2.5 right-3 px-1.5 py-0.5 rounded bg-surface-elevated font-mono text-[11px] text-text-muted select-none border border-border">
-                      <span className="text-text-secondary">{description.length}</span>/500
-                    </div>
-                  </div>
+                  <textarea
+                    id="product-desc"
+                    rows={3}
+                    disabled
+                    placeholder={`A descrição do produto ${NOT_AVAILABLE}.`}
+                    className="w-full min-h-[88px] p-3.5 bg-surface-1 rounded-lg text-text-primary text-sm placeholder:text-text-muted border border-border resize-none leading-relaxed opacity-60 cursor-not-allowed"
+                  />
                 </div>
               </div>
             </section>
@@ -383,8 +397,10 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         id="sale-price"
                         type="number"
                         step="0.01"
-                        value={salePrice}
-                        onChange={(e) => setSalePrice(parseFloat(e.target.value) || 0)}
+                        min="0"
+                        placeholder="0,00"
+                        value={salePriceInput}
+                        onChange={(e) => setSalePriceInput(e.target.value)}
                         className="w-full h-11 pl-11 pr-3.5 bg-surface-1 rounded-lg text-text-primary font-mono text-[15px] font-semibold tracking-wide border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all tabular-nums"
                       />
                     </div>
@@ -406,8 +422,10 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         id="cost-price"
                         type="number"
                         step="0.01"
-                        value={costPrice}
-                        onChange={(e) => setCostPrice(parseFloat(e.target.value) || 0)}
+                        min="0"
+                        placeholder="0,00"
+                        value={costPriceInput}
+                        onChange={(e) => setCostPriceInput(e.target.value)}
                         className="w-full h-11 pl-11 pr-3.5 bg-surface-1 rounded-lg text-text-primary font-mono text-[15px] font-semibold tracking-wide border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all tabular-nums"
                       />
                     </div>
@@ -452,16 +470,11 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         Permitir desconto no PDV
                       </label>
                       <p className="text-xs text-text-secondary mt-0.5">
-                        Permite que vendedores apliquem até 10% de desconto na tela de venda sem autorização de gerente.
+                        Desconto por produto no PDV {NOT_AVAILABLE}.
                       </p>
                     </div>
                   </div>
-                  <Switch
-                    id="toggle-discount"
-                    checked={allowDiscount}
-                    onCheckedChange={setAllowDiscount}
-                    className="ml-4"
-                  />
+                  <Switch id="toggle-discount" checked={false} disabled className="ml-4" />
                 </div>
               </div>
             </section>
@@ -495,8 +508,11 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                       <input
                         id="stock-qty"
                         type="number"
-                        value={currentStock}
-                        onChange={(e) => setCurrentStock(parseInt(e.target.value) || 0)}
+                        step="1"
+                        min="0"
+                        placeholder="0"
+                        value={currentStockInput}
+                        onChange={(e) => setCurrentStockInput(e.target.value)}
                         className="w-full h-11 pl-3.5 pr-8 bg-surface-1 rounded-lg text-text-primary font-mono text-[15px] font-semibold tracking-wide border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all tabular-nums"
                       />
                       <span className="absolute right-3 font-mono text-[11px] text-text-muted">
@@ -524,8 +540,11 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                       <input
                         id="stock-min"
                         type="number"
-                        value={minStock}
-                        onChange={(e) => setMinStock(parseInt(e.target.value) || 0)}
+                        step="1"
+                        min="0"
+                        placeholder="0"
+                        value={minStockInput}
+                        onChange={(e) => setMinStockInput(e.target.value)}
                         className={`w-full h-11 pl-3.5 pr-8 rounded-lg font-mono text-[15px] font-semibold tracking-wide transition-all tabular-nums ${
                           isStockMinError
                             ? 'bg-destructive/10 text-destructive border-2 border-destructive focus:ring-destructive focus:outline-none'
@@ -542,7 +561,7 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                     </div>
                     {isStockMinError && (
                       <p className="mt-1.5 text-xs text-destructive flex items-start gap-1 leading-tight font-medium">
-                        <span>O estoque mínimo deve ser menor que a quantidade atual</span>
+                        <span>Estoque atual abaixo do mínimo: o produto entra como estoque baixo</span>
                       </p>
                     )}
                   </div>
@@ -562,10 +581,10 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         onChange={(e) => setUnit(e.target.value)}
                         className="w-full h-11 pl-3.5 pr-10 bg-surface-1 rounded-lg text-text-primary text-sm appearance-none border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer"
                       >
-                        <option value="un (Unidade)">un (Unidade)</option>
-                        <option value="cx (Caixa c/ 10)">cx (Caixa c/ 10)</option>
-                        <option value="pct (Pacote)">pct (Pacote)</option>
-                        <option value="kg (Quilograma)">kg (Quilograma)</option>
+                        <option value="UN">un (Unidade)</option>
+                        <option value="CX">cx (Caixa)</option>
+                        <option value="PCT">pct (Pacote)</option>
+                        <option value="KG">kg (Quilograma)</option>
                       </select>
                       <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted h-4 w-4" />
                     </div>
@@ -587,16 +606,12 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                         Alertar quando atingir o estoque mínimo
                       </label>
                       <p className="text-xs text-text-secondary mt-0.5">
-                        Envia um alerta prioritário ao cockpit de compras e gera sugestão de ordem de reposição.
+                        O produto aparece como “Estoque baixo” em Produtos e no Dashboard ao
+                        atingir o mínimo. Notificações automáticas {NOT_AVAILABLE}.
                       </p>
                     </div>
                   </div>
-                  <Switch
-                    id="toggle-alert"
-                    checked={alertMinStock}
-                    onCheckedChange={setAlertMinStock}
-                    className="ml-4"
-                  />
+                  <Switch id="toggle-alert" checked={false} disabled className="ml-4" />
                 </div>
               </div>
             </section>
@@ -615,75 +630,23 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                     Imagem do produto
                   </h3>
                 </div>
-                <span className="font-mono text-[11px] text-text-muted">
-                  {images.length} / 8 slots
-                </span>
               </div>
 
-              {/* Área de Upload Tracejada */}
-              <div className="w-full h-44 rounded-xl bg-surface-1 p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-elevated/50 transition-all group relative overflow-hidden border border-dashed border-border-highlight">
-                <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center text-primary mb-2.5 group-hover:scale-105 group-hover:bg-primary/25 transition-all shadow-[0_0_16px_rgba(47,107,255,0.25)]">
+              {/* Upload de imagem: sem suporte no backend */}
+              <button
+                type="button"
+                onClick={() => notAvailable('O envio de imagem')}
+                aria-disabled="true"
+                className="w-full h-36 rounded-xl bg-surface-1 p-4 flex flex-col items-center justify-center text-center relative overflow-hidden border border-dashed border-border-highlight opacity-60 cursor-not-allowed"
+              >
+                <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center text-primary mb-2.5">
                   <UploadCloud className="h-6 w-6" />
                 </div>
                 <p className="text-sm text-text-primary font-semibold leading-snug">
-                  Arraste uma imagem ou{' '}
-                  <span className="text-primary underline underline-offset-2">clique</span>
+                  Envio de imagem
                 </p>
-                <p className="text-[11px] text-text-muted mt-1 font-mono">
-                  PNG ou JPG, até 5 MB (1200×1200px rec.)
-                </p>
-              </div>
-
-              {/* Miniaturas (56px) */}
-              <div className="mt-4 flex items-center gap-3">
-                {images.map((imgSrc, index) => {
-                  const isPrimary = index === 0
-                  return (
-                    <div
-                      key={index}
-                      className={`relative w-14 h-14 rounded-lg bg-surface-1 overflow-hidden shadow-md shrink-0 group ${
-                        isPrimary
-                          ? 'ring-2 ring-primary'
-                          : 'border border-border'
-                      }`}
-                    >
-                      <img
-                        src={imgSrc}
-                        alt={`Foto do produto ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      {isPrimary ? (
-                        <div className="absolute bottom-0 inset-x-0 bg-primary text-text-primary font-mono text-[8px] text-center uppercase tracking-tight py-0.5 font-bold">
-                          Principal
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveImage(index)}
-                          aria-label="Remover imagem"
-                          className="absolute inset-0 bg-background/80 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 flex items-center justify-center text-destructive transition-opacity cursor-pointer"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                  )
-                })}
-
-                {/* Botão Adicionar Mais */}
-                {images.length < 8 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      toast.info('Selecione uma imagem do computador para upload.')
-                    }}
-                    title="Adicionar outra imagem"
-                    className="w-14 h-14 rounded-lg bg-surface-1 hover:bg-surface-elevated text-text-muted hover:text-text-primary flex items-center justify-center transition-all shrink-0 border border-border cursor-pointer"
-                  >
-                    <Plus className="h-5 w-5" />
-                  </button>
-                )}
-              </div>
+                <p className="text-[11px] text-text-muted mt-1 font-mono">{NOT_AVAILABLE}</p>
+              </button>
             </section>
 
             {/* CARD 2: Status e Visibilidade */}
@@ -698,60 +661,23 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                 <span className="w-2 h-2 rounded-full bg-cyan-accent shadow-[0_0_6px_rgba(56,189,248,0.7)]" />
               </div>
 
-              {/* Segmented Control de 3 opções */}
-              <div className="p-1 rounded-lg bg-surface-1 flex items-center gap-1 mb-4 border border-border">
-                <button
-                  type="button"
-                  onClick={() => setStatus('ativo')}
-                  className={`flex-1 py-1.5 px-3 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    status === 'ativo'
-                      ? 'bg-surface-elevated text-text-primary shadow-sm ring-1 ring-primary'
-                      : 'text-text-secondary hover:text-text-primary'
-                  }`}
-                >
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
-                  <span>Ativo</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStatus('rascunho')}
-                  className={`flex-1 py-1.5 px-3 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    status === 'rascunho'
-                      ? 'bg-surface-elevated text-text-primary shadow-sm ring-1 ring-status-warning'
-                      : 'text-text-secondary hover:text-text-primary'
-                  }`}
-                >
-                  <span>Rascunho</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStatus('inativo')}
-                  className={`flex-1 py-1.5 px-3 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    status === 'inativo'
-                      ? 'bg-surface-elevated text-text-primary shadow-sm ring-1 ring-destructive'
-                      : 'text-text-secondary hover:text-text-primary'
-                  }`}
-                >
-                  <span>Inativo</span>
-                </button>
+              {/* O backend cadastra todo produto como ativo e disponível no PDV */}
+              <div className="p-3 rounded-lg bg-surface-1 flex items-center gap-2 mb-4 border border-border text-xs">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-text-primary font-semibold">Ativo</span>
+                <span className="text-text-muted">· disponível no PDV após salvar</span>
               </div>
 
-              {/* Switch: Exibir no catálogo público */}
-              <div className="flex items-center justify-between p-3 rounded-lg bg-surface-1 border border-border">
+              {/* Switch: Exibir no catálogo público (sem suporte no backend) */}
+              <div className="flex items-center justify-between p-3 rounded-lg bg-surface-1 border border-border opacity-60">
                 <div className="flex items-center gap-2.5">
                   <Store className="h-4 w-4 text-primary" />
-                  <label
-                    htmlFor="toggle-catalog"
-                    className="text-xs text-text-primary font-medium cursor-pointer"
-                  >
-                    Exibir no catálogo público
+                  <label htmlFor="toggle-catalog" className="text-xs text-text-primary font-medium">
+                    Catálogo público{' '}
+                    <span className="text-text-muted font-normal">({NOT_AVAILABLE})</span>
                   </label>
                 </div>
-                <Switch
-                  id="toggle-catalog"
-                  checked={publicCatalog}
-                  onCheckedChange={setPublicCatalog}
-                />
+                <Switch id="toggle-catalog" checked={false} disabled />
               </div>
             </section>
 
@@ -770,15 +696,8 @@ export function NewProductView({ onBack }: NewProductViewProps) {
               {/* Card do Produto Simulado */}
               <div className="p-3.5 rounded-lg bg-surface-1/90 backdrop-blur-md mb-4 border border-border">
                 <div className="flex gap-3 items-center">
-                  <div className="w-14 h-14 rounded-lg bg-surface-elevated overflow-hidden shrink-0 border border-border">
-                    <img
-                      src={
-                        images[0] ||
-                        'https://lh3.googleusercontent.com/aida-public/AB6AXuDsUyTzo-198ukN88n6g0Xqk5tmBCJLwwQJFBZ0yTxvls6Z6gh124ukxrD0EGuluucxhsfBcIdXVUTFUTzGRVqYQpiwx6I5Suk5X9xdKFr3T7xQ7TNihKucT_ktnuwasnmb7Wo319EDIQi5Jo_C0qJ6dr_4-i_Mk7fHxyxZA67Awd8ycxHqs8EOFwaQy_km4356vpJ4atnKF5cu9X9yyGKGf17bmMERCd8AvN1ObJ6RJCbzmxLyqeZx'
-                      }
-                      alt={name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-14 h-14 rounded-lg bg-surface-elevated overflow-hidden shrink-0 border border-border flex items-center justify-center text-text-muted">
+                    <Package className="h-6 w-6" strokeWidth={1.5} />
                   </div>
                   <div className="flex flex-col min-w-0 flex-1">
                     <span className="font-mono text-[11px] text-cyan-accent truncate">
@@ -822,25 +741,6 @@ export function NewProductView({ onBack }: NewProductViewProps) {
                   </span>
                 </div>
               </div>
-
-              {/* Mini Sparkline Decorativo em SVG */}
-              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-text-muted">
-                <span className="font-mono text-[10px] uppercase">
-                  Giro estimado (30d)
-                </span>
-                <div className="w-24 h-5">
-                  <svg className="w-full h-full text-primary" fill="none" viewBox="0 0 100 20">
-                    <path
-                      d="M0 16 L20 13 L40 15 L60 8 L80 10 L100 2"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                    />
-                    <circle cx="100" cy="2" fill="currentColor" r="2.5" />
-                  </svg>
-                </div>
-              </div>
             </section>
           </div>
         </div>
@@ -850,49 +750,37 @@ export function NewProductView({ onBack }: NewProductViewProps) {
       {/* BARRA DE AÇÕES FIXA NO RODAPÉ              */}
       {/* ========================================== */}
       <div className="fixed bottom-0 left-[248px] right-0 h-[72px] bg-surface-1/95 backdrop-blur-md z-40 px-8 flex items-center justify-between shadow-[0_-8px_24px_rgba(0,0,0,0.6)] border-t border-border">
-        {/* Indicador Esquerdo de Modificações */}
+        {/* Indicador Esquerdo */}
         <div className="flex items-center gap-3">
           <div className="relative flex items-center justify-center w-3 h-3">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-cyan-accent opacity-75 animate-ping" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-accent" />
           </div>
           <span className="text-sm text-text-primary font-medium">
-            Alterações não salvas
-          </span>
-          <span className="hidden sm:inline-block font-mono text-[11px] text-text-muted ml-1">
-            · Última sincronização há 4 min
+            {isSaving ? 'Salvando produto…' : 'Produto ainda não salvo'}
           </span>
         </div>
 
         {/* Botões de Ação Direita */}
         <div className="flex items-center gap-3">
-          {/* Botão Excluir Produto (Destructive) */}
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            className="h-10 px-3.5 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/30 hover:border-destructive/60 text-sm font-medium transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span>Excluir produto</span>
-          </Button>
-
           {/* Botão Cancelar */}
           <Button
             type="button"
             variant="ghost"
             onClick={onBack}
+            disabled={isSaving}
             className="h-10 px-4 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-2 text-sm transition-all cursor-pointer"
           >
             Cancelar
           </Button>
 
-          {/* Botão Salvar Rascunho */}
+          {/* Botão Salvar Rascunho (sem suporte no backend) */}
           <Button
             type="button"
             variant="outline"
-            onClick={handleSaveDraft}
-            className="h-10 px-4 rounded-lg bg-surface-elevated hover:bg-surface-elevated/80 text-text-primary border-border text-sm transition-all flex items-center gap-1.5 cursor-pointer"
+            onClick={() => notAvailable('Salvar rascunho')}
+            aria-disabled="true"
+            title={`Salvar rascunho ${NOT_AVAILABLE}`}
+            className="h-10 px-4 rounded-lg bg-surface-elevated text-text-primary border-border text-sm transition-all flex items-center gap-1.5 opacity-60 cursor-not-allowed"
           >
             <Save className="h-4 w-4 text-text-muted" />
             <span>Salvar rascunho</span>
@@ -902,59 +790,18 @@ export function NewProductView({ onBack }: NewProductViewProps) {
           <Button
             type="button"
             onClick={handleSaveProduct}
-            className="h-10 px-6 rounded-lg bg-primary hover:bg-primary-hover text-text-primary text-sm font-semibold shadow-[0_0_16px_rgba(47,107,255,0.4)] hover:shadow-[0_0_20px_rgba(47,107,255,0.6)] transition-all flex items-center gap-2 cursor-pointer"
+            disabled={isSaving}
+            className="h-10 px-6 rounded-lg bg-primary hover:bg-primary-hover text-text-primary text-sm font-semibold shadow-[0_0_16px_rgba(47,107,255,0.4)] hover:shadow-[0_0_20px_rgba(47,107,255,0.6)] transition-all flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
           >
-            <CheckCircle2 className="h-4 w-4" />
-            <span>Salvar produto</span>
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckCircle2 className="h-4 w-4" />
+            )}
+            <span>{isSaving ? 'Salvando…' : 'Salvar produto'}</span>
           </Button>
         </div>
       </div>
-
-      {/* Modal de Confirmação de Exclusão */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="max-w-md bg-surface-2 border border-border p-6 shadow-2xl">
-          <DialogHeader className="flex flex-row items-center gap-3 space-y-0 text-left">
-            <div className="w-11 h-11 rounded-full bg-destructive/15 border border-destructive/30 flex items-center justify-center text-destructive shrink-0">
-              <AlertTriangle className="h-6 w-6" />
-            </div>
-            <div>
-              <DialogTitle className="font-headline text-lg font-bold text-text-primary">
-                Excluir este produto?
-              </DialogTitle>
-              <DialogDescription className="text-xs text-text-secondary mt-0.5">
-                Esta ação não pode ser desfeita no catálogo.
-              </DialogDescription>
-            </div>
-          </DialogHeader>
-
-          <div className="p-3.5 rounded-lg bg-surface-1 border border-border my-2 text-xs text-text-secondary leading-relaxed">
-            <p>
-              O produto <strong className="text-text-primary">{name}</strong> (
-              <span className="font-mono text-primary">{sku}</span>) e seus vínculos com o
-              estoque serão permanentemente removidos de todos os canais de venda.
-            </p>
-          </div>
-
-          <DialogFooter className="flex items-center justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-              className="h-10 px-4 rounded-lg bg-surface-elevated text-text-primary border-border hover:bg-surface-elevated/80 text-sm cursor-pointer"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="button"
-              onClick={handleDeleteConfirm}
-              className="h-10 px-5 rounded-lg bg-destructive hover:bg-destructive/90 text-text-primary text-sm font-semibold shadow-md flex items-center gap-2 cursor-pointer"
-            >
-              <Trash2 className="h-4 w-4" />
-              <span>Sim, excluir</span>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

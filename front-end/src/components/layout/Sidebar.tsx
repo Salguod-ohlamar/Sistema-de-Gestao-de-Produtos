@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   LayoutDashboard,
   Package,
@@ -15,6 +16,7 @@ import { useAuth } from '@/features/auth/context'
 import { NexoraBrand } from '@/components/common/NexoraLogo'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { ProfileDialog } from './ProfileDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +33,7 @@ interface SidebarProps {
 
 export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps) {
   const { user } = useAuth()
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const displayName = user?.name ?? 'Usuário'
   const displayEmail = user?.email ?? ''
   const displayRole = user?.role ?? ''
@@ -117,7 +120,12 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
       <div className="p-3 border-t border-border bg-surface-1">
         <DropdownMenu>
           <div className="flex items-center justify-between p-2 rounded-xl bg-surface-2/60 border border-border hover:border-border-highlight transition-colors">
-            <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              type="button"
+              onClick={() => setIsProfileOpen(true)}
+              aria-label="Ver meu perfil"
+              className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer rounded-lg"
+            >
               <div className="relative shrink-0">
                 <Avatar className="w-9 h-9 border border-border">
                   <AvatarFallback className="bg-surface-elevated text-primary font-semibold text-xs">
@@ -134,7 +142,7 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
                   {displayRole}
                 </span>
               </div>
-            </div>
+            </button>
 
             <DropdownMenuTrigger asChild>
               <button
@@ -163,7 +171,10 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-border" />
-            <DropdownMenuItem className="cursor-pointer gap-2.5 text-text-secondary hover:text-text-primary">
+            <DropdownMenuItem
+              onSelect={() => setIsProfileOpen(true)}
+              className="cursor-pointer gap-2.5 text-text-secondary hover:text-text-primary"
+            >
               <UserCheck className="h-4 w-4 text-primary" strokeWidth={1.5} />
               <span>Ver meu perfil</span>
             </DropdownMenuItem>
@@ -176,6 +187,12 @@ export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps)
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <ProfileDialog
+          user={user}
+          initials={initials}
+          open={isProfileOpen}
+          onOpenChange={setIsProfileOpen}
+        />
       </div>
     </aside>
   )
