@@ -81,6 +81,7 @@ O backend usa o test runner nativo do Node (`node --test`). Veja [Desenvolviment
 - [Arquitetura e fluxos](./docs/arquitetura.md)
 - [Referência da API](./docs/api.md)
 - [Banco de dados e migrações](./docs/banco-de-dados.md)
+- [Preparar deploy na Vercel](./docs/deploy-vercel.md)
 - [Backend: configuração e execução](./backend/README.md)
 - [Front-end: configuração e execução](./front-end/README.md)
 

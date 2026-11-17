@@ -87,8 +87,9 @@ Empresas inativas não conseguem acessar rotas empresariais.
 
 ## Pontos operacionais
 
-- `server.js` atualmente permite qualquer origem CORS para desenvolvimento; restrinja a origem antes de produção.
+- O backend lê `CORS_ORIGINS`: origens exatas separadas por vírgula; em produção só aceita HTTPS e a API falha ao iniciar se não houver configuração.
 - A porta do backend está fixada em `3000`.
 - SMTP precisa estar configurado para que a recuperação envie mensagens.
 - A API depende das migrações aplicadas; ela não as executa ao iniciar.
+- Login, cadastro e outros formulários públicos usam limitadores em memória por instância; serverless requer uma camada global adicional.
 - Os testes cobrem unidades e integrações front-end simuladas; não substituem validação no banco ou no serviço SMTP publicado.

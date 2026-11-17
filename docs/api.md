@@ -13,13 +13,13 @@
 
 | Método e caminho | Acesso | Descrição |
 |---|---|---|
-| `POST /auth/login` | Público | Login de root, empresa ou colaborador. Corpo: `{ "email", "password" }`. Retorna `accessToken`, `principalType` e dados de perfil. |
-| `POST /empresas` | Público | Solicita cadastro. Campos: `trade_name`, `legal_name`, `email`, `cnpj` (14 dígitos), `phone` (10/11 dígitos), `segment` (`technology`, `retail`, `services`, `industry`) e `password` (mínimo 8). Retorna `202` e `pendingApproval: true`; não inicia sessão. |
+| `POST /auth/login` | Público | Login de root, empresa ou colaborador. Corpo: `{ "email", "password" }`. Retorna `accessToken`, `principalType` e dados de perfil; limite local de 10 tentativas por 10 minutos/IP (`429`). |
+| `POST /empresas` | Público | Solicita cadastro. Campos: `trade_name`, `legal_name`, `email`, `cnpj` (14 dígitos), `phone` (10/11 dígitos), `segment` (`technology`, `retail`, `services`, `industry`) e `password` (mínimo 8). Retorna `202` e `pendingApproval: true`; não inicia sessão. Limite local de 5 por 10 minutos/IP (`429`). |
 | `POST /auth/forgot-password` | Público | Corpo: `{ "email" }`. Registra solicitação e, se a conta estiver ativa, envia link por SMTP. Retorna mensagem genérica `202`; limite de 5 por 10 minutos/IP; retorna `503` quando SMTP não está configurado. |
 | `POST /auth/reset-password` | Público, com token | Corpo: `{ "token", "password" }`; senha de 8 a 128 caracteres. Token é de uso único e expira após 60 minutos; limite de 10 tentativas por 10 minutos/IP. |
 | `POST /contatos` | Público | Campos: `name`, `phone`, `email`, `company_name` e `website`. `website` é honeypot e deve ficar vazio. Cria pedido `contact`; limite de 5 por 10 minutos/IP. |
 
-Cadastro empresarial com e-mail ou CNPJ duplicado retorna `409`. Cadastro novo permanece inativo até aprovação root.
+Cadastro empresarial com e-mail ou CNPJ duplicado retorna `409`. Cadastro novo permanece inativo até aprovação root. Os limitadores públicos são em memória por instância; em serverless, complemente com limites compartilhados no provedor ou armazenamento distribuído.
 
 ## Produtos
 

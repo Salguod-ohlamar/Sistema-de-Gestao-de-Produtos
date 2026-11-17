@@ -1,14 +1,21 @@
 import CompanyRepository from '../repository/Company.repository.js';
 import IdentityRepository from '../repository/Identity.repository.js';
 import { createAccessToken, hashPassword, verifyPassword } from '../auth.js';
+import { createRateLimiter } from '../rateLimit.js';
 
 const allowedSegments = new Set(['technology', 'retail', 'services', 'industry']);
+const allowRegistration = createRateLimiter({ max: 5, windowMs: 10 * 60 * 1000 });
+const allowLogin = createRateLimiter({ max: 10, windowMs: 10 * 60 * 1000 });
 
 function publicCompany(company) {
     return { id: company.id, trade_name: company.trade_name, email: company.email };
 }
 
 async function registerCompany(request, reply) {
+    if (!allowRegistration(request.ip)) {
+        return reply.code(429).send({ error: 'Muitas tentativas de cadastro. Tente novamente em alguns minutos.' });
+    }
+
     const body = request.body || {};
     const company = {
         trade_name: String(body.trade_name || '').trim(),
@@ -40,6 +47,10 @@ async function registerCompany(request, reply) {
 }
 
 async function loginCompany(request, reply) {
+    if (!allowLogin(request.ip)) {
+        return reply.code(429).send({ error: 'Muitas tentativas de login. Tente novamente em alguns minutos.' });
+    }
+
     const email = String(request.body?.email || '').trim().toLowerCase();
     const password = String(request.body?.password || '');
     if (!email || !password) return reply.code(400).send({ error: 'Informe e-mail e senha.' });

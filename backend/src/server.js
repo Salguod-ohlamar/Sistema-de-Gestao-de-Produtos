@@ -10,7 +10,7 @@ import adminRoutes from '../src/routes/Admin.routes.js'
 import collaboratorRoutes from '../src/routes/Collaborator.routes.js'
 import companyWorkspaceRoutes from '../src/routes/CompanyWorkspace.routes.js'
 import contactRoutes from '../src/routes/Contact.routes.js'
-import { sql } from './database.js'
+import { createCorsOriginChecker, getCorsOrigins } from './corsConfig.js'
 
 
 if (!process.env.AUTH_TOKEN_SECRET || process.env.AUTH_TOKEN_SECRET.length < 32) {
@@ -21,9 +21,10 @@ const fastify = Fastify({
     logger: true
 })
 
-//REGISTRA O CORS PARA PERMITIR REQUISIÇÃO DO FRONT END
+const allowedOrigins = getCorsOrigins();
+
 await fastify.register(cors, {
-    origin: true, //Permite qualquer origem em modo de desenvolvimento
+    origin: createCorsOriginChecker(allowedOrigins),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 })

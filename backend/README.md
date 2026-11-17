@@ -24,8 +24,11 @@ Se `.env` já existir, não o sobrescreva; acrescente apenas as variáveis que e
 | `SMTP_USER` / `SMTP_PASSWORD` | Para recuperação | Credenciais do provedor SMTP. |
 | `SMTP_FROM` | Para recuperação | Remetente das mensagens. |
 | `FRONTEND_URL` | Para recuperação | URL pública do front-end; padrão local `http://localhost:5173`. |
+| `CORS_ORIGINS` | Sim em produção | Origens exatas do front-end, separadas por vírgula; produção exige HTTPS. |
 
 Use valores locais ou gerenciados por cofre de segredos. Não copie credenciais reais para documentação ou repositório.
+
+Em desenvolvimento, sem `CORS_ORIGINS`, o backend permite apenas `http://localhost:5173` e `http://127.0.0.1:5173`. Em produção, a API encerra a inicialização se a allowlist estiver ausente. CORS não substitui autenticação: clientes que não são navegadores ainda podem chamar endpoints públicos.
 
 ## Banco e primeiro root
 
@@ -66,3 +69,6 @@ O inventário completo de endpoints está em [docs/api.md](../docs/api.md); os f
 - O CORS está aberto (`origin: true`) para desenvolvimento. Restrinja-o ao domínio publicado antes de produção.
 - O endpoint de recuperação exige SMTP configurado; sem isso retorna indisponibilidade, embora registre a solicitação na fila administrativa.
 - Cadastros novos de empresa permanecem inativos até aprovação pelo root.
+- O limitador de tentativas atual é em memória por instância; em Vercel/serverless complemente com limite compartilhado no Firewall ou armazenamento distribuído.
+
+Veja o guia de [deploy na Vercel](../docs/deploy-vercel.md) para a configuração de dois projetos.
