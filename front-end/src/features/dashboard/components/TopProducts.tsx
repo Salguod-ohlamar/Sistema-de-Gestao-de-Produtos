@@ -1,60 +1,23 @@
-import {
-  Headphones,
-  Keyboard,
-  Mouse,
-  Monitor,
-  Cpu,
-  ArrowRight,
-} from 'lucide-react'
+import { Package, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import type { DashboardTopProduct } from '@/lib/api'
 
 interface TopProductsProps {
+  items?: DashboardTopProduct[]
+  loading?: boolean
   onViewReport?: () => void
 }
 
-export function TopProducts({ onViewReport }: TopProductsProps = {}) {
-  const products = [
-    {
-      name: 'Fone Bluetooth Pulse X2',
-      sku: 'SKU: PLS-X2-BLK',
-      units: '312 un.',
-      progress: 100,
-      icon: Headphones,
-      iconColor: 'text-primary',
-    },
-    {
-      name: 'Teclado Mecânico ErgoPro',
-      sku: 'SKU: KBD-ERG-99',
-      units: '248 un.',
-      progress: 80,
-      icon: Keyboard,
-      iconColor: 'text-cyan-accent',
-    },
-    {
-      name: 'Mouse Sem Fio Precision MX',
-      sku: 'SKU: MOU-MX-SIL',
-      units: '194 un.',
-      progress: 62,
-      icon: Mouse,
-      iconColor: 'text-primary-hover',
-    },
-    {
-      name: 'Suporte Articulado Dual Vesa',
-      sku: 'SKU: SUP-VESA-02',
-      units: '142 un.',
-      progress: 45,
-      icon: Monitor,
-      iconColor: 'text-text-muted',
-    },
-    {
-      name: 'Hub USB-C 8 em 1 Pro',
-      sku: 'SKU: HUB-8IN1-GRY',
-      units: '118 un.',
-      progress: 38,
-      icon: Cpu,
-      iconColor: 'text-cyan-accent',
-    },
-  ]
+export function TopProducts({ items = [], loading = false, onViewReport }: TopProductsProps = {}) {
+  const max = Math.max(1, ...items.map((i) => i.quantity_sold))
+  const products = items.map((i) => ({
+    name: i.name,
+    sku: `SKU: ${i.sku}`,
+    units: `${i.quantity_sold} un.`,
+    progress: Math.round((i.quantity_sold / max) * 100),
+    icon: Package,
+    iconColor: 'text-primary',
+  }))
 
   return (
     <Card className="p-6 bg-surface-2 border-border shadow-md flex flex-col justify-between">
@@ -65,7 +28,7 @@ export function TopProducts({ onViewReport }: TopProductsProps = {}) {
             Produtos mais vendidos
           </h2>
           <span className="text-xs text-text-muted">
-            Rankeamento por volume expedido
+            Ranking por unidades vendidas no período
           </span>
         </div>
         <button
@@ -80,6 +43,11 @@ export function TopProducts({ onViewReport }: TopProductsProps = {}) {
 
       {/* Lista com Barras de Progresso */}
       <div className="divide-y divide-border/50 mt-2">
+        {products.length === 0 && (
+          <p className="py-6 text-center text-sm text-text-muted">
+            {loading ? 'Carregando...' : 'Nenhuma venda no período.'}
+          </p>
+        )}
         {products.map((item) => {
           const Icon = item.icon
           return (

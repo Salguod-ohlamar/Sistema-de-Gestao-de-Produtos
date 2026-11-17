@@ -15,106 +15,24 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { UserDrawer } from './UserDrawer'
+import { useCollaborators } from '../hooks/useCollaborators'
+import { mapCollaborator } from '../userMapper'
 import { toast } from 'sonner'
 import { paginate, pageWindow } from '@/lib/pagination'
-
-interface UserItem {
-  id: string
-  name: string
-  email: string
-  initials: string
-  initialsColor: string
-  initialsBg: string
-  role: 'Administrador' | 'Gerente' | 'Vendedor' | 'Estoquista'
-  lastAccessTime: string
-  lastAccessDetail: string
-  status: 'Ativo' | 'Convite enviado' | 'Inativo'
-}
 
 const USERS_PAGE_SIZE = 4
 
 export function UsersView() {
-  const [drawerOpen, setDrawerOpen] = useState(true) // Inicialmente aberto conforme o Stitch screenshot
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState('Todos')
   const [statusFilter, setStatusFilter] = useState('Todos')
   const [page, setPage] = useState(1)
 
-  const users: UserItem[] = [
-    {
-      id: '1',
-      name: 'Mariana Albuquerque',
-      email: 'mariana.a@nexora.io',
-      initials: 'MA',
-      initialsColor: 'text-primary',
-      initialsBg: 'bg-primary/20',
-      role: 'Administrador',
-      lastAccessTime: 'Hoje, 09:41',
-      lastAccessDetail: 'IP 189.40.12.8',
-      status: 'Ativo',
-    },
-    {
-      id: '2',
-      name: 'Rafael Tavares',
-      email: 'rafael.t@nexora.io',
-      initials: 'RT',
-      initialsColor: 'text-cyan-accent',
-      initialsBg: 'bg-cyan-accent/20',
-      role: 'Gerente',
-      lastAccessTime: 'Hoje, 08:15',
-      lastAccessDetail: 'Terminal Sala B',
-      status: 'Ativo',
-    },
-    {
-      id: '3',
-      name: 'Beatriz Nogueira',
-      email: 'beatriz.n@nexora.io',
-      initials: 'BN',
-      initialsColor: 'text-text-secondary',
-      initialsBg: 'bg-surface-elevated',
-      role: 'Vendedor',
-      lastAccessTime: 'Ontem, 18:30',
-      lastAccessDetail: 'PDV Principal',
-      status: 'Ativo',
-    },
-    {
-      id: '4',
-      name: 'Lucas Menezes',
-      email: 'lucas.m@nexora.io',
-      initials: 'LM',
-      initialsColor: 'text-text-secondary',
-      initialsBg: 'bg-surface-elevated',
-      role: 'Estoquista',
-      lastAccessTime: 'Ontem, 16:12',
-      lastAccessDetail: 'Coletor RF-04',
-      status: 'Ativo',
-    },
-    {
-      id: '5',
-      name: 'Camila Duarte',
-      email: 'camila.d@nexora.io',
-      initials: 'CD',
-      initialsColor: 'text-cyan-accent',
-      initialsBg: 'bg-surface-elevated',
-      role: 'Vendedor',
-      lastAccessTime: 'Nunca acessou',
-      lastAccessDetail: '',
-      status: 'Convite enviado',
-    },
-    {
-      id: '6',
-      name: 'Thiago Ribeiro',
-      email: 'thiago.r@nexora.io',
-      initials: 'TR',
-      initialsColor: 'text-text-muted',
-      initialsBg: 'bg-surface-1',
-      role: 'Estoquista',
-      lastAccessTime: '14 out, 11:20',
-      lastAccessDetail: 'Afastamento',
-      status: 'Inativo',
-    },
-  ]
+  const { data: collaborators, isLoading, isError, error, refetch } = useCollaborators()
+  const users = (collaborators ?? []).map(mapCollaborator)
+  const activeCount = users.filter((u) => u.status === 'Ativo').length
+  const adminCount = users.filter((u) => u.role === 'Administrador').length
+  const inactiveCount = users.length - activeCount
 
   const filteredUsers = users.filter((u) => {
     const matchesQuery =
@@ -128,11 +46,7 @@ export function UsersView() {
   const pageData = paginate(filteredUsers, page, USERS_PAGE_SIZE)
 
   const handleExport = () => {
-    toast.success('Lista de usuários exportada com sucesso!')
-  }
-
-  const handleResend = (email: string) => {
-    toast.info(`Convite reenviado para ${email}`)
+    toast.info('Exportação ainda não está disponível.')
   }
 
   return (
@@ -167,7 +81,7 @@ export function UsersView() {
           </Button>
 
           <Button
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => toast.info('Cadastro de usuário ainda não está disponível nesta tela.')}
             className="h-10 px-5 rounded-xl gap-2 font-medium shadow-[0_0_16px_rgba(47,107,255,0.35)] cursor-pointer"
           >
             <UserPlus className="h-4 w-4" strokeWidth={1.5} />
@@ -188,7 +102,7 @@ export function UsersView() {
           </div>
           <div className="flex items-baseline justify-between">
             <span className="font-headline text-2xl font-bold text-text-primary">
-              24
+              {users.length}
             </span>
             <span className="font-mono text-xs text-text-muted">Cadastrados</span>
           </div>
@@ -202,12 +116,12 @@ export function UsersView() {
               variant="outline"
               className="px-2 py-0.5 text-[11px] font-mono text-cyan-accent bg-cyan-accent/10 border-cyan-accent/20"
             >
-              87.5%
+              {users.length ? `${((activeCount / users.length) * 100).toFixed(1).replace('.', ',')}%` : '0%'}
             </Badge>
           </div>
           <div className="flex items-baseline justify-between">
             <span className="font-headline text-2xl font-bold text-text-primary">
-              21
+              {activeCount}
             </span>
             <span className="flex items-center gap-1.5 text-xs text-cyan-accent">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-accent" />
@@ -226,28 +140,28 @@ export function UsersView() {
           </div>
           <div className="flex items-baseline justify-between">
             <span className="font-headline text-2xl font-bold text-text-primary">
-              3
+              {adminCount}
             </span>
             <span className="text-xs text-text-muted">Privilégio total</span>
           </div>
         </Card>
 
-        {/* Convites pendentes */}
+        {/* Inativos */}
         <Card className="p-5 rounded-xl bg-surface-1 border-border shadow-sm flex flex-col justify-between h-[104px] hover:border-border-highlight transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-text-muted">Convites pendentes</span>
+            <span className="text-xs text-text-muted">Inativos</span>
             <Badge
               variant="outline"
               className="px-2 py-0.5 text-[11px] font-mono text-destructive bg-destructive/10 border-destructive/20"
             >
-              Requer atenção
+              Sem acesso
             </Badge>
           </div>
           <div className="flex items-baseline justify-between">
             <span className="font-headline text-2xl font-bold text-text-primary">
-              2
+              {inactiveCount}
             </span>
-            <span className="text-xs text-destructive">Aguardando aceite</span>
+            <span className="text-xs text-destructive">Acesso desativado</span>
           </div>
         </Card>
       </section>
@@ -282,8 +196,7 @@ export function UsersView() {
                 <option value="Todos">Perfil: Todos</option>
                 <option value="Administrador">Administrador</option>
                 <option value="Gerente">Gerente</option>
-                <option value="Vendedor">Vendedor</option>
-                <option value="Estoquista">Estoquista</option>
+                <option value="Operador">Operador</option>
               </select>
             </div>
 
@@ -297,7 +210,6 @@ export function UsersView() {
               >
                 <option value="Todos">Status: Todos</option>
                 <option value="Ativo">Ativo</option>
-                <option value="Convite enviado">Convite enviado</option>
                 <option value="Inativo">Inativo</option>
               </select>
             </div>
@@ -331,12 +243,26 @@ export function UsersView() {
               <tr className="h-11 bg-surface-1 border-b border-border text-text-muted text-xs uppercase tracking-wider font-mono select-none">
                 <th className="pl-6 pr-4 font-medium">Usuário</th>
                 <th className="px-4 font-medium">Perfil</th>
-                <th className="px-4 font-medium">Último acesso</th>
+                <th className="px-4 font-medium">Admissão</th>
                 <th className="px-4 font-medium">Status</th>
                 <th className="pr-6 pl-4 font-medium text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60 text-sm">
+              {isLoading && (
+                <tr><td colSpan={5} className="py-12 text-center text-sm text-text-muted">Carregando usuários...</td></tr>
+              )}
+              {isError && (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-sm text-destructive">
+                    {error instanceof Error ? error.message : 'Não foi possível carregar os usuários.'}{' '}
+                    <button type="button" className="underline cursor-pointer" onClick={() => void refetch()}>Tentar de novo</button>
+                  </td>
+                </tr>
+              )}
+              {!isLoading && !isError && pageData.items.length === 0 && (
+                <tr><td colSpan={5} className="py-12 text-center text-sm text-text-muted">Nenhum usuário encontrado.</td></tr>
+              )}
               {pageData.items.map((user) => (
                 <tr
                   key={user.id}
@@ -377,24 +303,9 @@ export function UsersView() {
                     </Badge>
                   </td>
 
-                  {/* Último acesso */}
+                  {/* Admissão */}
                   <td className="px-4">
-                    <div className="flex flex-col font-mono text-xs">
-                      <span
-                        className={
-                          user.lastAccessTime === 'Nunca acessou'
-                            ? 'text-text-muted italic'
-                            : 'text-text-primary'
-                        }
-                      >
-                        {user.lastAccessTime}
-                      </span>
-                      {user.lastAccessDetail && (
-                        <span className="text-text-muted text-[11px]">
-                          {user.lastAccessDetail}
-                        </span>
-                      )}
-                    </div>
+                    <span className="font-mono text-xs text-text-primary">{user.hiredOn}</span>
                   </td>
 
                   {/* Status */}
@@ -407,15 +318,7 @@ export function UsersView() {
                         <span className="w-1.5 h-1.5 rounded-full bg-status-success" />
                         Ativo
                       </Badge>
-                    ) : user.status === 'Convite enviado' ? (
-                      <Badge
-                        variant="warning"
-                        className="gap-1.5 font-mono text-xs px-2.5 py-0.5"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-status-warning animate-pulse" />
-                        Convite enviado
-                      </Badge>
-                    ) : (
+                                        ) : (
                       <Badge
                         variant="secondary"
                         className="gap-1.5 font-mono text-xs px-2.5 py-0.5 text-text-disabled"
@@ -429,23 +332,10 @@ export function UsersView() {
                   {/* Ações */}
                   <td className="pr-6 pl-4 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {user.status === 'Convite enviado' && (
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => handleResend(user.email)}
-                          className="h-7 px-2 text-xs bg-surface-1 mr-1 cursor-pointer"
-                        >
-                          Reenviar
-                        </Button>
-                      )}
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        onClick={() => {
-                          setDrawerOpen(true)
-                          toast.info(`Editando permissões de ${user.name}`)
-                        }}
+                        onClick={() => toast.info('Edição de usuário ainda não está disponível nesta tela.')}
                         className="text-text-muted hover:text-text-primary cursor-pointer"
                         title="Editar Usuário"
                       >
@@ -517,15 +407,6 @@ export function UsersView() {
           </div>
         </div>
       </Card>
-
-      {/* Drawer Lateral: Novo Usuário */}
-      <UserDrawer
-        open={drawerOpen}
-        onOpenChange={setDrawerOpen}
-        onSuccess={() => {
-          // callback de sucesso
-        }}
-      />
     </div>
   )
 }

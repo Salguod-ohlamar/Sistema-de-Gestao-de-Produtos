@@ -13,23 +13,17 @@ import {
   Edit2,
   Trash2,
   MoreVertical,
-  Headphones,
-  Mouse,
-  Keyboard,
-  Cpu,
-  Video,
-  Armchair,
-  Laptop,
-  HardDrive,
+  Package,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ProductDetailDrawer } from './ProductDetailDrawer'
 import { FloatingActionBar } from './FloatingActionBar'
 import { toast } from 'sonner'
+import { useProducts } from '@/features/sales/hooks/useSales'
+import { mapApiProduct } from '../productMapper'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,143 +82,22 @@ function FilterMenu<T extends string>({ label, value, options, onChange }: Filte
   )
 }
 
-interface ProductRow {
-  id: string
-  name: string
-  sku: string
-  category: string
-  price: string
-  stockUnits: number
-  stockMax: number
-  status: 'Em estoque' | 'Estoque baixo' | 'Esgotado'
-  statusVariant: 'success' | 'warning' | 'destructive'
-  updatedAt: string
-  icon: React.ElementType
-  image?: string
-}
-
 interface ProductsViewProps {
   onNavigate?: (view: string) => void
 }
 
 export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
-  const [drawerOpen, setDrawerOpen] = useState(true) // Aberto por padrão para coincidir com a tela Stitch
-  const [selectedIds, setSelectedIds] = useState<string[]>(['1', '2']) // Itens 1 e 2 selecionados conforme screenshot
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [stockFilter, setStockFilter] = useState<StockRange>('all')
   const [priceFilter, setPriceFilter] = useState<PriceRange>('all')
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(4)
+  const [pageSize, setPageSize] = useState(8)
 
-  const products: ProductRow[] = [
-    {
-      id: '1',
-      name: 'Fone Bluetooth Pulse X2',
-      sku: 'PLS-X2-BLK',
-      category: 'Eletrônicos',
-      price: 'R$ 249,90',
-      stockUnits: 42,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: 'Hoje, 14:20',
-      icon: Headphones,
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80&h=80&fit=crop',
-    },
-    {
-      id: '2',
-      name: 'Mouse Sem Fio Aero M3',
-      sku: 'MOU-AER-M3',
-      category: 'Eletrônicos',
-      price: 'R$ 189,00',
-      stockUnits: 18,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: 'Hoje, 11:05',
-      icon: Mouse,
-    },
-    {
-      id: '3',
-      name: 'Teclado Mecânico Forge 75',
-      sku: 'KBD-FRG-75',
-      category: 'Eletrônicos',
-      price: 'R$ 549,00',
-      stockUnits: 8,
-      stockMax: 40,
-      status: 'Estoque baixo',
-      statusVariant: 'warning',
-      updatedAt: 'Ontem, 16:40',
-      icon: Keyboard,
-    },
-    {
-      id: '4',
-      name: 'Hub USB-C 7 em 1',
-      sku: 'HUB-7IN1-GRY',
-      category: 'Acessórios',
-      price: 'R$ 169,90',
-      stockUnits: 0,
-      stockMax: 30,
-      status: 'Esgotado',
-      statusVariant: 'destructive',
-      updatedAt: 'Ontem, 09:12',
-      icon: Cpu,
-    },
-    {
-      id: '5',
-      name: 'Webcam Full HD Vision',
-      sku: 'CAM-FHD-VIS',
-      category: 'Eletrônicos',
-      price: 'R$ 215,00',
-      stockUnits: 24,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: '10 out',
-      icon: Video,
-    },
-    {
-      id: '6',
-      name: 'Cadeira Ergonômica Lumbar Pro',
-      sku: 'CAD-LMB-PRO',
-      category: 'Escritório',
-      price: 'R$ 1.390,00',
-      stockUnits: 12,
-      stockMax: 20,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: '08 out',
-      icon: Armchair,
-    },
-    {
-      id: '7',
-      name: 'Suporte para Notebook Alumínio',
-      sku: 'SUP-NOT-ALM',
-      category: 'Acessórios',
-      price: 'R$ 129,00',
-      stockUnits: 3,
-      stockMax: 30,
-      status: 'Estoque baixo',
-      statusVariant: 'warning',
-      updatedAt: '05 out',
-      icon: Laptop,
-    },
-    {
-      id: '8',
-      name: 'SSD Externo 1TB Pro',
-      sku: 'SSD-EXT-1TB',
-      category: 'Eletrônicos',
-      price: 'R$ 489,00',
-      stockUnits: 32,
-      stockMax: 50,
-      status: 'Em estoque',
-      statusVariant: 'success',
-      updatedAt: '03 out',
-      icon: HardDrive,
-    },
-  ]
+  const { data: apiProducts, isLoading, isError, error, refetch } = useProducts()
+  const products = (apiProducts ?? []).map(mapApiProduct)
 
   const filtered = filterProducts(products, {
     query: searchQuery,
@@ -283,14 +156,14 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
             </Badge>
           </div>
           <p className="text-sm text-text-muted mt-0.5">
-            1.248 itens cadastrados no inventário central
+            {isLoading ? 'Carregando produtos...' : `${products.length} ${products.length === 1 ? 'item cadastrado' : 'itens cadastrados'}`}
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
           <Button
             variant="secondary"
-            onClick={() => toast.info('Iniciando importação de arquivo CSV...')}
+            onClick={() => toast.info('Importação de CSV ainda não está disponível.')}
             className="h-10 px-4 rounded-xl gap-2 text-sm bg-surface-1 border-border hover:bg-surface-elevated text-text-primary shadow-sm cursor-pointer"
           >
             <Download className="h-4 w-4 text-text-muted" strokeWidth={1.5} />
@@ -426,25 +299,40 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60 text-sm">
-              {visible.length === 0 && (
+              {isLoading && (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-sm text-text-muted">
-                    Nenhum produto encontrado com esses filtros.
+                    Carregando produtos...
+                  </td>
+                </tr>
+              )}
+              {isError && (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-sm text-destructive">
+                    {error instanceof Error ? error.message : 'Não foi possível carregar os produtos.'}{' '}
+                    <button type="button" className="underline cursor-pointer" onClick={() => void refetch()}>
+                      Tentar de novo
+                    </button>
+                  </td>
+                </tr>
+              )}
+              {!isLoading && !isError && visible.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-sm text-text-muted">
+                    {products.length === 0
+                      ? 'Nenhum produto cadastrado ainda. Use "Novo produto" para começar.'
+                      : 'Nenhum produto encontrado com esses filtros.'}
                   </td>
                 </tr>
               )}
               {visible.map((p) => {
-                const Icon = p.icon
                 const isSelected = selectedIds.includes(p.id)
                 const pct = Math.round((p.stockUnits / p.stockMax) * 100)
 
                 return (
                   <tr
                     key={p.id}
-                    onClick={() => {
-                      setDrawerOpen(true)
-                    }}
-                    className={`h-16 transition-colors group cursor-pointer ${
+                    className={`h-16 transition-colors group ${
                       isSelected
                         ? 'bg-primary/10 hover:bg-primary/15'
                         : 'hover:bg-surface-elevated/40'
@@ -472,7 +360,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <Icon className="h-5 w-5 text-text-muted" strokeWidth={1.5} />
+                            <Package className="h-5 w-5 text-text-muted" strokeWidth={1.5} />
                           )}
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -548,7 +436,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          onClick={() => toast.info(`Editando ${p.name}`)}
+                          onClick={() => toast.info('Edição de produto ainda não está disponível nesta tela.')}
                           className="text-text-muted hover:text-text-primary cursor-pointer"
                           title="Editar"
                         >
@@ -557,7 +445,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          onClick={() => toast.error(`Item excluído: ${p.sku}`)}
+                          onClick={() => toast.info('Exclusão de produto ainda não está disponível nesta tela.')}
                           className="text-text-muted hover:text-destructive cursor-pointer"
                           title="Excluir produto"
                         >
@@ -658,29 +546,10 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
       {/* Barra Flutuante de Ações em Lote */}
       <FloatingActionBar
         selectedCount={selectedIds.length}
-        onBatchEdit={() => toast.info(`Editar em lote: ${selectedIds.length} itens`)}
-        onExport={() => toast.success(`Exportando ${selectedIds.length} itens selecionados...`)}
+        onBatchEdit={() => toast.info('Edição em lote ainda não está disponível.')}
+        onExport={() => toast.info('Exportação ainda não está disponível.')}
         onDelete={() => {
-          setSelectedIds([])
-          toast.error('Produtos selecionados excluídos do catálogo.')
-        }}
-      />
-
-      {/* Drawer Lateral de Detalhes do Produto */}
-      <ProductDetailDrawer
-        open={drawerOpen}
-        onOpenChange={setDrawerOpen}
-        onEdit={() => {
-          if (onNavigate) {
-            onNavigate('novo-produto')
-          } else {
-            toast.info('Abrindo editor para Fone Bluetooth Pulse X2')
-          }
-        }}
-        onDuplicate={() => toast.success('Produto duplicado como rascunho!')}
-        onDelete={() => {
-          setDrawerOpen(false)
-          toast.error('Produto excluído com sucesso.')
+          toast.info('Exclusão em lote ainda não está disponível.')
         }}
       />
     </div>

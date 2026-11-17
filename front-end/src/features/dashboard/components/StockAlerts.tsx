@@ -3,54 +3,28 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
+import type { DashboardLowStock } from '@/lib/api'
+
 interface StockAlertsProps {
+  items?: DashboardLowStock[]
+  total?: number
+  loading?: boolean
   onReplenish?: (sku: string) => void
   onViewAll?: () => void
 }
 
-export function StockAlerts({ onReplenish, onViewAll }: StockAlertsProps) {
-  const alerts = [
-    {
-      name: 'Webcam 4K UltraStream',
-      sku: 'SKU: CAM-4K-PRO',
-      status: 'Sem estoque',
-      variant: 'destructive' as const,
-      ratio: '0 / 25 un.',
-      colorClass: 'text-destructive',
-    },
-    {
-      name: 'Cabo Thunderbolt 4 2m',
-      sku: 'SKU: CBL-TB4-2M',
-      status: 'Estoque baixo',
-      variant: 'warning' as const,
-      ratio: '2 / 30 un.',
-      colorClass: 'text-status-warning',
-    },
-    {
-      name: 'Microfone Condensador Wave',
-      sku: 'SKU: MIC-WAV-USB',
-      status: 'Estoque baixo',
-      variant: 'warning' as const,
-      ratio: '3 / 20 un.',
-      colorClass: 'text-status-warning',
-    },
-    {
-      name: 'Carregador GaN 65W Rápido',
-      sku: 'SKU: CHG-GAN-65W',
-      status: 'Estoque baixo',
-      variant: 'warning' as const,
-      ratio: '4 / 40 un.',
-      colorClass: 'text-status-warning',
-    },
-    {
-      name: 'Mousepad Desk Mat 90x40',
-      sku: 'SKU: MAT-9040-NVY',
-      status: 'Sem estoque',
-      variant: 'destructive' as const,
-      ratio: '0 / 15 un.',
-      colorClass: 'text-destructive',
-    },
-  ]
+export function StockAlerts({ items = [], total = 0, loading = false, onReplenish, onViewAll }: StockAlertsProps) {
+  const alerts = items.slice(0, 5).map((i) => {
+    const out = i.stock_quantity <= 0
+    return {
+      name: i.name,
+      sku: i.sku,
+      status: out ? 'Sem estoque' : 'Estoque baixo',
+      variant: (out ? 'destructive' : 'warning') as 'destructive' | 'warning',
+      ratio: `${i.stock_quantity} / mín. ${i.min_stock_quantity}`,
+      colorClass: out ? 'text-destructive' : 'text-status-warning',
+    }
+  })
 
   return (
     <Card className="p-6 bg-surface-2 border-border shadow-md flex flex-col justify-between">
@@ -64,7 +38,7 @@ export function StockAlerts({ onReplenish, onViewAll }: StockAlertsProps) {
             variant="warning"
             className="px-2 py-0.5 text-[11px] font-mono font-semibold"
           >
-            5 pendências
+            {total} {total === 1 ? 'pendência' : 'pendências'}
           </Badge>
         </div>
         <button
@@ -79,6 +53,11 @@ export function StockAlerts({ onReplenish, onViewAll }: StockAlertsProps) {
 
       {/* Lista de Alertas */}
       <div className="divide-y divide-border/50 mt-2">
+        {alerts.length === 0 && (
+          <p className="py-6 text-center text-sm text-text-muted">
+            {loading ? 'Carregando...' : 'Nenhum produto com estoque baixo.'}
+          </p>
+        )}
         {alerts.map((item) => (
           <div
             key={item.sku}

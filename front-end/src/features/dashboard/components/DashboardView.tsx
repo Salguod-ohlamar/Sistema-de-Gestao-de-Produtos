@@ -9,12 +9,12 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { KpiCard } from './KpiCard'
-import { SalesChart } from './SalesChart'
-import { CategoryDonut } from './CategoryDonut'
 import { TopProducts } from './TopProducts'
 import { StockAlerts } from './StockAlerts'
 import { RecentSalesTable } from './RecentSalesTable'
 import { toast } from 'sonner'
+import { useDashboard } from '../hooks/useDashboard'
+import { formatBrl } from '@/features/products/productMapper'
 
 interface DashboardViewProps {
   onNavigate?: (view: string) => void
@@ -23,12 +23,17 @@ interface DashboardViewProps {
 export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
   const [period, setPeriod] = useState<'7' | '30' | '90' | 'custom'>('30')
 
+  const days = period === '7' ? 7 : period === '90' ? 90 : 30
+  const { data, isLoading, isError, error } = useDashboard(days)
+  const summary = data?.summary
+  const dash = (v: string | undefined) => (isLoading || !v ? '—' : v)
+
   const handleExport = () => {
-    toast.success('Relatório executivo exportado com sucesso!')
+    toast.info('Exportação de relatório ainda não está disponível.')
   }
 
-  const handleReplenish = (sku: string) => {
-    toast.info(`Ordem de reposição gerada para o item: ${sku}`)
+  const handleReplenish = () => {
+    toast.info('Para repor, ajuste a quantidade do produto na tela Produtos.')
   }
 
   return (
@@ -91,6 +96,7 @@ export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
             </button>
             <button
               type="button"
+              hidden
               onClick={() => setPeriod('custom')}
               className={`px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
                 period === 'custom'
@@ -114,35 +120,44 @@ export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
         </div>
       </header>
 
+      {isError && (
+        <p className="text-sm text-destructive">
+          {error instanceof Error ? error.message : 'Não foi possível carregar o dashboard.'}
+        </p>
+      )}
+
       {/* Linha 1 — 4 Cards de KPI */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
           title="Faturamento Total"
-          value="R$ 148.920,50"
-          delta="+12,4%"
+          value={dash(summary && formatBrl(summary.revenue))}
+          delta=""
+          deltaLabel="no período selecionado"
           isPositive={true}
           icon={DollarSign}
           sparklineVariant="blue"
         />
         <KpiCard
           title="Vendas Realizadas"
-          value="1.284"
-          delta="+8,1%"
+          value={dash(summary && String(summary.sales_count))}
+          delta=""
+          deltaLabel="no período selecionado"
           isPositive={true}
           icon={ShoppingBag}
           sparklineVariant="blue"
         />
         <KpiCard
           title="Ticket Médio"
-          value="R$ 115,98"
-          delta="-2,3%"
-          isPositive={false}
+          value={dash(summary && formatBrl(summary.average_ticket))}
+          delta=""
+          deltaLabel="no período selecionado"
+          isPositive={true}
           icon={Receipt}
           sparklineVariant="cyan"
         />
         <KpiCard
           title="Itens em Estoque Baixo"
-          value="17"
+          value={dash(summary && String(summary.low_stock_count))}
           delta=""
           attentionText="Atenção"
           deltaLabel="Requer reposição"
@@ -152,20 +167,10 @@ export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
         />
       </section>
 
-      {/* Linha 2 — Gráficos Analíticos */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <SalesChart />
-        </div>
-        <div className="lg:col-span-4">
-          <CategoryDonut />
-        </div>
-      </section>
-
       {/* Linha 3 — Listas Operacionais */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TopProducts onViewReport={() => onNavigate?.('historico')} />
-        <StockAlerts onReplenish={handleReplenish} onViewAll={() => onNavigate?.('produtos')} />
+        <TopProducts items={data?.top_products} loading={isLoading} onViewReport={() => onNavigate?.('historico')} />
+        <StockAlerts items={data?.low_stock} total={summary?.low_stock_count ?? 0} loading={isLoading} onReplenish={handleReplenish} onViewAll={() => onNavigate?.('produtos')} />
       </section>
 
       {/* Linha 4 — Tabela de Vendas Recentes */}

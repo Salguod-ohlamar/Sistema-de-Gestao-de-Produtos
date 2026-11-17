@@ -11,6 +11,9 @@ export interface ApiProduct {
   min_stock_quantity: number
   /** numeric(10,2) chega como string no JSON */
   sale_price: string
+  /** podem não existir dependendo da versão da tabela */
+  created_at?: string | null
+  updated_at?: string | null
 }
 
 export function listProducts(): Promise<ApiProduct[]> {
