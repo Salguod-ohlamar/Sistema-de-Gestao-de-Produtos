@@ -9,6 +9,7 @@ import saleRoutes from './routes/Sale.routes.js';
 
 export const API_PREFIX = '/api';
 
+// Cria ou registra register api routes e trata o resultado da operação.
 export async function registerApiRoutes(fastify) {
     await fastify.register(companyRoutes, { prefix: API_PREFIX });
     await fastify.register(adminRoutes, { prefix: API_PREFIX });

@@ -1,6 +1,7 @@
 import { createCollaborator, updateCollaborator } from '../controller/Collaborator.controller.js';
 import { requireCompanyAccess } from '../middleware/authorization.js';
 
+// Implementa a operação relacionada a collaborator routes.
 async function collaboratorRoutes(fastify) {
     fastify.addHook('preHandler', async (request, reply) => {
         await requireCompanyAccess(request, reply);

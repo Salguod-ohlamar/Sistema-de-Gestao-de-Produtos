@@ -22,10 +22,12 @@ const transporter = emailConfigured
     })
     : null;
 
+// Valida ou verifica is email configured e informa se a condição é atendida.
 export function isEmailConfigured() {
     return emailConfigured;
 }
 
+// Envia send password reset email para o destino configurado e retorna o resultado.
 export async function sendPasswordResetEmail(email, resetUrl) {
     if (!transporter) {
         throw new Error('SMTP não está configurado.');

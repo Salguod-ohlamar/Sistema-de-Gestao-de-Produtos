@@ -11,6 +11,7 @@ export function getStoredTheme(): Theme {
   }
 }
 
+// Implementa a operação relacionada a apply theme.
 export function applyTheme(theme: Theme): void {
   document.documentElement.classList.toggle('dark', theme === 'dark')
   try {

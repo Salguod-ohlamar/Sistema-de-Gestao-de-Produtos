@@ -54,6 +54,7 @@ export interface DashboardData {
   stock_by_category: DashboardCategoryStock[]
 }
 
+// Busca ou obtém get dashboard e entrega o resultado ao chamador.
 export function getDashboard({ from, to }: DashboardQuery): Promise<DashboardData> {
   const query = new URLSearchParams({ from, to })
   return apiFetch<DashboardData>(`/dashboard?${query.toString()}`)

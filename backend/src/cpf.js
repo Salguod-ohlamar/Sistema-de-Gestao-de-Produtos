@@ -5,6 +5,7 @@ export function normalizeCpf(value) {
     for (const length of [9, 10]) {
         let sum = 0;
         for (let i = 0; i < length; i++) sum += Number(digits[i]) * (length + 1 - i);
+        // Valida ou verifica check e informa se a condição é atendida.
         const check = ((sum * 10) % 11) % 10;
         if (check !== Number(digits[length])) return null;
     }

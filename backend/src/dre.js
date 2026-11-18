@@ -2,7 +2,9 @@
 
 export const EXPENSE_CATEGORIES = ['rent', 'utilities', 'payroll', 'marketing', 'other'];
 
+// Formata ou converte to cents para o formato exigido pela interface.
 export const toCents = (value) => Math.round(Number(value || 0) * 100);
+// Implementa a operação relacionada a from cents.
 export const fromCents = (cents) => (cents / 100).toFixed(2);
 
 /**
@@ -37,6 +39,7 @@ export function buildDre({ revenue, cmv, expenses, taxRate }) {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+// Valida ou verifica is valid date e informa se a condição é atendida.
 export function isValidDate(value) {
     if (!DATE_RE.test(value)) return false;
     const d = new Date(`${value}T00:00:00Z`);
@@ -52,6 +55,7 @@ export function currentMonthRange(now = new Date()) {
     return { from: `${y}-${m}-01`, to: `${y}-${m}-${String(last).padStart(2, '0')}` };
 }
 
+// Interpreta ou normaliza parse range para um formato interno consistente.
 export function parseRange(query) {
     const def = currentMonthRange();
     const from = query.from ?? def.from;

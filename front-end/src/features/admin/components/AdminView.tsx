@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 
 type AdminTab = 'companies' | 'contacts'
 
+// Formata ou converte format date para o formato exigido pela interface.
 function formatDate(value: string | null) {
   if (!value) return 'Não informado'
   const date = new Date(value)
@@ -26,6 +27,7 @@ function formatDate(value: string | null) {
     : new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(date)
 }
 
+// Implementa a operação relacionada a segment label.
 function segmentLabel(value: string) {
   const labels: Record<string, string> = {
     technology: 'Tecnologia',
@@ -36,6 +38,7 @@ function segmentLabel(value: string) {
   return labels[value] ?? value
 }
 
+// Implementa a operação relacionada a error message.
 function errorMessage(error: unknown, fallback: string) {
   return error instanceof ApiError ? error.message : fallback
 }
@@ -50,6 +53,7 @@ interface CompanyCardProps {
   onToggleCollaborator: (id: number, isActive: boolean) => void
 }
 
+// Componente React responsável por renderizar company card.
 function CompanyCard({
   company,
   termMonths,
@@ -178,6 +182,7 @@ function CompanyCard({
   )
 }
 
+// Componente React responsável por renderizar contact card.
 function ContactCard({
   contact,
   isUpdating,
@@ -232,6 +237,7 @@ function ContactCard({
   )
 }
 
+// Componente React responsável por renderizar admin view.
 export function AdminView() {
   const { user } = useAuth()
   const isRoot = user?.principalType === 'root'
@@ -252,6 +258,7 @@ export function AdminView() {
     )
   }
 
+  // Implementa a operação relacionada a run action.
   const runAction = async (action: () => Promise<unknown>, successMessage: string) => {
     try {
       await action()

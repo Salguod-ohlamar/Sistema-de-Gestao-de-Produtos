@@ -47,6 +47,7 @@ export function parsePrice(price: string): number {
   return Number.isFinite(n) ? n : 0
 }
 
+// Implementa a operação relacionada a matches stock.
 export function matchesStock(units: number, range: StockRange): boolean {
   switch (range) {
     case 'zero':
@@ -62,6 +63,7 @@ export function matchesStock(units: number, range: StockRange): boolean {
   }
 }
 
+// Implementa a operação relacionada a matches price.
 export function matchesPrice(value: number, range: PriceRange): boolean {
   switch (range) {
     case 'lt100':
@@ -75,6 +77,7 @@ export function matchesPrice(value: number, range: PriceRange): boolean {
   }
 }
 
+// Implementa a operação relacionada a filter products.
 export function filterProducts<T extends FilterableProduct>(
   products: T[],
   f: ProductFilters

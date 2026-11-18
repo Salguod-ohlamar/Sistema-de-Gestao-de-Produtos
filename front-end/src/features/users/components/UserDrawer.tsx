@@ -25,6 +25,7 @@ interface UserDrawerProps {
   onSuccess?: () => void
 }
 
+// Implementa a operação relacionada a local date string.
 function localDateString() {
   const date = new Date()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -32,12 +33,14 @@ function localDateString() {
   return `${date.getFullYear()}-${month}-${day}`
 }
 
+// Implementa a operação relacionada a role label.
 function roleLabel(role: CollaboratorRole) {
   if (role === 'administrator') return 'Administrador'
   if (role === 'manager') return 'Gerente'
   return 'Operador / Vendedor'
 }
 
+// Componente React responsável por renderizar user drawer.
 export function UserDrawer({
   open,
   onOpenChange,
@@ -60,6 +63,7 @@ export function UserDrawer({
   const [role, setRole] = useState<CollaboratorRole>(collaborator?.role ?? 'manager')
   const [password, setPassword] = useState('')
 
+  // Processa a ação ou o evento associado a handle submit.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {

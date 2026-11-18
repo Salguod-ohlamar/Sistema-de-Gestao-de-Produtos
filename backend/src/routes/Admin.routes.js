@@ -1,6 +1,7 @@
 import { assignCompanyPlan, listCompanies, setCollaboratorActive, setCompanyActive } from '../controller/Admin.controller.js';
 import { requireRootAccess } from '../middleware/authorization.js';
 
+// Implementa a operação relacionada a admin routes.
 async function adminRoutes(fastify) {
     fastify.addHook('preHandler', requireRootAccess);
     fastify.get('/admin/companies', listCompanies);

@@ -30,10 +30,12 @@ export interface AdminCompany {
   collaborators: AdminCollaborator[]
 }
 
+// Busca ou obtém list admin companies e entrega o resultado ao chamador.
 export function listAdminCompanies(): Promise<AdminCompany[]> {
   return apiFetch<AdminCompany[]>('/admin/companies')
 }
 
+// Atualiza ou altera set admin company active, aplicando os dados recebidos.
 export function setAdminCompanyActive(
   id: number,
   isActive: boolean
@@ -44,6 +46,7 @@ export function setAdminCompanyActive(
   )
 }
 
+// Atualiza ou altera set admin collaborator active, aplicando os dados recebidos.
 export function setAdminCollaboratorActive(
   id: number,
   isActive: boolean
@@ -54,6 +57,7 @@ export function setAdminCollaboratorActive(
   )
 }
 
+// Implementa a operação relacionada a assign company plan.
 export function assignCompanyPlan(
   id: number,
   termMonths: number

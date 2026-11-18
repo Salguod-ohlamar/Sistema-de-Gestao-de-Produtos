@@ -12,10 +12,12 @@ const GENERIC_RESPONSE = {
     message: 'Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.'
 };
 
+// Valida ou verifica hash token e informa se a condição é atendida.
 function hashToken(token) {
     return createHash('sha256').update(token).digest('hex');
 }
 
+// Implementa a operação relacionada a request password reset.
 export async function requestPasswordReset(request, reply) {
     const email = String(request.body?.email || '').trim().toLowerCase();
     if (!EMAIL.test(email) || email.length > 100) {
@@ -97,6 +99,7 @@ export async function requestPasswordReset(request, reply) {
     }
 }
 
+// Implementa a operação relacionada a reset password.
 export async function resetPassword(request, reply) {
     const token = String(request.body?.token || '');
     const password = String(request.body?.password || '');

@@ -29,12 +29,14 @@ import { toast } from 'sonner'
 
 const USERS_PAGE_SIZE = 8
 
+// Implementa a operação relacionada a role label.
 function roleLabel(role: CollaboratorRole) {
   if (role === 'administrator') return 'Administrador'
   if (role === 'manager') return 'Gerente'
   return 'Operador / Vendedor'
 }
 
+// Formata ou converte format hire date para o formato exigido pela interface.
 function formatHireDate(value: string) {
   const date = new Date(`${value.slice(0, 10)}T00:00:00`)
   return Number.isNaN(date.getTime())
@@ -42,6 +44,7 @@ function formatHireDate(value: string) {
     : new Intl.DateTimeFormat('pt-BR').format(date)
 }
 
+// Implementa a operação relacionada a initials.
 function initials(name: string) {
   return name
     .trim()
@@ -52,6 +55,7 @@ function initials(name: string) {
     .toUpperCase()
 }
 
+// Componente React responsável por renderizar users view.
 export function UsersView() {
   const { user } = useAuth()
   const companyId = user?.principalType === 'root' ? null : user?.id ?? null
@@ -88,16 +92,19 @@ export function UsersView() {
     (collaborator) => collaborator.role === 'administrator' || collaborator.is_admin
   ).length
 
+  // Componente React responsável por renderizar open create drawer.
   const openCreateDrawer = () => {
     setSelectedCollaborator(null)
     setDrawerOpen(true)
   }
 
+  // Componente React responsável por renderizar open edit drawer.
   const openEditDrawer = (collaborator: CompanyCollaborator) => {
     setSelectedCollaborator(collaborator)
     setDrawerOpen(true)
   }
 
+  // Formata ou converte toggle collaborator active para o formato exigido pela interface.
   const toggleCollaboratorActive = async (collaborator: CompanyCollaborator) => {
     try {
       await setActiveMutation.mutateAsync({

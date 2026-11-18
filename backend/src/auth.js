@@ -5,14 +5,17 @@ import bcrypt from 'bcryptjs';
 const scrypt = promisify(scryptCallback);
 const TOKEN_DURATION_SECONDS = 60 * 60 * 8;
 
+// Busca ou obtém get token secret e entrega o resultado ao chamador.
 function getTokenSecret() {
     return process.env.AUTH_TOKEN_SECRET;
 }
 
+// Valida ou verifica hash password e informa se a condição é atendida.
 export async function hashPassword(password) {
     return bcrypt.hash(password, 12);
 }
 
+// Executa autenticação, autorização ou verificação relacionada a verify password.
 export async function verifyPassword(password, storedHash) {
     if (String(storedHash).startsWith('$2')) return bcrypt.compare(password, storedHash);
 
@@ -24,6 +27,7 @@ export async function verifyPassword(password, storedHash) {
     return actualKey.length === expectedKey.length && timingSafeEqual(actualKey, expectedKey);
 }
 
+// Cria ou registra create access token e trata o resultado da operação.
 export function createAccessToken(principal) {
     const type = principal.type || 'company';
     const payload = Buffer.from(JSON.stringify({
@@ -38,6 +42,7 @@ export function createAccessToken(principal) {
     return `${payload}.${signature}`;
 }
 
+// Executa autenticação, autorização ou verificação relacionada a authenticate company.
 export async function authenticateCompany(request, reply) {
     const authorization = request.headers.authorization || '';
     const [scheme, token] = authorization.split(' ');

@@ -14,6 +14,7 @@ interface AuthProviderProps {
   children: ReactNode
 }
 
+// Implementa a operação relacionada a auth provider.
 export function AuthProvider({ children }: AuthProviderProps) {
   // Nota de Segurança: o token fica apenas em memória (ver src/lib/api/client.ts).
   // Proibido gravar em localStorage conforme as regras do projeto Nexora.
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loginError, setLoginError] = useState<string | null>(null)
   const queryClient = useQueryClient()
 
+  // Executa autenticação, autorização ou verificação relacionada a login.
   const login = async (email: string, password: string): Promise<UserProfile | null> => {
     setLoginError(null)
     try {
@@ -39,6 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  // Cria ou registra register company e trata o resultado da operação.
   const registerCompany = async (input: CompanyRegistrationInput): Promise<boolean> => {
     setLoginError(null)
     try {
@@ -52,6 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  // Implementa a operação relacionada a logout.
   const logout = () => {
     queryClient.clear()
     setAccessToken(null)

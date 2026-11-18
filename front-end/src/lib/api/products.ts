@@ -33,26 +33,32 @@ export interface ProductInput {
   unit: string
 }
 
+// Busca ou obtém list products e entrega o resultado ao chamador.
 export function listProducts(): Promise<ApiProduct[]> {
   return apiFetch<ApiProduct[]>('/produtos')
 }
 
+// Busca ou obtém get product e entrega o resultado ao chamador.
 export function getProduct(id: number): Promise<ApiProduct> {
   return apiFetch<ApiProduct>(`/produtos/${id}`)
 }
 
+// Busca ou obtém find product by code e entrega o resultado ao chamador.
 export function findProductByCode(code: string): Promise<ApiProduct> {
   return apiFetch<ApiProduct>(`/produtos/codigo/${encodeURIComponent(code)}`)
 }
 
+// Cria ou registra create product e trata o resultado da operação.
 export function createProduct(input: ProductInput): Promise<ApiProduct> {
   return apiFetch<ApiProduct>('/produtos', { method: 'POST', body: { ...input } })
 }
 
+// Atualiza ou altera update product, aplicando os dados recebidos.
 export function updateProduct(id: number, input: ProductInput): Promise<ApiProduct> {
   return apiFetch<ApiProduct>(`/produtos/${id}`, { method: 'PUT', body: { ...input } })
 }
 
+// Remove ou cancela delete product e devolve o resultado da operação.
 export function deleteProduct(id: number): Promise<null> {
   return apiFetch<null>(`/produtos/${id}`, { method: 'DELETE' })
 }

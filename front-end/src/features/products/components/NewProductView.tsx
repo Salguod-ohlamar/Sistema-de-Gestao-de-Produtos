@@ -48,6 +48,7 @@ interface NewProductViewProps {
   productId?: number | null
 }
 
+// Componente React responsável por renderizar new product view.
 export function NewProductView({ onBack, productId = null }: NewProductViewProps) {
   const productQuery = useProduct(productId)
 
@@ -73,6 +74,7 @@ export function NewProductView({ onBack, productId = null }: NewProductViewProps
   return <ProductEditor product={productQuery.data ?? null} onBack={onBack} />
 }
 
+// Implementa a operação relacionada a product editor.
 function ProductEditor({
   product,
   onBack,
@@ -148,6 +150,7 @@ function ProductEditor({
     toast.info('Imagem removida da galeria.')
   }
 
+  // Processa a ação ou o evento associado a handle save product.
   const handleSaveProduct = () => {
     if (
       !name.trim() ||
@@ -180,6 +183,7 @@ function ProductEditor({
       min_stock_quantity: minStock,
       unit: unit.trim() || 'UN',
     }
+    // Gerencia a ação ou interação de on success na interface.
     const onSuccess = () => {
       toast.success(
         isEditing
@@ -188,6 +192,7 @@ function ProductEditor({
       )
       onBack?.()
     }
+    // Gerencia a ação ou interação de on error na interface.
     const onError = (error: Error) => {
       toast.error(error instanceof ApiError ? error.message : 'Não foi possível salvar o produto.')
     }
@@ -199,6 +204,7 @@ function ProductEditor({
     }
   }
 
+  // Processa a ação ou o evento associado a handle delete confirm.
   const handleDeleteConfirm = () => {
     if (productId === null) return
     deleteProduct.mutate(productId, {

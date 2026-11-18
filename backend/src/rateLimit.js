@@ -3,6 +3,7 @@
 export function createRateLimiter({ max, windowMs }) {
     const hits = new Map();
     return function allow(key, now = Date.now()) {
+        // Implementa a operação relacionada a recent.
         const recent = (hits.get(key) || []).filter((t) => now - t < windowMs);
         if (recent.length >= max) { hits.set(key, recent); return false; }
         recent.push(now);

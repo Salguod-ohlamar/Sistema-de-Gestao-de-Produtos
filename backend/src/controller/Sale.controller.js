@@ -1,6 +1,7 @@
 import saleRepository from '../repository/SaleRepository.js';
 import { normalizeCpf } from '../cpf.js';
 
+// Cria ou registra create sale controller e trata o resultado da operação.
 async function createSaleController(req, reply) {
     const { items } = req.body;
     if (!Array.isArray(items) || items.length === 0) {
@@ -29,6 +30,7 @@ async function createSaleController(req, reply) {
     }   
 }
 
+// Busca ou obtém list sales controller e entrega o resultado ao chamador.
 async function listSalesController(req, reply) {
     try {
         const sales = await saleRepository.listSales(req.companyId);
@@ -39,6 +41,7 @@ async function listSalesController(req, reply) {
     }
 }
 
+// Busca ou obtém get sale controller e entrega o resultado ao chamador.
 async function getSaleController(req, reply) {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) return reply.status(400).send({ error: 'Venda inválida.' });

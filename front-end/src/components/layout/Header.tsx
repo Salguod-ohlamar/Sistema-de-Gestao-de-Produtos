@@ -8,6 +8,7 @@ interface HeaderProps {
   onOpenNotifications?: () => void
 }
 
+// Componente React responsável por renderizar header.
 export function Header({ onOpenCommand, onOpenNotifications }: HeaderProps) {
   const { user } = useAuth()
   const displayName = user?.name ?? 'Usuário'

@@ -5,6 +5,7 @@ import { useAuth } from '@/features/auth/context'
 
 export { useProducts }
 
+// Hook React que gerencia o estado e as operações relacionadas a sales history.
 export function useSalesHistory(companyId: string | null) {
   return useQuery({
     queryKey: ['sales', companyId],
@@ -13,6 +14,7 @@ export function useSalesHistory(companyId: string | null) {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a create sale.
 export function useCreateSale() {
   const queryClient = useQueryClient()
   const { user } = useAuth()

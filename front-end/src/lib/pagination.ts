@@ -1,6 +1,8 @@
+// Implementa a operação relacionada a paginate.
 export function paginate<T>(items: T[], page: number, pageSize: number) {
   const totalPages = Math.max(1, Math.ceil(items.length / pageSize))
   const current = Math.min(Math.max(1, page), totalPages)
+  // Implementa a operação relacionada a start.
   const start = (current - 1) * pageSize
   return {
     page: current,

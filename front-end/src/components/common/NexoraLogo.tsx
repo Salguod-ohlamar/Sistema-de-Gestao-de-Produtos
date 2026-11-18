@@ -4,6 +4,7 @@ export interface NexoraLogoProps extends React.SVGProps<SVGSVGElement> {
   size?: number
 }
 
+// Componente React responsável por renderizar nexora logo icon.
 export function NexoraLogoIcon({ size = 28, className, ...props }: NexoraLogoProps) {
   return (
     <svg
@@ -32,6 +33,7 @@ export function NexoraLogoIcon({ size = 28, className, ...props }: NexoraLogoPro
   )
 }
 
+// Implementa a operação relacionada a nexora brand.
 export function NexoraBrand({ className }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2.5 ${className ?? ''}`}>

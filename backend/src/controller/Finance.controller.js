@@ -1,6 +1,7 @@
 import expenseRepository from '../repository/Expense.repository.js';
 import { EXPENSE_CATEGORIES, buildDre, isValidDate, parseRange } from '../dre.js';
 
+// Cria ou registra create expense controller e trata o resultado da operação.
 async function createExpenseController(req, reply) {
     const { category, description, amount, incurred_on } = req.body ?? {};
     if (!EXPENSE_CATEGORIES.includes(category)) {
@@ -28,6 +29,7 @@ async function createExpenseController(req, reply) {
     }
 }
 
+// Busca ou obtém list expenses controller e entrega o resultado ao chamador.
 async function listExpensesController(req, reply) {
     const range = parseRange(req.query ?? {});
     if (range.error) return reply.status(400).send({ error: range.error });
@@ -39,6 +41,7 @@ async function listExpensesController(req, reply) {
     }
 }
 
+// Remove ou cancela delete expense controller e devolve o resultado da operação.
 async function deleteExpenseController(req, reply) {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) return reply.status(400).send({ error: 'Id inválido.' });
@@ -52,6 +55,7 @@ async function deleteExpenseController(req, reply) {
     }
 }
 
+// Busca ou obtém get dre controller e entrega o resultado ao chamador.
 async function getDreController(req, reply) {
     const query = req.query ?? {};
     const range = parseRange(query);

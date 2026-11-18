@@ -5,6 +5,7 @@ export interface DateRange {
   to: string
 }
 
+// Formata ou converte to date input value para o formato exigido pela interface.
 function toDateInputValue(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -12,6 +13,7 @@ function toDateInputValue(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
+// Implementa a operação relacionada a date range for days.
 export function dateRangeForDays(days: number, now = new Date()): DateRange {
   if (!Number.isInteger(days) || days < 1) {
     throw new RangeError('O período deve conter pelo menos um dia.')
@@ -22,6 +24,7 @@ export function dateRangeForDays(days: number, now = new Date()): DateRange {
     month: '2-digit',
     day: '2-digit',
   }).formatToParts(now)
+  // Implementa a operação relacionada a date part.
   const datePart = (type: 'year' | 'month' | 'day') =>
     Number(parts.find((part) => part.type === type)?.value)
   const to = new Date(datePart('year'), datePart('month') - 1, datePart('day'), 12)
@@ -30,6 +33,7 @@ export function dateRangeForDays(days: number, now = new Date()): DateRange {
   return { from: toDateInputValue(from), to: toDateInputValue(to) }
 }
 
+// Implementa a operação relacionada a fill daily sales.
 export function fillDailySales(
   sales: DashboardDailySale[],
   from: string,
@@ -49,6 +53,7 @@ export function fillDailySales(
   return result
 }
 
+// Implementa a operação relacionada a date label.
 export function dateLabel(date: string): string {
   const [year, month, day] = date.split('-').map(Number)
   return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(

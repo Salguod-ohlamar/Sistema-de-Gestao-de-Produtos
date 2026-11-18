@@ -2,6 +2,7 @@ import { Toaster as Sonner } from 'sonner'
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
+// Formata ou converte toaster para o formato exigido pela interface.
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner

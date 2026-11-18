@@ -18,10 +18,12 @@ import { useAuth } from '@/features/auth/context'
 
 const dateTimeFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 
+// Valida ou verifica is today e informa se a condição é atendida.
 function isToday(iso: string): boolean {
   return new Date(iso).toDateString() === new Date().toDateString()
 }
 
+// Componente React responsável por renderizar stat card.
 function StatCard({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
   return (
     <div className={`flex flex-1 flex-col gap-1.5 rounded-[14px] border p-5 ${highlight ? 'border-border-highlight bg-surface-elevated' : 'border-border bg-surface-2'}`}>
@@ -31,6 +33,7 @@ function StatCard({ label, value, highlight = false }: { label: string; value: s
   )
 }
 
+// Componente React responsável por renderizar status badge.
 function StatusBadge({ status }: { status: SaleSummary['status'] }) {
   return status === 'completed' ? (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-status-success/12 px-2.5 py-1 text-xs font-semibold text-status-success">
@@ -43,12 +46,14 @@ function StatusBadge({ status }: { status: SaleSummary['status'] }) {
   )
 }
 
+// Componente React responsável por renderizar sales history view.
 export function SalesHistoryView() {
   const { user } = useAuth()
   const { data: sales, isLoading, isError, error, refetch } = useSalesHistory(user?.id ?? null)
   const [search, setSearch] = useState('')
 
   const stats = useMemo(() => {
+    // Formata ou converte today para o formato exigido pela interface.
     const today = (sales ?? []).filter((s) => s.status === 'completed' && isToday(s.created_at))
     const revenue = today.reduce((sum, s) => sum + Math.round(Number(s.total) * 100), 0) / 100
     return { count: today.length, revenue, average: today.length ? revenue / today.length : 0 }

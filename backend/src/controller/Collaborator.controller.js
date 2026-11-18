@@ -3,6 +3,7 @@ import CollaboratorRepository from '../repository/Collaborator.repository.js';
 
 const allowedRoles = new Set(['administrator', 'manager', 'operator']);
 
+// Cria ou registra create collaborator e trata o resultado da operação.
 async function createCollaborator(request, reply) {
     const body = request.body || {};
     const collaborator = {
@@ -35,6 +36,7 @@ async function createCollaborator(request, reply) {
     }
 }
 
+// Atualiza ou altera update collaborator, aplicando os dados recebidos.
 async function updateCollaborator(request, reply) {
     const id = Number(request.params.id);
     const body = request.body || {};

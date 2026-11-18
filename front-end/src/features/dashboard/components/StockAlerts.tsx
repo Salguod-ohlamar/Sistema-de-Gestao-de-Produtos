@@ -9,6 +9,7 @@ interface StockAlertsProps {
   onViewAll?: () => void
 }
 
+// Implementa a operação relacionada a stock alerts.
 export function StockAlerts({ products, totalCount, onViewAll }: StockAlertsProps) {
   const visibleProducts = products.slice(0, 5)
 

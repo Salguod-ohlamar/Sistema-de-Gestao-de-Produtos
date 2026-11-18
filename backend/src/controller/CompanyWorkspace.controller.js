@@ -1,5 +1,6 @@
 import CompanyWorkspaceRepository from '../repository/CompanyWorkspace.repository.js';
 
+// Busca ou obtém get company overview e entrega o resultado ao chamador.
 async function getCompanyOverview(request, reply) {
     try {
         const overview = await CompanyWorkspaceRepository.getOverview(request.companyId);
@@ -11,6 +12,7 @@ async function getCompanyOverview(request, reply) {
     }
 }
 
+// Busca ou obtém list company collaborators e entrega o resultado ao chamador.
 async function listCompanyCollaborators(request, reply) {
     try {
         return reply.send(await CompanyWorkspaceRepository.listCollaborators(request.companyId));
@@ -20,6 +22,7 @@ async function listCompanyCollaborators(request, reply) {
     }
 }
 
+// Atualiza ou altera set company collaborator active, aplicando os dados recebidos.
 async function setCompanyCollaboratorActive(request, reply) {
     if (typeof request.body?.is_active !== 'boolean') {
         return reply.code(400).send({ error: 'is_active precisa ser true ou false.' });
@@ -38,6 +41,7 @@ async function setCompanyCollaboratorActive(request, reply) {
     }
 }
 
+// Busca ou obtém get company billing e entrega o resultado ao chamador.
 async function getCompanyBilling(request, reply) {
     try {
         const billing = await CompanyWorkspaceRepository.getBilling(request.companyId);

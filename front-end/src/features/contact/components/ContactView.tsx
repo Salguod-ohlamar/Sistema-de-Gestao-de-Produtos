@@ -8,6 +8,7 @@ interface ContactViewProps {
   onBack: () => void
 }
 
+// Componente React responsável por renderizar contact view.
 export function ContactView({ onBack }: ContactViewProps) {
   const [form, setForm] = useState({
     name: '',
@@ -20,11 +21,13 @@ export function ContactView({ onBack }: ContactViewProps) {
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Atualiza ou altera update, aplicando os dados recebidos.
   const update = (field: keyof typeof form, value: string) => {
     setForm((current) => ({ ...current, [field]: value }))
     setError(null)
   }
 
+  // Processa a ação ou o evento associado a handle submit.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsSubmitting(true)

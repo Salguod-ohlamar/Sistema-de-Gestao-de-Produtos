@@ -19,10 +19,12 @@ interface ReceiptDialogProps {
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 
+// Implementa a operação relacionada a divider.
 function Divider() {
   return <div className="border-t border-dashed border-text-muted/60" />
 }
 
+// Componente React responsável por renderizar receipt dialog.
 export function ReceiptDialog({ sale, lineNames, operatorName, onClose }: ReceiptDialogProps) {
   const itemsCount = sale?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
 

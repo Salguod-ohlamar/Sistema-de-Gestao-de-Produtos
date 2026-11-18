@@ -10,12 +10,14 @@ interface PasswordResetViewProps {
   onCompleted: () => void
 }
 
+// Componente React responsável por renderizar password reset view.
 export function PasswordResetView({ token, onBack, onCompleted }: PasswordResetViewProps) {
   const [password, setPassword] = useState('')
   const [confirmation, setConfirmation] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Processa a ação ou o evento associado a handle submit.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)

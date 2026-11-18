@@ -11,6 +11,7 @@ import {
 export const adminCompaniesQueryKey = ['admin', 'companies'] as const
 export const adminContactsQueryKey = ['admin', 'contacts'] as const
 
+// Hook React que gerencia o estado e as operações relacionadas a admin companies.
 export function useAdminCompanies(enabled: boolean) {
   return useQuery({
     queryKey: adminCompaniesQueryKey,
@@ -19,6 +20,7 @@ export function useAdminCompanies(enabled: boolean) {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a admin contacts.
 export function useAdminContacts(enabled: boolean) {
   return useQuery({
     queryKey: adminContactsQueryKey,
@@ -27,6 +29,7 @@ export function useAdminContacts(enabled: boolean) {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a set admin company active.
 export function useSetAdminCompanyActive() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -39,6 +42,7 @@ export function useSetAdminCompanyActive() {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a set admin collaborator active.
 export function useSetAdminCollaboratorActive() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -48,6 +52,7 @@ export function useSetAdminCollaboratorActive() {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a assign company plan.
 export function useAssignCompanyPlan() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -57,6 +62,7 @@ export function useAssignCompanyPlan() {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a set contact handled.
 export function useSetContactHandled() {
   const queryClient = useQueryClient()
   return useMutation({

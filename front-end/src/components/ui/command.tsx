@@ -22,6 +22,7 @@ Command.displayName = CommandPrimitive.displayName
 
 type CommandDialogProps = DialogProps
 
+// Componente React responsável por renderizar command dialog.
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
@@ -118,6 +119,7 @@ const CommandItem = React.forwardRef<
 ))
 CommandItem.displayName = CommandPrimitive.Item.displayName
 
+// Implementa a operação relacionada a command shortcut.
 const CommandShortcut = ({
   className,
   ...props

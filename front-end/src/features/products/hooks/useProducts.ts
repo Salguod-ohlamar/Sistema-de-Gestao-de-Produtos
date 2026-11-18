@@ -10,15 +10,19 @@ import {
   type ProductInput,
 } from '@/lib/api'
 
+// Implementa a operação relacionada a products query key.
 export const productsQueryKey = (companyId: string | null) => ['products', companyId] as const
+// Implementa a operação relacionada a product query key.
 export const productQueryKey = (companyId: string | null, id: number | null) =>
   [...productsQueryKey(companyId), id] as const
 
+// Hook React que gerencia o estado e as operações relacionadas a company id.
 function useCompanyId(): string | null {
   const { user } = useAuth()
   return user?.id ?? null
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a products.
 export function useProducts() {
   const companyId = useCompanyId()
   return useQuery({
@@ -28,6 +32,7 @@ export function useProducts() {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a product.
 export function useProduct(id: number | null) {
   const companyId = useCompanyId()
   return useQuery({
@@ -40,10 +45,12 @@ export function useProduct(id: number | null) {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a find product by code.
 export function useFindProductByCode() {
   return useMutation({ mutationFn: (code: string) => findProductByCode(code) })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a create product.
 export function useCreateProduct() {
   const queryClient = useQueryClient()
   const companyId = useCompanyId()
@@ -55,6 +62,7 @@ export function useCreateProduct() {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a update product.
 export function useUpdateProduct() {
   const queryClient = useQueryClient()
   const companyId = useCompanyId()
@@ -66,6 +74,7 @@ export function useUpdateProduct() {
   })
 }
 
+// Hook React que gerencia o estado e as operações relacionadas a delete product.
 export function useDeleteProduct() {
   const queryClient = useQueryClient()
   const companyId = useCompanyId()

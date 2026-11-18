@@ -12,6 +12,7 @@ import { CATEGORY_LABELS, CATEGORY_OPTIONS, currentMonthRange, formatDateBr, toD
 const selectClass =
   'h-11 w-full rounded-lg border border-border bg-surface-elevated px-3 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/40'
 
+// Implementa a operação relacionada a line.
 function Line({
   label,
   value,
@@ -45,7 +46,9 @@ function Line({
   )
 }
 
+// Implementa a operação relacionada a dre statement.
 function DreStatement({ dre }: { dre: Dre }) {
+  // Implementa a operação relacionada a n.
   const n = (v: string) => Number(v)
   return (
     <div className="overflow-hidden rounded-[14px] border border-border bg-surface-2">
@@ -70,6 +73,7 @@ function DreStatement({ dre }: { dre: Dre }) {
   )
 }
 
+// Implementa a operação relacionada a expenses panel.
 function ExpensesPanel({ from, to }: { from: string; to: string }) {
   const { data: expenses, isLoading } = useExpenses(from, to)
   const createMutation = useCreateExpense()
@@ -79,6 +83,7 @@ function ExpensesPanel({ from, to }: { from: string; to: string }) {
   const [amount, setAmount] = useState('')
   const [date, setDate] = useState(toDateInput(new Date()))
 
+  // Implementa a operação relacionada a submit.
   const submit = (e: FormEvent) => {
     e.preventDefault()
     const value = Number(amount.replace(',', '.'))
@@ -173,6 +178,7 @@ function ExpensesPanel({ from, to }: { from: string; to: string }) {
   )
 }
 
+// Componente React responsável por renderizar dre view.
 export function DreView() {
   const initial = currentMonthRange()
   const [from, setFrom] = useState(initial.from)

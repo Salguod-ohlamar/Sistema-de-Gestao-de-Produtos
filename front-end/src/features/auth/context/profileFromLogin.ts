@@ -7,6 +7,7 @@ const ROLE_LABELS: Record<NonNullable<LoginResponse['role']>, string> = {
   operator: 'Operador de caixa',
 }
 
+// Implementa a operação relacionada a profile from login.
 export function profileFromLogin(data: LoginResponse): UserProfile {
   const roleLabel =
     data.principalType === 'collaborator' && data.role

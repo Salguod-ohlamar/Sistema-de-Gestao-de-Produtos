@@ -16,6 +16,7 @@ const compactCurrency = new Intl.NumberFormat('pt-BR', {
   maximumFractionDigits: 0,
 })
 
+// Componente React responsável por renderizar sales chart.
 export function SalesChart({ sales, from, to }: SalesChartProps) {
   const days = fillDailySales(sales, from, to)
   const maxRevenue = Math.max(...days.map((day) => Number(day.revenue)), 0)

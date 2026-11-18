@@ -40,20 +40,24 @@ export interface DreQuery {
   taxRate: number
 }
 
+// Busca ou obtém get dre e entrega o resultado ao chamador.
 export function getDre({ from, to, taxRate }: DreQuery): Promise<Dre> {
   const qs = new URLSearchParams({ from, to, tax_rate: String(taxRate) })
   return apiFetch<Dre>(`/dre?${qs.toString()}`)
 }
 
+// Busca ou obtém list expenses e entrega o resultado ao chamador.
 export function listExpenses(from: string, to: string): Promise<Expense[]> {
   const qs = new URLSearchParams({ from, to })
   return apiFetch<Expense[]>(`/despesas?${qs.toString()}`)
 }
 
+// Cria ou registra create expense e trata o resultado da operação.
 export function createExpense(input: ExpenseInput): Promise<Expense> {
   return apiFetch<Expense>('/despesas', { method: 'POST', body: { ...input } })
 }
 
+// Remove ou cancela delete expense e devolve o resultado da operação.
 export function deleteExpense(id: number): Promise<null> {
   return apiFetch<null>(`/despesas/${id}`, { method: 'DELETE' })
 }

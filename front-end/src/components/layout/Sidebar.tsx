@@ -33,6 +33,7 @@ interface SidebarProps {
   onNavigate?: (view: string) => void
 }
 
+// Componente React responsável por renderizar sidebar.
 export function Sidebar({ currentView = 'dashboard', onNavigate }: SidebarProps) {
   const { user } = useAuth()
   const settingsItems = [

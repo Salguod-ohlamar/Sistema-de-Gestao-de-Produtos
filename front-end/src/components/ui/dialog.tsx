@@ -47,6 +47,7 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+// Componente React responsável por renderizar dialog header.
 const DialogHeader = ({
   className,
   ...props
@@ -58,6 +59,7 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = 'DialogHeader'
 
+// Implementa a operação relacionada a dialog footer.
 const DialogFooter = ({
   className,
   ...props

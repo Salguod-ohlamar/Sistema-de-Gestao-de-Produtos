@@ -23,20 +23,24 @@ export interface CompanyRegistrationResponse {
   pendingApproval: true
 }
 
+// Executa autenticação, autorização ou verificação relacionada a login request.
 export function loginRequest(email: string, password: string): Promise<LoginResponse> {
   return apiFetch<LoginResponse>('/auth/login', { method: 'POST', body: { email, password } })
 }
 
+// Cria ou registra register company request e trata o resultado da operação.
 export function registerCompanyRequest(
   input: CompanyRegistrationInput
 ): Promise<CompanyRegistrationResponse> {
   return apiFetch<CompanyRegistrationResponse>('/empresas', { method: 'POST', body: { ...input } })
 }
 
+// Implementa a operação relacionada a request password reset.
 export function requestPasswordReset(email: string): Promise<{ ok: true; message: string }> {
   return apiFetch('/auth/forgot-password', { method: 'POST', body: { email } })
 }
 
+// Implementa a operação relacionada a reset password.
 export function resetPassword(token: string, password: string): Promise<{ ok: true }> {
   return apiFetch('/auth/reset-password', { method: 'POST', body: { token, password } })
 }

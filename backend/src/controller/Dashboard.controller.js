@@ -2,6 +2,7 @@ import dashboardRepository from '../repository/Dashboard.repository.js';
 import expenseRepository from '../repository/Expense.repository.js';
 import { parseRange } from '../dre.js';
 
+// Busca ou obtém get dashboard controller e entrega o resultado ao chamador.
 async function getDashboardController(req, reply) {
     const query = req.query ?? {};
     const range = parseRange(query);

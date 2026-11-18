@@ -22,10 +22,12 @@ export interface CartProduct {
   stock_quantity: number
 }
 
+// Formata ou converte to cents para o formato exigido pela interface.
 export function toCents(value: string | number): number {
   return Math.round(Number(value) * 100)
 }
 
+// Cria ou registra add to cart e trata o resultado da operação.
 export function addToCart(lines: CartLine[], product: CartProduct): CartLine[] {
   if (product.stock_quantity <= 0) return lines
 
@@ -51,6 +53,7 @@ export function addToCart(lines: CartLine[], product: CartProduct): CartLine[] {
   )
 }
 
+// Atualiza ou altera change quantity, aplicando os dados recebidos.
 export function changeQuantity(lines: CartLine[], productId: number, delta: number): CartLine[] {
   return lines
     .map((line) =>
@@ -61,14 +64,17 @@ export function changeQuantity(lines: CartLine[], productId: number, delta: numb
     .filter((line) => line.quantity > 0)
 }
 
+// Remove ou cancela remove line e devolve o resultado da operação.
 export function removeLine(lines: CartLine[], productId: number): CartLine[] {
   return lines.filter((line) => line.productId !== productId)
 }
 
+// Implementa a operação relacionada a cart total cents.
 export function cartTotalCents(lines: CartLine[]): number {
   return lines.reduce((sum, line) => sum + line.unitPriceCents * line.quantity, 0)
 }
 
+// Implementa a operação relacionada a cart item count.
 export function cartItemCount(lines: CartLine[]): number {
   return lines.reduce((sum, line) => sum + line.quantity, 0)
 }

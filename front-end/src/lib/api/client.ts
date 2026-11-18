@@ -7,10 +7,12 @@ const API_URL: string = import.meta.env.VITE_API_URL ?? '/api'
 
 let accessToken: string | null = null
 
+// Atualiza ou altera set access token, aplicando os dados recebidos.
 export function setAccessToken(token: string | null): void {
   accessToken = token
 }
 
+// Busca ou obtém get access token e entrega o resultado ao chamador.
 export function getAccessToken(): string | null {
   return accessToken
 }
@@ -33,6 +35,7 @@ interface RequestOptions {
   signal?: AbortSignal
 }
 
+// Implementa a operação relacionada a api fetch.
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'

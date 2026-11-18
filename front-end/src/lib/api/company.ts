@@ -71,22 +71,27 @@ export interface UpdateCollaboratorInput {
   phone: string | null
 }
 
+// Busca ou obtém get company overview e entrega o resultado ao chamador.
 export function getCompanyOverview(): Promise<CompanyOverview> {
   return apiFetch<CompanyOverview>('/empresa/dashboard')
 }
 
+// Busca ou obtém get company billing e entrega o resultado ao chamador.
 export function getCompanyBilling(): Promise<CompanyBilling> {
   return apiFetch<CompanyBilling>('/empresa/financeiro')
 }
 
+// Busca ou obtém list company collaborators e entrega o resultado ao chamador.
 export function listCompanyCollaborators(): Promise<CompanyCollaborator[]> {
   return apiFetch<CompanyCollaborator[]>('/empresa/colaboradores')
 }
 
+// Cria ou registra create collaborator e trata o resultado da operação.
 export function createCollaborator(input: NewCollaboratorInput): Promise<CompanyCollaborator> {
   return apiFetch<CompanyCollaborator>('/colaboradores', { method: 'POST', body: { ...input } })
 }
 
+// Atualiza ou altera update collaborator, aplicando os dados recebidos.
 export function updateCollaborator(
   id: number,
   input: UpdateCollaboratorInput
@@ -97,6 +102,7 @@ export function updateCollaborator(
   })
 }
 
+// Atualiza ou altera set collaborator active, aplicando os dados recebidos.
 export function setCollaboratorActive(
   id: number,
   isActive: boolean

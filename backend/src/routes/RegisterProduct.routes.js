@@ -10,6 +10,7 @@ import { requireCompanyAccess } from '../middleware/authorization.js';
 
 //Função principal das  rotas
 
+// Implementa a operação relacionada a products routers.
 async function productsRouters(fastify, options) {
 
     fastify.addHook('preHandler', requireCompanyAccess);

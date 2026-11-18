@@ -28,6 +28,7 @@ interface DashboardViewProps {
 
 type Period = '7' | '30' | '90' | 'custom'
 
+// Componente React responsável por renderizar dashboard view.
 export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
   const { user } = useAuth()
   const companyId = user?.id ?? null
@@ -43,6 +44,7 @@ export function DashboardView({ onNavigate }: DashboardViewProps = {}) {
   const dashboardQuery = useDashboard(companyId, range)
   const salesQuery = useSalesHistory(companyId)
 
+  // Processa a ação ou o evento associado a handle export.
   const handleExport = () => {
     toast.info('A exportação de relatórios ainda não está disponível.')
   }

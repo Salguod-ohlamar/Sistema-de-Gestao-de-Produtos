@@ -20,10 +20,12 @@ interface AppLayoutProps {
   children: React.ReactNode
 }
 
+// Componente React responsável por renderizar app layout.
 export function AppLayout({ currentView, onNavigate, children }: AppLayoutProps) {
   const [commandOpen, setCommandOpen] = React.useState(false)
 
   React.useEffect(() => {
+    // Implementa a operação relacionada a down.
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
@@ -35,6 +37,7 @@ export function AppLayout({ currentView, onNavigate, children }: AppLayoutProps)
     return () => document.removeEventListener('keydown', down)
   }, [])
 
+  // Processa a ação ou o evento associado a handle select nav.
   const handleSelectNav = (viewId: string) => {
     onNavigate(viewId)
     setCommandOpen(false)

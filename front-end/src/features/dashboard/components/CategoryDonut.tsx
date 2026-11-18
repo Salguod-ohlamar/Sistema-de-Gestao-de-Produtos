@@ -8,6 +8,7 @@ interface CategoryDonutProps {
 const COLORS = ['#2F6BFF', '#38BDF8', '#B4C5FF', '#5D74BC', '#7C8BA8']
 const CIRCUMFERENCE = 2 * Math.PI * 38
 
+// Implementa a operação relacionada a category donut.
 export function CategoryDonut({ categories }: CategoryDonutProps) {
   const totalStock = categories.reduce((sum, item) => sum + item.stock_units, 0)
   const visible = categories.slice(0, 4)

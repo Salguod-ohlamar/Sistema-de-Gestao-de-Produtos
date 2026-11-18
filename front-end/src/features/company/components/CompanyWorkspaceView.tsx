@@ -14,10 +14,12 @@ interface CompanyWorkspaceViewProps {
   onNavigate?: (view: string) => void
 }
 
+// Implementa a operação relacionada a currency.
 function currency(value: number | string) {
   return formatCurrency(Number(value) || 0)
 }
 
+// Formata ou converte format date para o formato exigido pela interface.
 function formatDate(value: string | null) {
   if (!value) return 'Não informado'
   const date = new Date(`${value.slice(0, 10)}T00:00:00`)
@@ -26,6 +28,7 @@ function formatDate(value: string | null) {
     : new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(date)
 }
 
+// Implementa a operação relacionada a query error.
 function QueryError({
   error,
   onRetry,
@@ -47,6 +50,7 @@ function QueryError({
   )
 }
 
+// Componente React responsável por renderizar company workspace view.
 export function CompanyWorkspaceView({ onNavigate }: CompanyWorkspaceViewProps) {
   const { user } = useAuth()
   const companyId = user?.principalType === 'root' ? null : user?.id ?? null

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { applyTheme, getStoredTheme, type Theme } from '@/lib/theme'
 
+// Componente React responsável por renderizar theme toggle.
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme())
   const next: Theme = theme === 'dark' ? 'light' : 'dark'

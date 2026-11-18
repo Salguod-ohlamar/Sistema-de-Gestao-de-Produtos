@@ -4,6 +4,7 @@ import { createRateLimiter } from '../rateLimit.js';
 const allow = createRateLimiter({ max: 5, windowMs: 10 * 60 * 1000 });
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Interpreta ou normaliza parse contact para um formato interno consistente.
 export function parseContact(body = {}) {
     const data = {
         name: String(body.name || '').trim(),
@@ -18,6 +19,7 @@ export function parseContact(body = {}) {
     return valid ? data : null;
 }
 
+// Cria ou registra create contact e trata o resultado da operação.
 export async function createContact(request, reply) {
     // campo isca: pessoas não veem; robôs preenchem. Responde sucesso sem gravar.
     if (request.body?.website) return reply.code(201).send({ ok: true });
@@ -38,6 +40,7 @@ export async function createContact(request, reply) {
     }
 }
 
+// Busca ou obtém list contacts e entrega o resultado ao chamador.
 export async function listContacts(request, reply) {
     try {
         return reply.send(await sql`
@@ -51,6 +54,7 @@ export async function listContacts(request, reply) {
     }
 }
 
+// Atualiza ou altera set contact handled, aplicando os dados recebidos.
 export async function setContactHandled(request, reply) {
     if (typeof request.body?.handled !== 'boolean') {
         return reply.code(400).send({ error: 'handled precisa ser true ou false.' });

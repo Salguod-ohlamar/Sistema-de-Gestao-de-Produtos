@@ -52,6 +52,7 @@ interface FilterMenuProps<T extends string> {
   onChange: (v: T) => void
 }
 
+// Implementa a operação relacionada a filter menu.
 function FilterMenu<T extends string>({ label, value, options, onChange }: FilterMenuProps<T>) {
   const active = value !== 'all'
   const current = options.find((o) => o.value === value)?.label
@@ -104,6 +105,7 @@ interface ProductsViewProps {
   onNavigate?: (view: string, productId?: number) => void
 }
 
+// Formata ou converte to product row para o formato exigido pela interface.
 function toProductRow(product: ApiProduct): ProductRow {
   const stockUnits = Number(product.stock_quantity) || 0
   const minStock = Number(product.min_stock_quantity) || 0
@@ -129,6 +131,7 @@ function toProductRow(product: ApiProduct): ProductRow {
   }
 }
 
+// Componente React responsável por renderizar products view.
 export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
   const productsQuery = useProducts()
   const deleteProduct = useDeleteProduct()
@@ -144,6 +147,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(4)
 
+  // Implementa a operação relacionada a products.
   const products = (productsQuery.data ?? []).map(toProductRow)
 
   const filtered = filterProducts(products, {
@@ -164,6 +168,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
     setPage(1)
   }
 
+  // Remove ou cancela clear filters e devolve o resultado da operação.
   const clearFilters = () => {
     setSearchQuery('')
     setCategoryFilter(null)
@@ -173,18 +178,21 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
     setPage(1)
   }
 
+  // Componente React responsável por renderizar toggle select.
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     )
   }
 
+  // Formata ou converte toggle select all para o formato exigido pela interface.
   const toggleSelectAll = () => {
     const visibleIds = visible.map((p) => p.id)
     const allSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id))
     setSelectedIds(allSelected ? selectedIds.filter((id) => !visibleIds.includes(id)) : [...new Set([...selectedIds, ...visibleIds])])
   }
 
+  // Processa a ação ou o evento associado a handle delete.
   const handleDelete = (product: ProductRow) => {
     deleteProduct.mutate(Number(product.id), {
       onSuccess: () => {
@@ -201,6 +209,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
     })
   }
 
+  // Processa a ação ou o evento associado a handle code search.
   const handleCodeSearch = () => {
     const code = searchQuery.trim()
     if (!code) return
@@ -222,6 +231,7 @@ export function ProductsView({ onNavigate }: ProductsViewProps = {}) {
     })
   }
 
+  // Processa a ação ou o evento associado a handle delete selected.
   const handleDeleteSelected = async () => {
     const results = await Promise.allSettled(
       selectedIds.map((id) => deleteProduct.mutateAsync(Number(id)))

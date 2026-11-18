@@ -63,6 +63,7 @@ const SheetContent = React.forwardRef<
 ))
 SheetContent.displayName = SheetPrimitive.Content.displayName
 
+// Componente React responsável por renderizar sheet header.
 const SheetHeader = ({
   className,
   ...props
@@ -77,6 +78,7 @@ const SheetHeader = ({
 )
 SheetHeader.displayName = 'SheetHeader'
 
+// Implementa a operação relacionada a sheet footer.
 const SheetFooter = ({
   className,
   ...props

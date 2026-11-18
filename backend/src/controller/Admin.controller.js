@@ -1,5 +1,6 @@
 import AdminRepository from '../repository/Admin.repository.js';
 
+// Busca ou obtém list companies e entrega o resultado ao chamador.
 async function listCompanies(request, reply) {
     try {
         return reply.send(await AdminRepository.listCompanies());
@@ -9,6 +10,7 @@ async function listCompanies(request, reply) {
     }
 }
 
+// Atualiza ou altera set company active, aplicando os dados recebidos.
 async function setCompanyActive(request, reply) {
     if (typeof request.body?.is_active !== 'boolean') {
         return reply.code(400).send({ error: 'is_active precisa ser true ou false.' });
@@ -23,6 +25,7 @@ async function setCompanyActive(request, reply) {
     }
 }
 
+// Atualiza ou altera set collaborator active, aplicando os dados recebidos.
 async function setCollaboratorActive(request, reply) {
     if (typeof request.body?.is_active !== 'boolean') {
         return reply.code(400).send({ error: 'is_active precisa ser true ou false.' });
@@ -37,6 +40,7 @@ async function setCollaboratorActive(request, reply) {
     }
 }
 
+// Implementa a operação relacionada a assign company plan.
 async function assignCompanyPlan(request, reply) {
     const termMonths = Number(request.body?.term_months);
     if (!Number.isInteger(termMonths) || termMonths < 1 || termMonths > 120) {

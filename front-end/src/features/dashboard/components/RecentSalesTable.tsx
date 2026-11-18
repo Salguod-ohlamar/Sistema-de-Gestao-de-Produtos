@@ -18,6 +18,7 @@ const dateTimeFormatter = new Intl.DateTimeFormat('pt-BR', {
   timeStyle: 'short',
 })
 
+// Componente React responsável por renderizar recent sales table.
 export function RecentSalesTable({
   sales = [],
   isLoading = false,

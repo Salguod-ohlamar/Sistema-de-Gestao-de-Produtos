@@ -48,6 +48,7 @@ async function findProductsByIdController(req, reply) {
     }
 }
 
+// Busca ou obtém find products by code controller e entrega o resultado ao chamador.
 async function findProductsByCodeController(req, reply) {
     try {
         const { codigo } = req.params;
@@ -71,6 +72,7 @@ async function findProductsByCodeController(req, reply) {
 
 
 
+// Atualiza ou altera update by id, aplicando os dados recebidos.
 async function updateById(req, reply) {
     try {
         const { id } = req.params;
@@ -99,6 +101,7 @@ async function updateById(req, reply) {
 
 
 
+// Remove ou cancela delete by id e devolve o resultado da operação.
 async function deleteById(req, reply) {
     try {
         const { id } = req.params;

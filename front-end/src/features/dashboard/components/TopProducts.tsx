@@ -8,6 +8,7 @@ interface TopProductsProps {
   onViewReport?: () => void
 }
 
+// Formata ou converte top products para o formato exigido pela interface.
 export function TopProducts({ products, onViewReport }: TopProductsProps) {
   const maxQuantity = Math.max(...products.map((product) => product.quantity_sold), 0)
 

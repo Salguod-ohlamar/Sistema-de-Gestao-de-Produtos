@@ -17,6 +17,7 @@ import { ContactView } from '@/features/contact/components/ContactView'
 import { AdminView } from '@/features/admin/components/AdminView'
 import { toast } from 'sonner'
 
+// Implementa a operação relacionada a app content.
 function AppContent() {
   const { user, isAuthenticated, logout } = useAuth()
   const [currentView, setCurrentView] = useState('login') // Fluxo de Autenticação / Tela 7
@@ -29,6 +30,7 @@ function AppContent() {
     if (resetToken) window.history.replaceState(null, '', window.location.pathname)
   }, [resetToken])
 
+  // Processa a ação ou o evento associado a handle navigate.
   const handleNavigate = (view: string, productId?: number) => {
     if (view === 'login') {
       logout()
@@ -172,6 +174,7 @@ function AppContent() {
   )
 }
 
+// Componente React responsável por renderizar app.
 export function App() {
   return (
     <AuthProvider>

@@ -28,10 +28,12 @@ export interface SaleSummary {
   items_count: number
 }
 
+// Cria ou registra create sale e trata o resultado da operação.
 export function createSale(items: SaleItemInput[]): Promise<CreatedSale> {
   return apiFetch<CreatedSale>('/vendas', { method: 'POST', body: { items } })
 }
 
+// Busca ou obtém list sales e entrega o resultado ao chamador.
 export function listSales(): Promise<SaleSummary[]> {
   return apiFetch<SaleSummary[]>('/vendas')
 }

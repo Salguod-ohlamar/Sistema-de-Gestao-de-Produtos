@@ -23,6 +23,7 @@ interface LoginViewProps {
   initialErrorState?: boolean
 }
 
+// Componente React responsável por renderizar login view.
 export function LoginView({
   onLoginSuccess,
   onCompanyRegistration,
@@ -37,6 +38,7 @@ export function LoginView({
   const [hasError, setHasError] = useState(initialErrorState)
   const [isLoading, setIsLoading] = useState(false)
 
+  // Processa a ação ou o evento associado a handle submit.
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 

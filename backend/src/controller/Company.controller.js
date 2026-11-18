@@ -7,10 +7,12 @@ const allowedSegments = new Set(['technology', 'retail', 'services', 'industry']
 const allowRegistration = createRateLimiter({ max: 5, windowMs: 10 * 60 * 1000 });
 const allowLogin = createRateLimiter({ max: 10, windowMs: 10 * 60 * 1000 });
 
+// Implementa a operação relacionada a public company.
 function publicCompany(company) {
     return { id: company.id, trade_name: company.trade_name, email: company.email };
 }
 
+// Cria ou registra register company e trata o resultado da operação.
 async function registerCompany(request, reply) {
     if (!allowRegistration(request.ip)) {
         return reply.code(429).send({ error: 'Muitas tentativas de cadastro. Tente novamente em alguns minutos.' });
@@ -46,6 +48,7 @@ async function registerCompany(request, reply) {
     }
 }
 
+// Executa autenticação, autorização ou verificação relacionada a login company.
 async function loginCompany(request, reply) {
     if (!allowLogin(request.ip)) {
         return reply.code(429).send({ error: 'Muitas tentativas de login. Tente novamente em alguns minutos.' });

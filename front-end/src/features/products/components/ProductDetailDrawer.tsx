@@ -24,6 +24,7 @@ interface ProductDetailDrawerProps {
   product?: ApiProduct | null
 }
 
+// Componente React responsável por renderizar product detail drawer.
 export function ProductDetailDrawer({
   open,
   onOpenChange,

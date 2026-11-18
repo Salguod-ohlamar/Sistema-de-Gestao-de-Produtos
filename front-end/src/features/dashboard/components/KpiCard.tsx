@@ -14,6 +14,7 @@ interface KpiCardProps {
   attentionText?: string
 }
 
+// Componente React responsável por renderizar kpi card.
 export function KpiCard({
   title,
   value,

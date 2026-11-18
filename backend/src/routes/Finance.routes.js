@@ -7,6 +7,7 @@ import {
 import { getDashboardController } from '../controller/Dashboard.controller.js';
 import { requireFinanceAccess } from '../middleware/authorization.js';
 
+// Implementa a operação relacionada a finance routers.
 async function financeRouters(fastify) {
     fastify.addHook('preHandler', requireFinanceAccess);
     fastify.get('/dre', getDreController);

@@ -29,12 +29,14 @@ import { ReceiptDialog } from './ReceiptDialog'
 
 type StockState = 'ok' | 'low' | 'out'
 
+// Implementa a operação relacionada a stock state.
 function stockState(product: ApiProduct): StockState {
   if (product.stock_quantity <= 0) return 'out'
   if (product.stock_quantity <= product.min_stock_quantity) return 'low'
   return 'ok'
 }
 
+// Implementa a operação relacionada a stock chip.
 function StockChip({ product }: { product: ApiProduct }) {
   const state = stockState(product)
   if (state === 'out') {
@@ -58,6 +60,7 @@ function StockChip({ product }: { product: ApiProduct }) {
   )
 }
 
+// Componente React responsável por renderizar product card.
 function ProductCard({ product, onAdd }: { product: ApiProduct; onAdd: () => void }) {
   const out = product.stock_quantity <= 0
   return (
@@ -89,6 +92,7 @@ function ProductCard({ product, onAdd }: { product: ApiProduct; onAdd: () => voi
   )
 }
 
+// Componente React responsável por renderizar pos view.
 export function PosView() {
   const { user } = useAuth()
   const { data: products, isLoading, isError, error, refetch } = useProducts()
@@ -117,6 +121,7 @@ export function PosView() {
   const totalCents = cartTotalCents(lines)
   const itemCount = cartItemCount(lines)
 
+  // Processa a ação ou o evento associado a handle add.
   const handleAdd = (product: ApiProduct) => {
     const current = lines.find((l) => l.productId === product.id)
     if (current && current.quantity >= current.maxQuantity) {
@@ -126,6 +131,7 @@ export function PosView() {
     setLines((prev) => addToCart(prev, product))
   }
 
+  // Processa a ação ou o evento associado a handle finish.
   const handleFinish = () => {
     const names = Object.fromEntries(lines.map((l) => [l.productId, l.name]))
     createSale.mutate(

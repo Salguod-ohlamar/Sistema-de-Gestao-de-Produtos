@@ -17,6 +17,7 @@ const segments: { value: CompanyRegistrationInput['segment']; label: string }[] 
   { value: 'industry', label: 'Indústria' },
 ]
 
+// Componente React responsável por renderizar company registration view.
 export function CompanyRegistrationView({
   onBack,
   onRegistered,
@@ -35,11 +36,13 @@ export function CompanyRegistrationView({
     passwordConfirmation: '',
   })
 
+  // Atualiza ou altera update, aplicando os dados recebidos.
   const update = (field: keyof typeof form, value: string) => {
     setForm((current) => ({ ...current, [field]: value }))
     setFormError(null)
   }
 
+  // Processa a ação ou o evento associado a handle submit.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const cnpj = form.cnpj.replace(/\D/g, '')

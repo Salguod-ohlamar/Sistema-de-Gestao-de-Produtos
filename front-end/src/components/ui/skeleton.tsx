@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 
+// Componente React responsável por renderizar skeleton.
 function Skeleton({
   className,
   ...props

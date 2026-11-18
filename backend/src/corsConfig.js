@@ -1,5 +1,6 @@
 const LOCAL_FRONTEND_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
+// Busca ou obtém get cors origins e entrega o resultado ao chamador.
 export function getCorsOrigins({
     environment = process.env.NODE_ENV,
     configuredOrigins = process.env.CORS_ORIGINS
@@ -35,6 +36,7 @@ export function getCorsOrigins({
     return [...new Set(origins)];
 }
 
+// Cria ou registra create cors origin checker e trata o resultado da operação.
 export function createCorsOriginChecker(allowedOrigins) {
     return (origin, callback) => {
         callback(null, !origin || allowedOrigins.includes(origin));

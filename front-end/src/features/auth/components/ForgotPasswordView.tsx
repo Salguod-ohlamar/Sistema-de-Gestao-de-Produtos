@@ -8,12 +8,14 @@ interface ForgotPasswordViewProps {
   onBack: () => void
 }
 
+// Componente React responsável por renderizar forgot password view.
 export function ForgotPasswordView({ onBack }: ForgotPasswordViewProps) {
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Processa a ação ou o evento associado a handle submit.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)

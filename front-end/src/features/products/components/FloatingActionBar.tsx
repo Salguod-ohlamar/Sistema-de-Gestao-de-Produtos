@@ -8,6 +8,7 @@ interface FloatingActionBarProps {
   onDelete?: () => void
 }
 
+// Componente React responsável por renderizar floating action bar.
 export function FloatingActionBar({
   selectedCount,
   onBatchEdit,

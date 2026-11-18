@@ -1,6 +1,7 @@
 import { sql } from '../database.js';
 import { authenticateCompany } from '../auth.js';
 
+// Implementa a operação relacionada a require company access.
 export async function requireCompanyAccess(request, reply) {
     await authenticateCompany(request, reply);
     if (reply.sent) return;
@@ -24,6 +25,7 @@ export async function requireCompanyAccess(request, reply) {
     }
 }
 
+// Implementa a operação relacionada a require root access.
 export async function requireRootAccess(request, reply) {
     await authenticateCompany(request, reply);
     if (reply.sent) return;
@@ -38,6 +40,7 @@ export async function requireRootAccess(request, reply) {
     if (!admin.length) return reply.code(403).send({ error: 'Administrador inativo ou não encontrado.' });
 }
 
+// Implementa a operação relacionada a require company manager.
 export async function requireCompanyManager(request, reply) {
     await requireCompanyAccess(request, reply);
     if (reply.sent) return;
